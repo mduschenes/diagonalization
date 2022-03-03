@@ -5,8 +5,7 @@ int main(int argc, char *argv[]){
 	
     int argn = 1;
 
-    std::string path = "data.csv";
-    std::string test = "test.csv";
+    std::string path = "data";
     int N = 3;
     int D = 2;
     int d = 1;
@@ -36,12 +35,11 @@ int main(int argc, char *argv[]){
 
 	A.print();
 
+    A.load(path);
     A.dump(path);
 
-    A.load(test);
-    // A.load(path);
-
     A.print();
+
 
 	return 0;
 };

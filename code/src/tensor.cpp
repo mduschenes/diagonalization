@@ -61,27 +61,51 @@ void Tensor<T>::print(){
 	std::cout << "K = " << this->system.K << std::endl;
 	std::cout << "|O| = " << utils::norm<T>(this->data,this->data) << std::endl;
 	std::cout << "data = \n" << this->data << std::endl;
-
+	std::cout << std::endl;	
 };
 
 template <class T>
 void Tensor<T>::dump(std::string path){
 
-    std::ofstream file(path.c_str());
+	io::io<T> io_data;
+	std::string data;
+	io_data.join(data,path,this->system.data,this->system.ext);
+
+	std::cout << data << std::endl;
+
+    std::ofstream file(data.c_str());
     file << this->data.format(tensor::Format);
+
+
+	io::io<int> io_metadata;
+	std::string metadata;
+	io_metadata.join(metadata,path,this->system.metadata,this->system.ext);
+
+	std::cout << metadata << std::endl;
+
+
+	std::vector<std::string> header(this->system.strings);
+	std::vector<int> values = {this->system.N,this->system.D,this->system.d,this->system.n,this->system.K};
+
+    io_metadata.write(metadata,header,values);
 
 };
 
 template <class T>
 void Tensor<T>::load(std::string path){
 	
-	int n = this->system.n;
-    
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> data(n,n);
+	io::io<T> io;
+
+	std::string directory;
+	io.join(directory,path,this->system.data,this->system.ext);
 
 	std::vector<std::vector<T>> file;
 
-	this->io.read(path,file);
+	io.read(directory,file);
+
+	int n = this->system.n;
+    
+    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> data(n,n);
 
     for (int i = 0; i < n; i++){
     	for (int j = 0; j < n; j++){

@@ -39,7 +39,7 @@ struct System {
 	std::string data = "data";
 	std::string metadata = "metadata";
 	std::string ext = "csv";
-	std::vector<std::string> strings = {"N","D","d","n","K","string"};
+	std::vector<std::string> strings = {"N","D","d","n","K"};
 };	
 
 // Observables variables
@@ -74,7 +74,6 @@ class Tensor {
 		void print();
 
 		// Save and Load
-		io::io<T> io;
 		void dump(std::string path);
 		void load(std::string path);
 
