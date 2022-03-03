@@ -1,0 +1,46 @@
+#!/bin/bash
+
+
+#SBATCH --job-name=NERS570_Lab4
+#SBATCH --mail-user=mduschen@umich.edu
+#SBATCH --mail-type=END
+#SBATCH --cpus-per-task=1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=4000m 
+#SBATCH --time=10:00:00
+#SBATCH --output=./logs/%x-%j.log
+
+#make run $n
+
+submit=${1:-1}
+file=matmul
+ext=out
+lib=mkl_intel_ilp64  #openblas
+#lib=openblas
+LFLAGS="-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_sequential -lmkl_core -lm"
+#LFLAGS=""
+CCFLAGS="-O2 -I${MKLROOT}/include"
+#CCFLAGS="-O2"
+if [[ "${ext}" == "out" ]]
+then
+	echo $lib
+	echo g++ -o ${file}.out ${file}.cpp -l${lib} ${LFLAGS} ${CCFLAGS}
+	#g++ -o ${file}.out ${file}.cpp -l${lib} ${LFLAGS} ${CCFLAGS}
+	g++ -o ${file}.out ${file}.cpp -L$HOME/intel/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lm
+
+else
+	echo python
+fi
+
+
+for n in 20 100 500 1000 2000 4000;
+do
+	echo Running $n
+	if [ "${submit}" == 1 ]
+	then
+		./${file}.${ext} $n
+	else
+		echo No Submit
+	fi
+done

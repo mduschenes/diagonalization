@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# BSUB -W 72:00              # wall time
+#BSUB -M 1000               # amount of memory in MB per process
+#BSUB -J montecarlo            # job name
+#BSUB -e errors.%J          # error file name in which %J is replaced by the job ID
+#BSUB -o output.%J          # output file name in which %J is replaced by the job ID
+#BSUB -N                    # email job end notification
+#BSUB -u mduschen@umich.edu     # email address to send notifications

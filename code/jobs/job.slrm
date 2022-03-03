@@ -1,0 +1,30 @@
+#!/bin/sh
+# Node resource configurations
+#SBATCH --job-name=torch_checkpoint_demo
+#SBATCH --mem=16G
+#SBATCH --cpus-per-task=4
+#SBATCH --partition=t4v2
+#SBATCH --gres=gpu:1
+#SBATCH --qos=normal
+
+# Append is important because otherwise preemption resets the file
+#SBATCH --open-mode=append
+
+
+CWD=${1:-.}
+DATE=$(date '+%Y-%m-%d')
+
+echo "${DATE}: Job ${SLURM_JOB_ID} start"
+
+CWD=${CWD}/${SLURM_JOB_ID}-${DATE}
+mkdir -p ${CWD}
+
+./run.sh ${CWD}
+
+DATE=$(date '+%Y-%m-%d')
+echo "${DATE}: Job $SLURM_JOB_ID done, exit code: $?"
+
+
+cp ./$SLURM_JOB_ID.out ${CWD}/job.out
+cp ./$SLURM_JOB_ID.err ${CWD}/job.err
+

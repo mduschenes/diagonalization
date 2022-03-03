@@ -1,0 +1,429 @@
+% Pdf
+
+% \usepackage[cmyk]{xcolor}
+\pdfpageattr {/Group << /S /Transparency /I true /CS /DeviceRGB>>} 
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+
+% Beamer 
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{ifthen}
+\usepackage{xspace}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+
+\usepackage[english]{babel}
+\usefonttheme{professionalfonts} % using non standard fonts for beamer
+\usefonttheme[]{serif} %I want the font be serif
+
+
+\usepackage{subcaption}
+\usepackage{bibentry}
+
+\usepackage{animate}
+\usepackage{pdfpages}
+% \includepackage{pdf14}
+% \pdfminorversion=6
+
+
+
+% Colors
+
+
+% \definecolor{progress}{HTML}{E8D25C}
+% \definecolor{sapphire}{HTML}{0A1965}
+% \definecolor{sherpa}{HTML}{0A414D}
+% \definecolor{tyrian}{HTML}{4D0A41}
+% \definecolor{palatinate}{HTML}{713B67}
+
+
+% \definecolor{standard}{HTML}{0A414D} %SherpaBlue
+% \definecolor{standard}{HTML}{08343E} %SherpaBlueDark
+% \definecolor{standard}{HTML}{900C3F} %SherpaBlueDark
+% \definecolor{standard}{HTML}{009999} %SherpaBlue
+% \definecolor{progress}{HTML}{713B67}
+% \definecolor{progress}{HTML}{581845}
+% \definecolor{text}{HTML}{403B3F}
+
+% IQC Theme
+\ifthenelse{\equal{\doctheme}{iqc}}{%
+\definecolor{standard}{HTML}{900C3F}
+\definecolor{progress}{HTML}{581845}
+\definecolor{text}{HTML}{403B3F}
+\definecolor{grey}{gray}{0.6}
+}{}
+
+% Vector Theme
+\ifthenelse{\equal{\doctheme}{vector}}{%
+\definecolor{standard}{HTML}{07223E}
+\definecolor{progress}{HTML}{EB008B}
+\definecolor{text}{HTML}{07223E}
+\definecolor{grey}{gray}{0.6}
+}{}
+
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=text}
+\setbeamercolor{alerted text}{fg=progress}
+\setbeamercolor{frametitle}{bg=standard}
+% % \setbeamercolor{title separator}{ ... }
+% \setbeamercolor{progress bar in head/foot}{bg=pitchwhite,fg=pitchblack}
+% \setbeamercolor{progress bar in section page}{bg=pitchwhite,fg=pitchblack}
+
+% \definecolor{mDarkBrown}{HTML}{604c38}
+% \definecolor{mDarkTeal}{HTML}{23373b}
+% \definecolor{mLightBrown}{HTML}{EB811B}
+% \definecolor{mLightGreen}{HTML}{14B03D}
+% \newcommand{\metropolis@colors@dark}{
+%   \setbeamercolor{normal text}{%
+%     fg=black!2,
+%     bg=mDarkTeal
+%   }
+%   \usebeamercolor[fg]{normal text}
+% }
+% \newcommand{\metropolis@colors@light}{
+%   \setbeamercolor{normal text}{%
+%     fg=mDarkTeal,
+%     bg=black!2
+%   }
+% }
+% \setbeamercolor{alerted text}{%
+%   fg=mLightBrown
+% }
+% \setbeamercolor{example text}{%
+%   fg=mLightGreen
+% }
+
+
+
+% Text environment
+\usepackage{changepage}
+\usepackage{textpos}
+\newenvironment{textbox}[3]{
+  \vspace{#3}
+  \begin{adjustwidth}{#1}{#2}
+
+}{  
+  \end{adjustwidth}
+}
+
+
+% Notes
+% \setbeameroption{show notes}
+\setbeameroption{hide notes}
+% \setbeameroption{show only notes}
+% \setbeameroption{show notes on second screen}
+
+\setbeamerfont{note page}{size=\tiny}
+\addtobeamertemplate{note page}{\setbeamerfont{itemize/enumerate subbody}{size=\tiny}}{}
+
+
+
+
+% Footline
+\defbeamertemplate{footline}{centered page number}
+{%
+
+\hbox{%
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=2.6ex,dp=1ex,left,leftskip=0.3cm]{section in foot}%
+    % \usebeamerfont{note page}Computational Physics Group\newline~\emph{umich.edu/$\sim$compphys/}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=2.6ex,dp=1ex,center]{section in foot}%
+    \usebeamerfont{section in foot} \insertframenumber/\insertmainframenumber %\insertpresentationendpage%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.3333\paperwidth,ht=2.6ex,dp=1ex,right,rightskip=0.3cm]{section in foot}%
+    % \usebeamerfont{section in foot} \includegraphics[width=2.5cm,trim={0 6cm 0 6cm},clip]{figures/logo.eps}
+  
+  \ifthenelse{\equal{\doctheme}{iqc}}{%
+    \usebeamerfont{section in foot} \includegraphics[height=0.5cm]{figures/logo_iqc.eps}
+    }{}
+  \ifthenelse{\equal{\doctheme}{vector}}{%    
+    \usebeamerfont{section in foot} \includegraphics[height=0.5cm]{figures/logo_vector.eps}
+    }{}    
+    
+  \end{beamercolorbox}}%
+
+   
+  % \hspace*{\fill}%
+  % \usebeamercolor[fg]{page number in head/foot}%
+  % \usebeamerfont{page number in head/foot}%
+  % \insertpagenumber\,/\,\insertpresentationendpage%
+  \hspace*{\fill}\vskip2pt%
+}
+
+\setbeamertemplate{footline}[centered page number]
+
+
+
+% Title
+
+% \makeatletter
+% \let\thetitle\@title
+% \let\theauthor\@author
+% \let\thedate\@date
+% \makeatother
+
+\title{\doctitle}
+% \subtitle{}
+% \date{September 14, 2021}
+\date{\today}
+\author{\docauthor}
+\institute{\docaffil \\ \\ \\ \docbib}
+\titlegraphic{
+\begin{textbox}{14em}{2em}{2.7cm}
+  \tikzfig{0.7}{\docgraphic}
+\end{textbox}
+} 
+
+
+
+% Outline
+\newcommand{\makeoutline}{
+\begin{frame}{Outline}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents%[hideallsubsections]
+\end{frame}
+}
+
+
+% References
+% \usepackage[pdftex,pdfauthor={\docauthor},pdftitle={\pdftitle}]{hyperref}
+\hypersetup{
+pdftitle={\pdftitle},
+pdfauthor={\docauthor}
+}
+% \usepackage[style=authoryear,backend=biber]{biblatex}
+% % \usepackage{footbib}
+% \DeclareFieldFormat[article]{volume}{\textbf{#1}}
+% \DeclareFieldFormat{pages}{#1}
+% \DeclareCiteCommand{\footcite}[\mkbibfootnote]
+%   {\usebibmacro{prenote}}
+%   {\printnames[family-given]{labelname}%
+%    \newunit
+%    \printfield{journaltitle}%
+%    \newunit
+%    \printfield{volume} 
+%    \newunit
+%    \printlabeldateextra}
+%   {\addsemicolon\space}
+%   {\usebibmacro{postnote}}
+% \IfFileExists{style.bst}{\bibliographystyle{style}}{\bibliographystyle{naturemag}}%h-physrev}
+% \addbibresource{talk}
+
+
+% Paragraphs
+% \usepackage{parskip}
+% \setlength{\parskip}{\medskip} 
+\newcommand{\spacing}{\vspace{0.5cm}}
+% \usepackage{enumitem}
+% \setlist[itemize]{leftmargin=*}
+
+
+
+% Math
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}
+% \usepackage{braket}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage[cal=boondoxo]{mathalfa}
+
+
+% Commands
+
+% \usepackage{xargs}
+% \usepackage{etoolbox}
+
+\renewcommand{\square}{{\ooalign{$\sqsubset\mkern2mu$\cr$\mkern0.25mu\sqsupset$\cr}}}
+\newcommand{\hrectangle}{{\ooalign{$\sqsubset\mkern1mu$\cr$\mkern3mu\sqsupset$\cr}}+}
+\newcommand{\vrectangle}{{\ooalign{$\sqsubset\mkern1mu$\cr$\mkern1mu\sqsupset$\cr}}-}
+
+\newcommand{\obs}{\mathcal A}
+\renewcommand{\trace}[2][]{\textrm{tr}_{#1}\left(#2\right)}
+
+\newcommand{\func}[1][\funcindex]{u^{#1}}
+\newcommand{\funcone}[1][\funcindex]{w^{#1}}
+\newcommand{\functwo}[1][\funcindex]{v^{#1}}
+\newcommand{\Func}[1][\funcindex]{U^{#1}}
+\newcommand{\Funcone}[1][\funcindex]{W^{#1}}
+\newcommand{\Functwo}[1][\funcindex]{V^{#1}}
+\newcommand{\funcindex}[1][\chi]{#1}
+
+\renewcommand{\var}[1][\varindex]{x^{#1}}
+\newcommand{\varone}[1][\varindex]{y^{#1}}
+\newcommand{\vartwo}[1][\varindex]{z^{#1}}
+\newcommand{\Var}[1][\varindex]{X^{#1}}
+\newcommand{\Varone}[1][\varindex]{Y^{#1}}
+\newcommand{\Vartwo}[1][\varindex]{Z^{#1}}
+\newcommand{\varindex}[1][\mu]{#1}
+\newcommand{\varindexone}[1][\nu]{#1}
+\newcommand{\varindextwo}[1][\theta]{#1}
+\newcommand{\varindexthree}[1][\epsilon]{#1}
+\newcommand{\varindexfour}[1][\delta]{#1}
+
+\newcommand{\radius}{r}
+\newcommand{\Radius}{R}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\vecbar}[1]{\vec{\bar{#1}}}
+\newcommand*{\vertbar}{\Big\rvert}
+\newcommand*{\horzbar}{\rule[.5ex]{3ex}{0.5pt}}
+\newcommand{\nmodm}[2]{#1\ (\mathrm{mod}\ #2)}
+\newcommand{\reals}[1][]{{\mathbb{R}}^{#1}}
+\newcommand{\complexes}[1][]{{\mathbb{C}}^{#1}}
+\newcommand{\ith}[1]{#1^{\textrm{th}}}
+
+
+
+
+\newcounter{Nargs}
+\def\numargs#1{%
+    \setcounter{Nargs}{0}%
+    \foreach \x in #1{%
+    \stepcounter{Nargs}%
+  }%
+    \the\value{Nargs}%
+}  
+% % \ifnum1=0\numargs{{#2}}\relax \else \numargs{{#2}}\fi} 
+% \newcommand*{\derivative}[2][f]{%
+%     \frac{\partial^{\ifstrequal{\string \numargs{{#2}}}{\string 1}{}{\numargs{{#2}}}} #1}{%
+%     \foreach \variable in {#2} {%
+%     \partial \variable}}%
+% }
+
+\renewcommand*{\derivative}[3][0]{%
+    \def\N{\numargs{{#3}}}%
+    \frac{\partial^{\ifnum#1=1 {} \else #1 \fi} #2}{%
+    \foreach \x in {#3} {\partial \x}}
+}
+
+\newcommand*{\uniderivative}[3][1]{%
+    \frac{\partial^{\ifnum#1=1 {} \else #1 \fi} #2}{
+    \partial {#3}^{\ifnum#1=1 {} \else #1 \fi}}
+}
+
+\newcommand*{\nderivative}[4][n]{%
+    \def\N{\numargs{{#3}}}%
+    \frac{\partial^{#1} #2}{\partial#3\cdots\partial#4}
+}
+
+\newcommand*{\difference}[3][0]{%
+    \def\M{1}%
+    \def\N{\numargs{{#3}}}%
+    \frac{\delta^{\ifnum#1=1 {} \else #1 \fi} #2}{%
+    \foreach \x in {#3} {\delta \x}}
+}
+
+\newcommand*{\unidifference}[3][1]{%
+    \frac{\delta^{\ifnum#1=1 {} \else #1 \fi} #2}{
+    \delta {#3}^{\ifnum#1=1 {} \else #1 \fi}}
+}
+
+\newcommand*{\ndifference}[4][n]{%
+    \def\N{\numargs{{#3}}}%
+    \frac{\delta^{#1} #2}{\delta#3\cdots\delta#4}
+}
+
+\newcommand*{\Difference}[3][0]{%
+    \def\M{1}%
+    \def\N{\numargs{{#3}}}%
+    \frac{\Delta^{\ifnum#1=1 {} \else #1 \fi} #2}{%
+    \foreach \x in {#3} {\Delta \x}}
+}
+
+\newcommand*{\uniDifference}[3][1]{%
+    \frac{\Delta^{\ifnum#1=1 {} \else #1 \fi} #2}{
+    \Delta {#3}^{\ifnum#1=1 {} \else #1 \fi}}
+}
+
+\newcommand*{\nDifference}[4][n]{%
+    \def\N{\numargs{{#3}}}%
+    \frac{\Delta^{#1} #2}{\Delta#3\cdots\Delta#4}
+}
+
+
+% Language
+\newcommand{\etal}{\emph{et al.} }
+
+% Editing
+\newcommand{\kg}[1]{\textcolor{red}{\textbf{(kg)} #1}}
+\newcommand{\md}[1]{\textcolor{blue}{\textbf{(md)} #1}}
+\newcommand{\mdkg}[1]{\textcolor{green}{\textbf{(md-kg)} #1}}
+
+% Notes
+% \setbeameroption{show notes}
+\setbeameroption{hide notes}
+% \setbeameroption{show only notes}
+% \setbeameroption{show notes on second screen}
+
+\setbeamerfont{note page}{size=\tiny}
+\addtobeamertemplate{note page}{\setbeamerfont{itemize/enumerate subbody}{size=\tiny}}{}
+
+
+
+% Tikz
+\usepackage{tikz}
+\usepackage{tikzit}
+\usetikzlibrary{shapes.geometric, arrows,chains}
+\usetikzlibrary{quantikz}
+
+
+
+\tikzset{
+  startstop/.style={
+    rectangle, 
+    rounded corners,
+    minimum width=3cm, 
+    minimum height=1cm,
+    align=center, 
+    draw=black, 
+    fill=red!30
+    },
+  process/.style={
+    rectangle, 
+    minimum width=3cm, 
+    minimum height=1cm, 
+    align=center, 
+    draw=black, 
+    fill=blue!30
+    },
+  decision/.style={
+    rectangle, 
+    minimum width=3cm, 
+    minimum height=1cm, align=center, 
+    draw=black, 
+    fill=green!30
+    },
+  arrow/.style={thick,->,>=stealth},
+  dec/.style={
+    ellipse, 
+    align=center, 
+    draw=black, 
+    fill=green!30
+    },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

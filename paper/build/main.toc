@@ -1,0 +1,3 @@
+\babel@toc {british}{}
+\contentsline {section}{\numberline {1}INSERT SECTION}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}INSERT SUBSECTION}{1}{subsection.1.1}%
