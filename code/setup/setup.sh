@@ -31,6 +31,9 @@ pip install -r requirements.pip.txt
 cd ${cwd}
 
 
+# Install HDF5
+./setup_hdf5.sh
+
 
 # Test
 src=test

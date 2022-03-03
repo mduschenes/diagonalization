@@ -2,6 +2,7 @@
 #define _UTILS_
 
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <cstddef>
 #include <vector> 
@@ -10,16 +11,17 @@
 
 #include <Eigen/Dense>
 #include <LBFGS.h>
-
+#include "hdf5.h"
 
 
 namespace utils {
 
 
-Eigen::MatrixXd commutator(Eigen::MatrixXd & A, Eigen::MatrixXd & B);
+template<class T>
+Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> commutator(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
 
-double norm(Eigen::MatrixXd & A, Eigen::MatrixXd & B);
-
+template<class T>
+T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
 
 
 };

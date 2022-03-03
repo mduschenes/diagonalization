@@ -1,6 +1,6 @@
 #include "io.hpp"
 
-namespace IO {
+namespace io {
 
 template <class T>
 io<T>::io(char delimeter,char linebreak){
@@ -24,18 +24,17 @@ void io<T>::write(std::string path,std::vector<std::string> & header,std::vector
 	
 	std::ofstream file(path);
 	
-	int N,M;
-	_size(data,N,M);
+	unsigned int N,M;
+	this->shape(data,N,M);
 
-
-	for(int i=0;i<M;i++){
+	for(unsigned int i=0;i<M;i++){
 		file << header[i];
 		if (i<(M-1)){file<<this->delimeter;};
 	};
 	file << this->linebreak;
 
-	for (int j=0;j<N;j++){
-	for(int i=0;i<M;i++){
+	for (unsigned int j=0;j<N;j++){
+	for(unsigned int i=0;i<M;i++){
 			if(j<data[i].size()){file << data[i][j];};
 			if (i<(M-1)){file<<this->delimeter;};
 		};
@@ -53,41 +52,106 @@ void io<T>::read(std::string path,std::vector<std::string> & header,std::vector<
 	std::string line,string;
 	T datum;
 
-	int col=0,row=0;
+	int number = 0;
 	while(std::getline(file,line)){
-		col=0;
-		std::stringstream stream(line);
+		
+		std::istringstream stream(line);
+		data.push_back(std::vector<T>{});
 
-		if (row == 0){
-			while(stream >> string){
+		if (number == 0){
+			while(std::getline(stream, string, this->delimeter)){
 				header.push_back(string);
-				data.push_back(std::vector<T>{});
-				if(stream.peek() == this->delimeter){stream.ignore();};
-				col ++;
 			};
 		}
 		else{
-			while(stream >> datum){
-				data[col].push_back(datum);
-				col ++;
+			while(std::getline(stream, string, this->delimeter)){
+				datum = this->parse(string);
+				data[number].push_back(datum);
 			};
 		};
-		row++;
+		number++;
 	};
 	file.close();
 	return;
 };
 
+
+
 template <class T>
-void  io<T>::_size(std::vector<std::vector<T>> & data, int &N, int &M){
+void io<T>::write(std::string path,std::vector<std::vector<T>> & data){
+	
+	std::ofstream file(path);
+	
+	unsigned int N,M;
+	this->shape(data,N,M);
+
+	for (unsigned int j=0;j<N;j++){
+		for(unsigned int i=0;i<M;i++){
+			if(j<data[i].size()){file << data[i][j];};
+			if (i<(M-1)){file<<this->delimeter;};
+		};
+		file << this->linebreak;
+	};
+
+	file.close();
+	return;	
+};
+
+
+template <class T>
+void io<T>::read(std::string path,std::vector<std::vector<T>> & data){
+
+	std::ifstream file(path);	
+	std::string line,string;	
+	T datum;
+
+	int number = 0;
+	while(std::getline(file,line)){
+
+		std::istringstream stream(line);
+		data.push_back(std::vector<T>{});
+		
+		while(std::getline(stream, string, this->delimeter)){
+			datum = this->parse(string);
+			data[number].push_back(datum);
+		};
+
+		number++;
+	};
+	file.close();
+	return;
+};
+
+
+template <class T>
+void io<T>::shape(std::vector<std::vector<T>> & data, unsigned int &N, unsigned int &M){
 	M = data.size();
 	N = 0;
-	int _N = 0;
-	for(int i=0;i<M;i++){
+	unsigned int _N = 0;
+	for(unsigned int i=0;i<M;i++){
 		_N = data[i].size();
 		if(_N>N){N=_N;};
 	};
 };
 
 
+template<class T>
+T io<T>::parse(std::string & string){
+	std::vector<char> remove = {' ',};
+	for (char s : remove){
+		string.erase(std::remove(string.begin(), string.end(),s), string.end());
+	};
+	// string.erase(std::remove(string.begin(), string.end(),' '), string.end());
+	std::istringstream stream(string);
+    T value;
+    stream >> value;	
+	return value;
+}
+
+template class io<double>;
+template class io<int>;
+
+
 };
+
+

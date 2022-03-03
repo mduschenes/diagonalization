@@ -11,7 +11,7 @@ LIB_DIR := lib
 OBJ_DIR := obj
 DEP_DIR := obj
 EXE_DIR := bin
-CMD_DIR := cmd
+CMD_DIR := src
 DIR := SRC_DIR INC_DIR LIB_DIR OBJ_DIR EXE_DIR
 
 # Extensions
@@ -24,7 +24,7 @@ EXE_EXT := out
 CMD_EXT:= py
 
 # Targets
-SRC := main tensor utils
+SRC :=  utils io tensor main
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 LIB := 
@@ -68,21 +68,6 @@ endif
 
 
 
-
-
-# CLI Arguments
-ifeq (run,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (process,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-
-
 # Compile Options
 ifdef USE_DEP
 # CCFLAGS += -MMD -MP
@@ -97,10 +82,23 @@ endif
 ifdef USE_HDF5
 HDF5_DIR := $(USE_HDF5)
 USE_HDF5 := 1
-CCFLAGS += -I$(HDF5_DIR)/include -DUSE_HDF5
-LDFLAGS += -L$(HDF5_DIR)/lib 
-LDLIBS += -lhdf5 -lhdf5_hl
+CCFLAGS += -I$(HDF5_DIR) -DUSE_HDF5
+LDFLAGS += -L$(HDF5_DIR)lib 
+LDLIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp
 endif
+
+
+# CLI Arguments
+ifeq (run,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
+ifeq (process,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
 
 
 

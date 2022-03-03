@@ -7,9 +7,9 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
-
-namespace IO {
+namespace io {
 
 template <class T>
 class io{
@@ -25,14 +25,14 @@ class io{
 		void write(std::string path,std::vector<std::string> & header,std::vector<std::vector<T>> & data);
 		void read(std::string path,std::vector<std::string> & header,std::vector<std::vector<T>> & data);
 
+		void write(std::string path,std::vector<std::vector<T>> & data);
+		void read(std::string path,std::vector<std::vector<T>> & data);
+
 	private:
-		void _size(std::vector<std::vector<T>> & data,int & N,int & M);
+		void shape(std::vector<std::vector<T>> & data,unsigned int & N,unsigned int & M);
+		T parse(std::string & string);
 };		
 
-template class io<int>;
-template class io<float>;
-template class io<double>;
-template class io<char>;
-template class io<std::string>;
 };
+
 #endif

@@ -5,35 +5,43 @@ int main(int argc, char *argv[]){
 	
     int argn = 1;
 
+    std::string path = "data.csv";
+    std::string test = "test.csv";
     int N = 3;
     int D = 2;
     int d = 1;
     int K = 3;
-    std::vector<int> theta(K,0.0);
+    std::vector<double> theta(K,0.0);
 
     // argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
+    argn++;if (argc >= argn){path = argv[argn-1];};
     argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
     argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
     argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
     argn++;if (argc >= argn){K = std::atoi(argv[argn-1]);};
 
-    tensor::System<int> system;
+    tensor::System<double> system;
     system.N = N;
     system.D = D;
     system.d = d;
-    system.Q = pow(D,N);
+    system.n = pow(D,N);
     system.K = K;
     system.theta = theta;
 
  
-	tensor::Operator<int> O(system);
+	tensor::Tensor<double> A(system);
 
-	std::vector<int> params = theta;
-	O.assemble(params);
+	std::vector<double> params = theta;
+	A.assemble(params);
 
-	O.print();
+	A.print();
 
-	utils::norm(O.data,O.data);
+    A.dump(path);
+
+    A.load(test);
+    // A.load(path);
+
+    A.print();
 
 	return 0;
 };
