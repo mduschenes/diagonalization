@@ -157,6 +157,39 @@ void io<T>::write(std::string & path,std::vector<std::vector<T>> & data){
 
 
 template <class T>
+void io<T>::read(std::string & path,std::vector<T> & data){
+
+	std::ifstream file(path);	
+	std::string string;	
+	T value;
+
+	while(std::getline(file,string, this->delimeter)){
+		this->parse(value,string);
+		data.push_back(value);
+	};
+	file.close();
+	return;
+};
+
+
+
+template <class T>
+void io<T>::write(std::string & path,std::vector<T> & data){
+	
+	std::ofstream file(path);
+
+	unsigned int N;
+	this->shape(data,N);
+
+	for (unsigned int i=0;i<N;i++){
+		if(i<data.size()){file << data[i];};
+	};
+	file.close();
+	return;	
+};
+
+
+template <class T>
 void io<T>::read(std::string & path,std::vector<std::vector<T>> & data){
 
 	std::ifstream file(path);	
@@ -180,6 +213,13 @@ void io<T>::read(std::string & path,std::vector<std::vector<T>> & data){
 	return;
 };
 
+
+template <class T>
+void io<T>::write(std::string & path,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
+	std::string name = "data";
+	utils::eigen_to_hdf5<T>(path,name,data);
+	return;
+};
 
 
 template <class T>

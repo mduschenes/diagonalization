@@ -9,6 +9,8 @@
 #include <string>
 #include <algorithm>
 
+#include "utils.hpp"
+
 namespace io {
 
 template <class T>
@@ -33,6 +35,8 @@ class io{
 
 		void write(std::string & path,std::vector<std::vector<T>> & data);
 		void read(std::string & path,std::vector<std::vector<T>> & data);
+
+		void write(std::string & path,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 		void join(std::string & path,std::string & directory,std::string & file,std::string & ext);
 		void parse(T & value, std::string & string);

@@ -1,4 +1,3 @@
-// #pragma once
 #ifndef _TENSOR_
 #define _TENSOR_
 
@@ -10,21 +9,18 @@
 #include <complex>
 #include <cmath>
 
-#define EIGEN_USE_MKL_ALL    
+#define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
+#include <Eigen/Eigenvalues> 
+
 #include <LBFGS.h>
 #include <H5Cpp.h>
-
-
+	
 #include "utils.hpp"
 #include "io.hpp"
 
 
 namespace tensor {
-
-
-// File Format
-const static Eigen::IOFormat Format(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", "\n");
 
 
 // System variables
@@ -35,11 +31,13 @@ struct System {
 	int d; // spatial dimensions
 	int n; // Total dimension of space
 	int K; // Number of parameters	
+	int size; // Data size
+	int dim = 2; // Data dimension
 	std::vector<type> theta; // parameters
-	std::string data = "data";
-	std::string metadata = "metadata";
-	std::string ext = "csv";
-	std::vector<std::string> strings = {"N","D","d","n","K"};
+	std::string data = "data"; // data name
+	std::string metadata = "metadata"; // metadata name
+	std::string ext = "hdf5"; // file extension
+	std::vector<std::string> strings = {"N","D","d","n","K"}; // settings names
 };	
 
 // Observables variables
@@ -56,32 +54,48 @@ struct Observables {
 
 
 //  Class for Tensor
-template <class T>
+template <typename T>
 class Tensor {
- 
+
 	public:
 		//  Constructor and Destructor
 		Tensor(tensor::System<T> & system);
 		~Tensor();
 
-
-		// System settings
-		void set(tensor::System<T> & system);
-		bool exists = false;
+		// Settings
 		tensor::System<T> system;
 
-		// Print
-		void print();
+		// Size and Dimension
+		const unsigned int size;
+		const unsigned int dim;
+
+		// Type
+		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> Type;
+		typedef Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> Int;
+
+		// Data
+		Type data;
+
+		// Setup
+		void setup(tensor::System<T> & system);
 
 		// Save and Load
 		void dump(std::string path);
 		void load(std::string path);
 
-		// Assemble
-		void assemble(std::vector<T> theta);
+		// Print
+		void print();
 
-		// Data
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> data;
+		// Set
+		void set(std::vector<T> & theta);
+
+		// Solve
+		Eigen::SelfAdjointEigenSolver<Tensor<T>::Type> solver;
+		void eig();
+		void eig(std::vector<T> & eigenvalues, Tensor<T>::Type & eigenvectors);
+
+		// Convert
+		// void convert(std::vector<std::vector<T>> & data);		
 
 	private:
 

@@ -80,7 +80,7 @@ def deserialize_json(obj,key='py/object'):
 
 # Load data - General file import
 def load(path,wr='r',default=None,verbose=False,**kwargs):
-	loaders = {**{ext: (lambda obj,ext=ext,**kwargs:getattr(pd,'read_%s'%ext)(obj,**kwargs)) for ext in ['csv']},
+	loaders = {**{ext: (lambda obj,ext=ext,**kwargs:getattr(pd,'read_%s'%ext)(obj,{**kwargs})) for ext in ['csv']},
 			   **{ext: (lambda obj,ext=ext,**kwargs:np.loadtxt(obj,**{'delimiter':',',**kwargs})) for ext in ['txt']},
 			   **{ext: (lambda obj,ext=ext,**kwargs:getattr(pd,'read_%s'%ext)(obj,**kwargs) if wr=='r' else (pickle.load(obj,**kwargs))) for ext in ['pickle']},
 			   **{ext: (lambda obj,ext=ext,**kwargs: json.load(obj,**{'object_hook':deserialize_json,**kwargs})) for ext in ['json']},
@@ -105,14 +105,12 @@ def load(path,wr='r',default=None,verbose=False,**kwargs):
 				logger.log(verbose,'Loading path %s'%(path))
 				return data
 			except Exception as e:
-				print(e)
 				try:
 					with open(path,wr) as obj:
 						data = loader(obj,**kwargs)
 						logger.log(verbose,'Loading obj %s'%(path))
 						return data
 				except Exception as e:
-					print(e)
 					pass
 
 	return default			

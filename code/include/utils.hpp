@@ -10,19 +10,25 @@
 #include <cmath>
 
 #include <Eigen/Dense>
-#include <LBFGS.h>
-#include "hdf5.h"
-
-
+#include <H5Cpp.h>
 namespace utils {
 
 
-template<class T>
+template<typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> commutator(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
 
-template<class T>
+template<typename T>
 T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
 
+template<typename T>
+H5::DataType H5Type(T);
+
+
+template<typename T>
+void eigen_to_hdf5(std::string & path, std::string & name, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
+
+template<typename T>
+void hdf5_to_eigen(std::string & path, std::string & name, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 };
 

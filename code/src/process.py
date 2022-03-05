@@ -63,7 +63,7 @@ def main(args):
 					"path":"figures",
 					"verbose":"info"
 				},
-				"data":"data/test.csv"
+				"data":"data/test.csv",
 				"model":{
 					"N":3,
 					"D":2,
@@ -83,12 +83,17 @@ def main(args):
 			}
 			]
 
-		params = setup(args,defaults)
+	# params = setup(args,defaults)
 
+	data = args[0]
+	data = load(data,header='infer')
+	print(data)
 
-		data = load(params['data'])
+	# data = load(params['data'])
 
-		plot(data)
+	# plot(data)
+
+	print('Hello World')
 
 
 if __name__ == '__main__':
