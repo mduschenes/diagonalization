@@ -1,9 +1,5 @@
 #!/bin/bash
 
-wget http://h5cpp.org/download/libh5cpp-dev_1.10.4.6-1~exp1_all.deb
-
-
-
 
 cwd=$(pwd)
 

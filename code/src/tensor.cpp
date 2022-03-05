@@ -2,10 +2,6 @@
 
 namespace tensor {
 
-// File Format
-const static Eigen::IOFormat Format(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", "\n");
-
-
 // Constructor and Destructor
 template <typename T>
 Tensor<T>::Tensor(tensor::System<T> & system) : size(system.size), dim(system.dim){
@@ -93,23 +89,18 @@ void Tensor<T>::print(){
 template <typename T>
 void Tensor<T>::dump(std::string path){
 
+
+	// Data
 	io::io<T> io_data;
-	std::string data;
-	io_data.join(data,path,this->system.data,this->system.ext);
+    io_data.write(path,this->system.data,this->data);
 
-    std::ofstream file(data.c_str());
-    file << this->data.format(tensor::Format);
+    // Metadata
+	// io::io<int> io_metadata;
 
+	// std::vector<std::string> header(this->system.strings);
+	// std::vector<int> values = {this->system.N,this->system.D,this->system.d,this->system.n,this->system.K};
 
-
-	io::io<int> io_metadata;
-	std::string metadata;
-	io_metadata.join(metadata,path,this->system.metadata,this->system.ext);
-
-	std::vector<std::string> header(this->system.strings);
-	std::vector<int> values = {this->system.N,this->system.D,this->system.d,this->system.n,this->system.K};
-
-    io_metadata.write(metadata,header,values);
+ //    io_metadata.write(path,this->system.metadata,header,values);
 
 };
 
@@ -118,12 +109,9 @@ void Tensor<T>::load(std::string path){
 	
 	io::io<T> io;
 
-	std::string directory;
-	io.join(directory,path,this->system.data,this->system.ext);
-
 	std::vector<std::vector<T>> file;
 
-	io.read(directory,file);
+	io.read(path,file);
 
 	int size = this->system.size;
     

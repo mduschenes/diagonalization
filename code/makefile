@@ -27,7 +27,8 @@ PROCESS_EXT:= py
 SRC := utils io tensor main
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
-LIB := 
+# LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
+LIB := hdf5/libhdf5_hl_cpp.a hdf5/libhdf5_cpp.a hdf5/libhdf5_hl.a hdf5/libhdf5.a
 LIB := $(patsubst %,$(LIB_DIR)/%,$(LIB))
 
 OBJ := $(patsubst $(SRC_DIR)/%.$(SRC_EXT),$(OBJ_DIR)/%.$(OBJ_EXT),$(SRC))
@@ -50,13 +51,40 @@ PROFILE_OUT := profile.out
 USE_DEP := 1
 USE_OMP := 1
 USE_MKL := 1
-USE_HDF5 := /usr/lib/x86_64-linux-gnu/hdf5/serial/
+# USE_HDF5 := /usr/lib/x86_64-linux-gnu/hdf5/serial/
+# USE_HDF5 := /usr/local/include/
+USE_HDF5 := /usr/local/
 USE_PROFILE :=
 
 # Flags
 CC_FLAGS := -O2 -m64 -std=c++17 -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
+
+
+# Compile Options
+ifdef USE_DEP
+# CC_FLAGS += -MMD -MP
+endif
+
+ifdef USE_OMP
+USE_OMP = 1
+CCFLAGS += -DUSE_OMP
+LD_FLAGS += -fopenmp -msse2
+endif
+
+ifdef USE_HDF5
+HDF5_DIR := $(USE_HDF5)
+USE_HDF5 := 1
+CC_FLAGS += -I$(HDF5_DIR) -DUSE_HDF5 -DOLD_HEADER_FILENAME -DHDF_NO_NAMESPACE -DNO_STATIC_CAST
+LD_FLAGS += -L$(HDF5_DIR)lib 
+LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/lib
+endif
+
+ifdef USE_PROFILE
+CC_FLAGS += -pg
+endif
+
 
 # User Libraries
 CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include
@@ -72,30 +100,6 @@ else
 CC_FLAGS +=
 LD_FLAGS +=
 LD_LIBS  += -lblas -llapack -fopenmp
-endif
-
-
-# Compile Options
-ifdef USE_DEP
-# CC_FLAGS += -MMD -MP
-endif
-
-ifdef USE_OMP
-USE_OMP = 1
-CC_FLAGS +=
-LD_FLAGS += -fopenmp -msse2
-endif
-
-ifdef USE_HDF5
-HDF5_DIR := $(USE_HDF5)
-USE_HDF5 := 1
-CC_FLAGS += -I$(HDF5_DIR) -DUSE_HDF5
-LD_FLAGS += -L$(HDF5_DIR)lib
-LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp
-endif
-
-ifdef USE_PROFILE
-CC_FLAGS += -pg
 endif
 
 

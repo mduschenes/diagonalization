@@ -31,6 +31,8 @@ int main(int argc, char *argv[]){
     system.K = K;
     system.size = pow(D,N); 
     system.dim = 2; 
+    system.data = "data"; // data name
+    system.metadata = "metadata"; // metadata name
     system.theta = theta;
 
  
@@ -40,10 +42,10 @@ int main(int argc, char *argv[]){
 	A.set(params);
 
     
-    // std::string path = "data";
+    std::string path = "data/data.hdf5";
 	// A.print();
     // A.load(path);
-    // A.dump(path);
+    A.dump(path);
     // A.print();
 
     A.eig();

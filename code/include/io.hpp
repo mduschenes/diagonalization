@@ -9,6 +9,9 @@
 #include <string>
 #include <algorithm>
 
+#include <Eigen/Dense>
+#include <H5Cpp.h>
+
 #include "utils.hpp"
 
 namespace io {
@@ -33,10 +36,13 @@ class io{
 		void write(std::string & path,std::vector<T> & data);
 		void read(std::string & path,std::vector<T> & data);
 
+		void write(std::string & path,std::string & name, std::vector<T> & data);
+		void write(std::string & path,std::string & name, std::vector<std::string> & header, std::vector<T> & data);
+
 		void write(std::string & path,std::vector<std::vector<T>> & data);
 		void read(std::string & path,std::vector<std::vector<T>> & data);
 
-		void write(std::string & path,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
+		void write(std::string & path,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 		void join(std::string & path,std::string & directory,std::string & file,std::string & ext);
 		void parse(T & value, std::string & string);

@@ -2,6 +2,9 @@
 
 namespace io {
 
+// Eigen File Format
+const static Eigen::IOFormat EigenFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", "\n");
+
 template <class T>
 io<T>::io(char delimeter,char linebreak){
 	this->delimeter=delimeter;
@@ -18,6 +21,8 @@ io<T>::io(){};
 
 template <class T>
 io<T>::~io(){};
+
+
 
 
 template <class T>
@@ -215,11 +220,38 @@ void io<T>::read(std::string & path,std::vector<std::vector<T>> & data){
 
 
 template <class T>
-void io<T>::write(std::string & path,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
-	std::string name = "data";
-	utils::eigen_to_hdf5<T>(path,name,data);
+void io<T>::write(std::string & path, std::string & name, std::vector<std::string> & header , std::vector<T> & data){
+
+	if (utils::ends_with(path,".csv")){
+		io<T>::write(path,header,data);
+	}
+	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
+		std::cout << path << " , " << name << std::endl;
+		utils::vector_to_hdf5<T>(path,name,data);
+	};
 	return;
 };
+
+template <class T>
+void io<T>::write(std::string & path, std::string & name, std::vector<T> & data){
+
+	if (utils::ends_with(path,".csv")){
+		io<T>::write(path,data);
+	}
+	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
+		utils::vector_to_hdf5<T>(path,name,data);
+	};
+	return;
+};
+
+
+
+
+template <class T>
+void io<T>::write(std::string & path,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
+	utils::eigen_to_hdf5<T>(path,name,data);
+};
+
 
 
 template <class T>

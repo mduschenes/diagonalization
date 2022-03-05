@@ -36,7 +36,6 @@ struct System {
 	std::vector<type> theta; // parameters
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::string ext = "hdf5"; // file extension
 	std::vector<std::string> strings = {"N","D","d","n","K"}; // settings names
 };	
 

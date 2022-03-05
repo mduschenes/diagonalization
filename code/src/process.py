@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Import python modules
-import os,sys
+import os,sys,h5py
 import numpy as np
 import scipy as sp
 
@@ -85,15 +85,19 @@ def main(args):
 
 	# params = setup(args,defaults)
 
-	data = args[0]
-	data = load(data,header='infer')
+	path = args[0]
+
+	print(path)
+
+	data = h5py.File(path,'r').get('data')[...]
+
+	# data = load(data,header='infer')
 	print(data)
 
 	# data = load(params['data'])
 
 	# plot(data)
 
-	print('Hello World')
 
 
 if __name__ == '__main__':
