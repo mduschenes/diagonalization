@@ -57,7 +57,7 @@ USE_HDF5 := /usr/local/
 USE_PROFILE :=
 
 # Flags
-CC_FLAGS := -O2 -m64 -std=c++17 -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
+CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
 

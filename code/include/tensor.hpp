@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
 #include <cstddef>
 #include <vector> 
 #include <complex>
 #include <cmath>
+#include <random>
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
@@ -70,7 +70,6 @@ class Tensor {
 
 		// Type
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> Type;
-		typedef Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> Int;
 
 		// Data
 		Type data;
@@ -87,6 +86,7 @@ class Tensor {
 
 		// Set
 		void set(std::vector<T> & theta);
+		void rand(std::vector<T> & theta);
 
 		// Solve
 		Eigen::SelfAdjointEigenSolver<Tensor<T>::Type> solver;

@@ -19,6 +19,57 @@ bool ends_with(std::string const & value, std::string const & pattern){
 };
 
 
+template <typename T, typename U>
+void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other){
+	
+	other = data.template cast<U>();	
+
+	return;
+};
+
+
+
+unsigned int bit(unsigned int x, unsigned int j){
+	return (x >> j) & 1;
+};
+
+unsigned int phase(unsigned int x, unsigned int j){
+	return bit(x,j)*x;
+};
+
+unsigned int flip(unsigned int x, unsigned int j){
+	return x ^ (1 << j);
+};
+
+unsigned int phaseflip(unsigned int x, unsigned int j){
+	return bit(x,j) * flip(x,j);
+};
+
+bool polarization(unsigned int x, unsigned int n, unsigned int m){
+	unsigned int p = 0;
+	unsigned int j = 0;
+	while((p<=m)&&(j<n)){
+		p += bit(x,j);
+		j++;
+	};
+	return p==m;
+};
+
+
+// int ditphase(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
+// 	return (x >> j) & u;
+// };
+
+// int ditraise(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
+// 	return (x + 1)*((d - 1 - (x&(pow(d,j))))/d);
+// };
+
+// int ditlower(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
+// 	return (x - 1)*((d - 1 + (x&(pow(d,j))))/d);
+// };
+
+
+
 
 template <typename T>
 struct H5TypeMap {
@@ -77,9 +128,6 @@ void vector_to_hdf5(std::string & path, std::string & name, std::vector<T> & dat
 };
 
 
-
-
-
 template<typename T>
 void hdf5_to_eigen(std::string & path, std::string & name, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
 };
@@ -95,6 +143,13 @@ template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &,Eige
 
 template Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> commutator<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &);
 template Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> commutator<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &);
+
+template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<float,float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<float,double>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<int,double>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<int,float>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
 
 template <> H5::DataType H5TypeMap<double>::h5_type = H5::PredType::NATIVE_DOUBLE;
 template <> H5::DataType H5TypeMap<float>::h5_type = H5::PredType::NATIVE_FLOAT;

@@ -1,10 +1,9 @@
 #ifndef _UTILS_
 #define _UTILS_
 
+#include <cstddef>
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
-#include <cstddef>
 #include <vector> 
 #include <complex>
 #include <cmath>
@@ -23,8 +22,17 @@ template<typename T>
 T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
 
 
+unsigned int bit(unsigned int x, unsigned int j);
+unsigned int phase(unsigned int x, unsigned int j);
+unsigned int flip(unsigned int x, unsigned int j);
+unsigned int phaseflip(unsigned int x, unsigned int j);
+bool polarization(unsigned int x, unsigned int n, unsigned int m);
+
 bool ends_with(std::string const & value, std::string const & pattern);
 
+
+template <typename T, typename U>
+void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
 
 template<typename T>
 H5::DataType H5Type();
