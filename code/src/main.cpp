@@ -7,34 +7,47 @@
 
 int main(int argc, char *argv[]){
 
+    int argn = 1;
+
+    unsigned int n = 3;
+    argn++;if (argc >= argn){n = std::atoi(argv[argn-1]);};
+
     unsigned int d = 2;
-    unsigned int n = 16;
     unsigned int N = 1 << n;
     unsigned int m = n >> 1;
-    bool p;
+    // bool p;
 
 
-    unsigned int i,j;
+    unsigned int j;
     std::vector<unsigned int> z,x,y;
     x.resize(n);
     y.resize(n);
     z.resize(n);
 
-    std::cout << "n,N,m = " << n << ", " << N << ", " << m << std::endl;
-    
+    #pragma omp parallel for
     for (j=0;j<N;j++){
-        std::cout << "j = " << j;
-        std::cout << " x,y,z = ";
-        for (i=0; i<n; i++){
-            x[i] = utils::bit(utils::flip(j,i),i);
-            y[i] = utils::bit(utils::phaseflip(j,i),i);
-            z[i] = utils::bit(utils::phase(j,i),i);
-            std::cout << x[i] << y[i] << z[i] << "|";
+        for (unsigned int i=0; i<n; i++){
+            utils::bit(utils::flip(j,i),i);
+            utils::bit(utils::phaseflip(j,i),i);
+            utils::bit(utils::phase(j,i),i);
         };
-        p = utils::polarization(j,n,m);
-        std::cout << " p = " << p;
-        std::cout << std::endl;
+        utils::polarization(j,n,m);
     };
+
+    // std::cout << "n,N,m = " << n << ", " << N << ", " << m << std::endl;
+    // for (j=0;j<N;j++){
+    //     std::cout << "j = " << j;
+    //     std::cout << " x,y,z = ";
+    //     for (unsigned int i=0; i<n; i++){
+    //         x[i] = utils::bit(utils::flip(j,i),i);
+    //         y[i] = utils::bit(utils::phaseflip(j,i),i);
+    //         z[i] = utils::bit(utils::phase(j,i),i);
+    //         std::cout << x[i] << y[i] << z[i] << "|";
+    //     };
+    //     p = utils::polarization(j,n,m);
+    //     std::cout << " p = " << p;
+    //     std::cout << std::endl;
+    // };
 
     return 0;
 };
@@ -50,6 +63,7 @@ int main(int argc, char *argv[]){
 //     mkl_set_num_threads(NUM_THREADS);
 //     omp_set_num_threads(NUM_THREADS);
 	
+//     // argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
 //     int argn = 1;
 
 //     int N = 2;
