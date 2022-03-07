@@ -45,14 +45,15 @@ unsigned int phaseflip(unsigned int x, unsigned int j){
 	return bit(x,j) * flip(x,j);
 };
 
-bool polarization(unsigned int x, unsigned int n, unsigned int m){
-	unsigned int p = 0;
-	unsigned int j = 0;
-	while((p<=m)&&(j<n)){
-		p += bit(x,j);
-		j++;
-	};
-	return p==m;
+unsigned int bitcount(unsigned int x){
+	return __builtin_popcount(x);
+	// unsigned int p = 0;
+	// unsigned int j = 0;
+	// while((p<=m)&&(j<n)){
+	// 	p += bit(x,j);
+	// 	j++;
+	// };
+	// return p==m;
 };
 
 

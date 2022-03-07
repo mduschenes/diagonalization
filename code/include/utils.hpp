@@ -26,7 +26,7 @@ unsigned int bit(unsigned int x, unsigned int j);
 unsigned int phase(unsigned int x, unsigned int j);
 unsigned int flip(unsigned int x, unsigned int j);
 unsigned int phaseflip(unsigned int x, unsigned int j);
-bool polarization(unsigned int x, unsigned int n, unsigned int m);
+unsigned int bitcount(unsigned int x);
 
 bool ends_with(std::string const & value, std::string const & pattern);
 

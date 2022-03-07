@@ -2,8 +2,11 @@
 #include <cstddef>
 #include <vector> 
 
-
 #include "utils.hpp"
+
+#define EIGEN_USE_MKL_ALL   
+#include <Eigen/Dense>
+#include <Eigen/Eigenvalues> 
 
 int main(int argc, char *argv[]){
 
@@ -15,23 +18,34 @@ int main(int argc, char *argv[]){
     unsigned int d = 2;
     unsigned int N = 1 << n;
     unsigned int m = n >> 1;
-    // bool p;
 
-
-    unsigned int j;
+    unsigned int i,j,k;
     std::vector<unsigned int> z,x,y;
     x.resize(n);
     y.resize(n);
     z.resize(n);
 
-    #pragma omp parallel for
-    for (j=0;j<N;j++){
-        for (unsigned int i=0; i<n; i++){
-            utils::bit(utils::flip(j,i),i);
-            utils::bit(utils::phaseflip(j,i),i);
-            utils::bit(utils::phase(j,i),i);
+    std::vector<double> theta = {9,};
+
+    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Zero(N,N);
+
+    #pragma omp parallel for private(i,j,k) shared(a)
+    for (i=0;i<N;i++){
+        if (utils::bitcount(i) == m) {
+            for (k=0; k<n; k++){
+                j = utils::flip(i,k);
+                a(i,j) += theta[0]*utils::bit(j,k);
+                // utils::bit(utils::phaseflip(i,k),k);
+                // utils::bit(utils::phase(i,k),k);
+            };
         };
-        utils::polarization(j,n,m);
+    };
+
+    for (i=0;i<N;i++){
+        for (j=0;j<N;j++){
+            std::cout << a(i,j) << " ";
+        };
+        std::cout << std::endl;
     };
 
     // std::cout << "n,N,m = " << n << ", " << N << ", " << m << std::endl;
