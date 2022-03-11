@@ -160,6 +160,7 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ma
 
 	H5::Group obj = file.openGroup(group);
 
+
 	std::string real = name;
 	real.append(".real");
 
@@ -263,6 +264,46 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ve
 
 
 template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,T> & attributes){
+
+	// H5::Exception::dontPrint();
+	
+	typename std::map<std::string, T>::iterator i;
+	H5::DataType type = H5Type<T>();
+	H5::DataType datatype(type);
+
+	try {
+		H5::H5File file(path,H5F_ACC_RDWR);
+	}
+	catch (...) {
+		H5::H5File file(path,H5F_ACC_TRUNC);
+	};
+	H5::H5File file(path,H5F_ACC_RDWR);
+
+	try {
+		H5::Group obj = file.openGroup(group);
+	}
+	catch (...) {
+		H5::Group obj = file.createGroup(group);
+	};
+
+	H5::Group obj = file.openGroup(group);
+
+	H5::DataSpace dataspace(H5S_SCALAR);
+
+	H5::Attribute attribute;
+
+	for (i=attributes.begin(); i!=attributes.end();i++){
+		attribute = obj.createAttribute(i->first,datatype,dataspace);
+		attribute.write(datatype,&i->second);
+	};
+
+	return;
+};
+
+
+
+template<typename T>
 void dump(std::string & path, std::string & name, std::vector<T> & data){
 
 	H5::Exception::dontPrint();
@@ -312,14 +353,18 @@ template void dump(std::string & path, std::string & group, std::string & name, 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<float, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<int, Eigen::Dynamic> & data);
 
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & data);
+
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<int>, Eigen::Dynamic> & data);
 
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,double> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,float> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,int> & attributes);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & name, std::vector<double> & data);
 template void dump(std::string & path, std::string & name, std::vector<float> & data);

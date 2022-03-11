@@ -7,6 +7,7 @@
 #include <vector> 
 #include <complex>
 #include <cmath>
+#include <map>
 
 #include <Eigen/Dense>
 #include <H5Cpp.h>
@@ -31,6 +32,11 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ma
 
 template<typename T>
 void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data);
+
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,T> & attributes);
+
 
 template<typename T>
 void dump(std::string & path, std::string & name, std::vector<T> & data);

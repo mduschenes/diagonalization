@@ -42,8 +42,10 @@ class io{
 		void dump(std::string & path,std::vector<std::vector<T>> & data);
 		void load(std::string & path,std::vector<std::vector<T>> & data);
 
-		void dump(std::string & path,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
+		void dump(std::string & path,std::string & group,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data);
+
+		void dump(std::string & path,std::string & group,std::string & name, std::map<std::string,T> & attributes);
 
 		void join(std::string & path,std::string & directory,std::string & file,std::string & ext);
 		void parse(T & value, std::string & string);

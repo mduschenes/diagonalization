@@ -52,7 +52,7 @@ void Tensor<T>::rand(std::vector<T> & theta){
 	int n = this->system.n;
 
 	typedef T U;
-	
+
 	// Tensor<U>::Type data = Tensor<U>::Type::Random(size,size);
 
 	std::random_device device;
@@ -80,6 +80,9 @@ template <typename T>
 void Tensor<T>::eig(std::vector<T> & eigenvalues, Tensor<T>::Type & eigenvectors){
 	this->solver.compute(this->data);
 	std::cout << this->solver.eigenvalues() << std::endl;
+
+	std::string path;
+
 	// std:: cout << this->solver << std:endl;//.compute(this->data);	
 	return;
 };
@@ -116,16 +119,21 @@ void Tensor<T>::dump(std::string path){
 
 	// Data
 	io::io<T> io_data;
-    io_data.dump(path,this->system.data,this->data);
+    io_data.dump(path,this->system.group,this->system.name,this->data);
 
     // Metadata
-	// io::io<int> io_metadata;
+	io::io<int> io_metadata;
 
-	// std::vector<std::string> header(this->system.strings);
-	// std::vector<int> values = {this->system.N,this->system.D,this->system.d,this->system.n,this->system.K};
+	std::map<std::string,int> attributes;
+	attributes["N"] = this->system.N;
+	attributes["D"] = this->system.D;
+	attributes["d"] = this->system.d;
+	attributes["n"] = this->system.n;
+	attributes["K"] = this->system.K;
 
- //    io_metadata.dump(path,this->system.metadata,header,values);
+    io_metadata.dump(path,this->system.group,this->system.name,attributes);
 
+    return;
 };
 
 template <typename T>

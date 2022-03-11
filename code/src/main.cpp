@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <vector> 
 #include <complex> 
+#include <map>
 
 #include "utils.hpp"
 #include "hdf5.hpp"
@@ -77,6 +78,15 @@ int main(int argc, char *argv[]){
     // std::cout << vec.imag() << std::endl;
 
     hdf5::dump(path,group,name,data);
+
+    std::map<std::string, int> attributes;
+
+    attributes["N"] = size;
+    attributes["D"] = 2;
+    attributes["d"] = 1;
+
+    hdf5::dump(path,group,name,attributes);
+
     // hdf5::dump(path,group,name,vec);
 
     // std::cout << "n,N,m = " << n << ", " << N << ", " << m << std::endl;

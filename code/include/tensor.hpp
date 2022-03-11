@@ -33,7 +33,9 @@ struct System {
 	int K; // Number of parameters	
 	int size; // Data size
 	int dim = 2; // Data dimension
-	std::vector<type> theta; // parameters
+	std::vector<type> theta; // parameters	
+	std::string group = "data"; // name
+	std::string name = "data"; // name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
 	std::vector<std::string> strings = {"N","D","d","n","K"}; // settings names

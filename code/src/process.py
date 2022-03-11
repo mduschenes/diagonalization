@@ -104,6 +104,11 @@ def main(args):
 	print(data.shape,data.dtype)
 	print(data)
 
+
+	n = h5py.File(path,'r')[group].attrs.get('N')
+	print("N = ",n)
+
+
 	# data = load(params['data'])
 
 	# plot(data)
