@@ -2,8 +2,6 @@
 
 namespace io {
 
-// Eigen File Format
-const static Eigen::IOFormat EigenFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", "\n");
 
 template <class T>
 io<T>::io(char delimeter,char linebreak){
@@ -26,7 +24,7 @@ io<T>::~io(){};
 
 
 template <class T>
-void io<T>::write(std::string & path,std::vector<std::string> & header,std::vector<T> & data){
+void io<T>::dump(std::string & path,std::vector<std::string> & header,std::vector<T> & data){
 	
 	std::ofstream file(path);
 	
@@ -51,7 +49,7 @@ void io<T>::write(std::string & path,std::vector<std::string> & header,std::vect
 
 
 template <class T>
-void io<T>::read(std::string & path,std::vector<std::string> & header,std::vector<T> & data){
+void io<T>::load(std::string & path,std::vector<std::string> & header,std::vector<T> & data){
 	std::ifstream file(path);
 	std::string line,string;
 	T value;
@@ -83,7 +81,7 @@ void io<T>::read(std::string & path,std::vector<std::string> & header,std::vecto
 
 
 template <class T>
-void io<T>::write(std::string & path,std::vector<std::string> & header,std::vector<std::vector<T>> & data){
+void io<T>::dump(std::string & path,std::vector<std::string> & header,std::vector<std::vector<T>> & data){
 	
 	std::ofstream file(path);
 	
@@ -110,7 +108,7 @@ void io<T>::write(std::string & path,std::vector<std::string> & header,std::vect
 
 
 template <class T>
-void io<T>::read(std::string & path,std::vector<std::string> & header,std::vector<std::vector<T>> & data){
+void io<T>::load(std::string & path,std::vector<std::string> & header,std::vector<std::vector<T>> & data){
 	std::ifstream file(path);
 	std::string line,string;
 	T value;
@@ -141,7 +139,7 @@ void io<T>::read(std::string & path,std::vector<std::string> & header,std::vecto
 
 
 template <class T>
-void io<T>::write(std::string & path,std::vector<std::vector<T>> & data){
+void io<T>::dump(std::string & path,std::vector<std::vector<T>> & data){
 	
 	std::ofstream file(path);
 	
@@ -162,7 +160,7 @@ void io<T>::write(std::string & path,std::vector<std::vector<T>> & data){
 
 
 template <class T>
-void io<T>::read(std::string & path,std::vector<T> & data){
+void io<T>::load(std::string & path,std::vector<T> & data){
 
 	std::ifstream file(path);	
 	std::string string;	
@@ -179,7 +177,7 @@ void io<T>::read(std::string & path,std::vector<T> & data){
 
 
 template <class T>
-void io<T>::write(std::string & path,std::vector<T> & data){
+void io<T>::dump(std::string & path,std::vector<T> & data){
 	
 	std::ofstream file(path);
 
@@ -195,7 +193,7 @@ void io<T>::write(std::string & path,std::vector<T> & data){
 
 
 template <class T>
-void io<T>::read(std::string & path,std::vector<std::vector<T>> & data){
+void io<T>::load(std::string & path,std::vector<std::vector<T>> & data){
 
 	std::ifstream file(path);	
 	std::string line,string;	
@@ -220,26 +218,26 @@ void io<T>::read(std::string & path,std::vector<std::vector<T>> & data){
 
 
 template <class T>
-void io<T>::write(std::string & path, std::string & name, std::vector<std::string> & header , std::vector<T> & data){
+void io<T>::dump(std::string & path, std::string & name, std::vector<std::string> & header , std::vector<T> & data){
 
 	if (utils::ends_with(path,".csv")){
-		io<T>::write(path,header,data);
+		io<T>::dump(path,header,data);
 	}
 	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
 		std::cout << path << " , " << name << std::endl;
-		utils::vector_to_hdf5<T>(path,name,data);
+		hdf5::dump<T>(path,name,data);
 	};
 	return;
 };
 
 template <class T>
-void io<T>::write(std::string & path, std::string & name, std::vector<T> & data){
+void io<T>::dump(std::string & path, std::string & name, std::vector<T> & data){
 
 	if (utils::ends_with(path,".csv")){
-		io<T>::write(path,data);
+		io<T>::dump(path,data);
 	}
 	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
-		utils::vector_to_hdf5<T>(path,name,data);
+		hdf5::dump<T>(path,name,data);
 	};
 	return;
 };
@@ -248,8 +246,13 @@ void io<T>::write(std::string & path, std::string & name, std::vector<T> & data)
 
 
 template <class T>
-void io<T>::write(std::string & path,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
-	utils::eigen_to_hdf5<T>(path,name,data);
+void io<T>::dump(std::string & path,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data){
+	hdf5::dump<T>(path,name,data);
+};
+
+template <class T>
+void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data){
+	hdf5::dump<T>(path,group,name,data);
 };
 
 

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <cstddef>
 #include <vector> 
+#include <complex> 
 
 #include "utils.hpp"
+#include "hdf5.hpp"
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
@@ -47,6 +49,35 @@ int main(int argc, char *argv[]){
         };
         std::cout << std::endl;
     };
+
+
+    std::string path = "data.hdf5";
+    std::string group = "data";
+    std::string name = "x";
+
+    const int size = 10;
+
+    Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> data(size,size);
+    Eigen::Vector<std::complex<double>, Eigen::Dynamic> vec(size);
+
+    int s,t;
+
+    for (s=0;s<size;s++){
+        vec(s) = s + 10*s*1i;
+    };
+
+    for (s=0;s<size;s++){
+        for (t=0;t<size;t++){
+            data(s,t) = s + 10*t*1i;
+        };
+    };
+
+
+
+    // std::cout << vec.imag() << std::endl;
+
+    hdf5::dump(path,group,name,data);
+    // hdf5::dump(path,group,name,vec);
 
     // std::cout << "n,N,m = " << n << ", " << N << ", " << m << std::endl;
     // for (j=0;j<N;j++){

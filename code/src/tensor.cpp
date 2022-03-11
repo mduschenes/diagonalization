@@ -116,7 +116,7 @@ void Tensor<T>::dump(std::string path){
 
 	// Data
 	io::io<T> io_data;
-    io_data.write(path,this->system.data,this->data);
+    io_data.dump(path,this->system.data,this->data);
 
     // Metadata
 	// io::io<int> io_metadata;
@@ -124,7 +124,7 @@ void Tensor<T>::dump(std::string path){
 	// std::vector<std::string> header(this->system.strings);
 	// std::vector<int> values = {this->system.N,this->system.D,this->system.d,this->system.n,this->system.K};
 
- //    io_metadata.write(path,this->system.metadata,header,values);
+ //    io_metadata.dump(path,this->system.metadata,header,values);
 
 };
 
@@ -135,7 +135,7 @@ void Tensor<T>::load(std::string path){
 
 	std::vector<std::vector<T>> file;
 
-	io.read(path,file);
+	io.load(path,file);
 
 	int size = this->system.size;
     

@@ -86,12 +86,22 @@ def main(args):
 	# params = setup(args,defaults)
 
 	path = args[0]
+	group = args[1]
+	name = args[2]
 
-	print(path)
+	try:
+		data = h5py.File(path,'r')[group][name][...]
+	except:
+		name_real = "%s.%s"%(name,'real')
+		data_real = h5py.File(path,'r')[group][name_real][...]
 
-	data = h5py.File(path,'r').get('data')[...]
+		name_imag = "%s.%s"%(name,'imag')
+		data_imag = h5py.File(path,'r')[group][name_imag][...]
+
+		data = data_real + 1j*data_imag
 
 	# data = load(data,header='infer')
+	print(data.shape,data.dtype)
 	print(data)
 
 	# data = load(params['data'])
