@@ -90,8 +90,6 @@ def main(args):
 	name = args[2]
 
 	try:
-		data = h5py.File(path,'r')[group][name][...]
-	except:
 		name_real = "%s.%s"%(name,'real')
 		data_real = h5py.File(path,'r')[group][name_real][...]
 
@@ -99,6 +97,9 @@ def main(args):
 		data_imag = h5py.File(path,'r')[group][name_imag][...]
 
 		data = data_real + 1j*data_imag
+	except:
+		data = h5py.File(path,'r')[group][name][...]
+
 
 	# data = load(data,header='infer')
 	print(data.shape,data.dtype)

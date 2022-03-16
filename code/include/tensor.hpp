@@ -14,7 +14,6 @@
 #include <Eigen/Eigenvalues> 
 
 #include <LBFGS.h>
-#include <H5Cpp.h>
 	
 #include "utils.hpp"
 #include "io.hpp"
@@ -86,8 +85,7 @@ class Tensor {
 		// Print
 		void print();
 
-		// Set
-		void set(std::vector<T> & theta);
+		// Random Set
 		void rand(std::vector<T> & theta);
 
 		// Solve

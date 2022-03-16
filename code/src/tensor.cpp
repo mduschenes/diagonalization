@@ -18,27 +18,6 @@ void Tensor<T>::setup(tensor::System<T> & system){
 	this->system = system;
 };
 
-template <typename T>
-void Tensor<T>::set(std::vector<T> & theta){
-
-	int size = this->size;
-	int dim = this->dim;
-
-	int N = this->system.N;
-	int D = this->system.D;
-	int n = this->system.n;
-
-	// Tensor<T>::Type data(size,size);
-	// T value = 0;
-	
-	// for (unsigned int i=0; i<(pow(size,dim)); i++){
-	// 	data(i) =  value;
-	// };
-	// this->data = data;
-
-	this->rand(theta);
-};
-
 
 
 template <typename T>
@@ -52,13 +31,13 @@ void Tensor<T>::rand(std::vector<T> & theta){
 	int n = this->system.n;
 
 	typedef T U;
-
-	// Tensor<U>::Type data = Tensor<U>::Type::Random(size,size);
+	// this->Type data = this->Type::Random(size,size);
 
 	std::random_device device;
 	std::mt19937 seed(device());  
 	std::uniform_real_distribution<U> distribution(-1.0, 1.0);
-	Tensor<U>::Type data = Type::NullaryExpr(size,size,[&](){return distribution(seed);});
+	typename decltype(*this)::Type data = decltype(*this)::Type::NullaryExpr(size,size,[&](){return distribution(seed);});
+
 
 	utils::cast<U,T>(data,this->data);
 
@@ -160,8 +139,11 @@ void Tensor<T>::load(std::string path){
 };
 
 template class Tensor<double>;
+template class Tensor<float>;
 template class System<double>;
+template class System<float>;
 template class Observables<double>;
+template class Observables<float>;
 
 };
 

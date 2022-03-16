@@ -6,86 +6,116 @@
 
 #include "utils.hpp"
 #include "hdf5.hpp"
+#include "hamiltonian.hpp"
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues> 
 
+
 int main(int argc, char *argv[]){
 
-    int argn = 1;
 
-    unsigned int n = 3;
-    argn++;if (argc >= argn){n = std::atoi(argv[argn-1]);};
+    int N = 3;
+    int D = 3;
+    typedef double T;
 
-    unsigned int d = 2;
-    unsigned int N = 1 << n;
-    unsigned int m = n >> 1;
+    tensor::System<double> system;
+    system.N = N;
+    system.D = D;
+    system.d = 1;
+    system.n = pow(D,N);
+    system.K = 2;
+    system.size = pow(D,N); 
+    system.dim = 2; 
+    system.data = "data"; // data name
+    system.metadata = "metadata"; // metadata name
 
-    unsigned int i,j,k;
-    std::vector<unsigned int> z,x,y;
-    x.resize(n);
-    y.resize(n);
-    z.resize(n);
+    hamiltonian::Hamiltonian<T> H(system);
 
-    std::vector<double> theta = {9,};
+    std::vector<T> theta = {1,0.5};
 
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Zero(N,N);
+    H.set(theta);
 
-    #pragma omp parallel for private(i,j,k) shared(a)
-    for (i=0;i<N;i++){
-        if (utils::bitcount(i) == m) {
-            for (k=0; k<n; k++){
-                j = utils::flip(i,k);
-                a(i,j) += theta[0]*utils::bit(j,k);
-                // utils::bit(utils::phaseflip(i,k),k);
-                // utils::bit(utils::phase(i,k),k);
-            };
-        };
-    };
-
-    for (i=0;i<N;i++){
-        for (j=0;j<N;j++){
-            std::cout << a(i,j) << " ";
-        };
-        std::cout << std::endl;
-    };
+    return 0;
+};
 
 
-    std::string path = "data.hdf5";
-    std::string group = "data";
-    std::string name = "x";
+// int main(int argc, char *argv[]){
 
-    const int size = 10;
+//     int argn = 1;
 
-    Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> data(size,size);
-    Eigen::Vector<std::complex<double>, Eigen::Dynamic> vec(size);
+//     unsigned int n = 3;
+//     argn++;if (argc >= argn){n = std::atoi(argv[argn-1]);};
 
-    int s,t;
+//     unsigned int d = 2;
+//     unsigned int N = 1 << n;
+//     unsigned int m = n >> 1;
 
-    for (s=0;s<size;s++){
-        vec(s) = s + 10*s*1i;
-    };
+//     unsigned int i,j,k;
+//     std::vector<unsigned int> z,x,y;
+//     x.resize(n);
+//     y.resize(n);
+//     z.resize(n);
 
-    for (s=0;s<size;s++){
-        for (t=0;t<size;t++){
-            data(s,t) = s + 10*t*1i;
-        };
-    };
+//     std::vector<double> theta = {9,};
+
+//     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Zero(N,N);
+
+//     #pragma omp parallel for private(i,j,k) shared(a)
+//     for (i=0;i<N;i++){
+//         if (utils::bitcount(i) == m) {
+//             for (k=0; k<n; k++){
+//                 j = utils::flip(i,k);
+//                 a(i,j) += theta[0]*utils::bit(j,k);
+//                 // utils::bit(utils::phaseflip(i,k),k);
+//                 // utils::bit(utils::phase(i,k),k);
+//             };
+//         };
+//     };
+
+//     for (i=0;i<N;i++){
+//         for (j=0;j<N;j++){
+//             std::cout << a(i,j) << " ";
+//         };
+//         std::cout << std::endl;
+//     };
+
+
+//     std::string path = "data.hdf5";
+//     std::string group = "data";
+//     std::string name = "x";
+
+//     const int size = 10;
+
+//     Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> data(size,size);
+//     Eigen::Vector<std::complex<double>, Eigen::Dynamic> vec(size);
+
+//     int s,t;
+
+//     for (s=0;s<size;s++){
+//         vec(s) = s + 10*s*1i;
+//     };
+
+//     for (s=0;s<size;s++){
+//         for (t=0;t<size;t++){
+//             data(s,t) = s + 10*t*1i;
+//         };
+//     };
 
 
 
-    // std::cout << vec.imag() << std::endl;
+//     // std::cout << vec.imag() << std::endl;
 
-    hdf5::dump(path,group,name,data);
+//     hdf5::dump(path,group,name,data);
 
-    std::map<std::string, int> attributes;
+//     std::map<std::string, int> attributes;
 
-    attributes["N"] = size;
-    attributes["D"] = 2;
-    attributes["d"] = 1;
+//     attributes["N"] = size;
+//     attributes["D"] = 2;
+//     attributes["d"] = 1;
 
-    hdf5::dump(path,group,name,attributes);
+//     hdf5::dump(path,group,name,attributes);
 
     // hdf5::dump(path,group,name,vec);
 
@@ -104,8 +134,8 @@ int main(int argc, char *argv[]){
     //     std::cout << std::endl;
     // };
 
-    return 0;
-};
+//     return 0;
+// };
 
 
 // #include "tensor.hpp"
