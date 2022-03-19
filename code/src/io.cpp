@@ -254,15 +254,17 @@ void io<T>::dump(std::string & path,std::string & group,std::string & name,Eigen
 	hdf5::dump<T>(path,group,name,data);
 };
 
+
 template <class T>
-void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data){
+void io<T>::dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data){
 	hdf5::dump<T>(path,group,name,data);
 };
 
 template <class T>
-void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data){
+void io<T>::dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data){
 	hdf5::dump<T>(path,group,name,data);
 };
+
 
 template <class T>
 void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,T> & attributes){

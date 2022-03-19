@@ -46,14 +46,10 @@ void Tensor<T>::rand(){
 template <typename T>
 void Tensor<T>::eig(){
 
-	std::cout << "start eigs" << std::endl;
-
 	// Solve
 	this->solver.compute(this->data);
-	typename tensor::Tensor<T>::matrix eigenvalues = this->solver.eigenvalues();
+	typename tensor::Tensor<T>::vector eigenvalues = this->solver.eigenvalues();
 	typename tensor::Tensor<std::complex<T>>::matrix eigenvectors = this->solver.eigenvectors();
-
-	std::cout << "done eigs" << std::endl;
 
 	utils::check(eigenvalues);
 	utils::check(eigenvectors);

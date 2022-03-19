@@ -38,7 +38,7 @@ EXE := $(patsubst %,$(EXE_DIR)/%.$(EXE_EXT),$(EXE))
 
 PROCESS := process
 PROCESS := $(patsubst %,$(PROCESS_DIR)/%.$(PROCESS_EXT),$(PROCESS))
-PROCESS_FLAGS := data data
+PROCESS_FLAGS :=
 PROCESS_DEP := data/data.hdf5
 
 PROFILE := gprof

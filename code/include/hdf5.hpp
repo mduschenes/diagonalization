@@ -12,6 +12,7 @@
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
 #include <Eigen/Dense>
+#include <Eigen/Eigenvalues> 
 #include <H5Cpp.h>
 
 
@@ -34,6 +35,21 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ma
 
 template<typename T>
 void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data);
+
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, const Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, const Eigen::Vector<T, Eigen::Dynamic> & data);
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, const Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & data);
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, const Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data);
+
+
 
 
 template<typename T>

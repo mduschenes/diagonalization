@@ -38,10 +38,9 @@ def main(args):
 	attributes = ['eigenvalues','eigenvectors']
 
 	data = {}
-	attrs = {}
+
 	for group in file:
 		data[group] = {}
-		attrs[group] = {}
 
 		names = list(set((name.replace('.real','').replace('.imag','') for name in file[group])))
 		for name in names:
@@ -59,30 +58,10 @@ def main(args):
 
 		names = list(set((name for name in file[group].attrs)))
 		for name in names:
-			attrs[group][name] = file[group].attrs[name]
-
-			# try:
-			# 	attrs = dict(file[group].attrs.items())
-			# except:
-			# 	attrs = dict(file[group].attrs.items())
-
-			# for name in attributes:
-			# 	try:
-			# 		name_real = "%s.%s"%(name,'real')
-			# 		data_real = file[group][name_real][...]
-
-			# 		name_imag = "%s.%s"%(name,'imag')
-			# 		data_imag = file[group][name_imag][...]
-
-			# 		attrs[name] = data_real + 1j*data_imag
-			# 	except:
-			# 		attrs[name] = file[group][name]
-
-
+			data[group][name] = file[group].attrs[name]
 
 	# print(data.shape,data.dtype)
 	print(data)
-	print(attrs)
 
 	# data = load(params['data'])
 

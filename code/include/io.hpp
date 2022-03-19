@@ -12,6 +12,7 @@
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
 #include <Eigen/Dense>
+#include <Eigen/Eigenvalues> 
 
 #include "hdf5.hpp"
 #include "utils.hpp"
