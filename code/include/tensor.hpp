@@ -32,12 +32,13 @@ struct System {
 	int K; // Number of parameters	
 	int size; // Data size
 	int dim = 2; // Data dimension
-	std::vector<type> theta; // parameters	
-	std::string group = "data"; // name
-	std::string name = "data"; // name
+	std::vector<type> parameters; // parameters	
+	std::string path = "data.hdf5"; // path name
+	std::string group = "data"; // group name
+	std::string name = "data"; // object name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::vector<std::string> strings = {"N","D","d","n","K"}; // settings names
+	std::vector<std::string> attributes = {"N","D","d","n","K"}; // settings names
 };	
 
 // Observables variables
@@ -70,28 +71,28 @@ class Tensor {
 		const unsigned int dim;
 
 		// Type
-		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> Type;
+		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
 
 		// Data
-		Type data;
+		type data;
 
 		// Setup
 		void setup(tensor::System<T> & system);
 
 		// Save and Load
-		void dump(std::string path);
-		void load(std::string path);
+		void dump();
+		void load();
 
 		// Print
 		void print();
 
 		// Random Set
-		void rand(std::vector<T> & theta);
+		void rand();
 
 		// Solve
-		Eigen::SelfAdjointEigenSolver<Tensor<T>::Type> solver;
+		Eigen::SelfAdjointEigenSolver<Tensor<T>::type> solver;
 		void eig();
-		void eig(std::vector<T> & eigenvalues, Tensor<T>::Type & eigenvectors);
+		void eig(std::vector<T> & eigenvalues, Tensor<T>::type & eigenvectors);
 
 		// Convert
 		// void convert(std::vector<std::vector<T>> & data);		

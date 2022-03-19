@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 
+#define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
 
 #include "utils.hpp"

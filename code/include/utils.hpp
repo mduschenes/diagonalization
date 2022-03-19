@@ -8,6 +8,7 @@
 #include <complex>
 #include <cmath>
 
+#define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
 
 namespace utils {

@@ -9,6 +9,7 @@
 #include <cmath>
 #include <map>
 
+#define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
 #include <H5Cpp.h>
 

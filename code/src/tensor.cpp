@@ -21,25 +21,24 @@ void Tensor<T>::setup(tensor::System<T> & system){
 
 
 template <typename T>
-void Tensor<T>::rand(std::vector<T> & theta){
+void Tensor<T>::rand(){
 
-	int size = this->size;
-	int dim = this->dim;
+	// int size = this->size;
+	// int dim = this->dim;
 
-	int N = this->system.N;
-	int D = this->system.D;
-	int n = this->system.n;
+	// int N = this->system.N;
+	// int D = this->system.D;
+	// int n = this->system.n;
+	// std::vector<T> parameters = this->system.parameters;
+	
+	// typedef T U;
 
-	typedef T U;
-	// this->Type data = this->Type::Random(size,size);
+	// std::random_device device;
+	// std::mt19937 seed(device());  
+	// std::uniform_real_distribution<U> distribution(-1.0, 1.0);
+	// typename tensor::Tensor<T>::type data = tensor::Tensor<T>::type::NullaryExpr(size,size,[&](){return distribution(seed);});
 
-	std::random_device device;
-	std::mt19937 seed(device());  
-	std::uniform_real_distribution<U> distribution(-1.0, 1.0);
-	typename decltype(*this)::Type data = decltype(*this)::Type::NullaryExpr(size,size,[&](){return distribution(seed);});
-
-
-	utils::cast<U,T>(data,this->data);
+	// utils::cast<U,T>(data,this->data);
 
 	return;
 };
@@ -48,7 +47,7 @@ template <typename T>
 void Tensor<T>::eig(){
 	
 	std::vector<T> eigenvalues;
-	Tensor<T>::Type eigenvectors;
+	Tensor<T>::type eigenvectors;
 
 	this->eig(eigenvalues,eigenvectors);
 
@@ -56,7 +55,7 @@ void Tensor<T>::eig(){
 };
 
 template <typename T>
-void Tensor<T>::eig(std::vector<T> & eigenvalues, Tensor<T>::Type & eigenvectors){
+void Tensor<T>::eig(std::vector<T> & eigenvalues, Tensor<T>::type & eigenvectors){
 	this->solver.compute(this->data);
 	std::cout << this->solver.eigenvalues() << std::endl;
 
@@ -93,17 +92,22 @@ void Tensor<T>::print(){
 };
 
 template <typename T>
-void Tensor<T>::dump(std::string path){
+void Tensor<T>::dump(){
 
+	// Path
+	std::string path = this->system.path;
 
 	// Data
-	io::io<T> io_data;
+	typedef T T_data;
+	io::io<T_data> io_data;
     io_data.dump(path,this->system.group,this->system.name,this->data);
 
-    // Metadata
-	io::io<int> io_metadata;
 
-	std::map<std::string,int> attributes;
+    // Metadata
+	typedef int T_metadata;    
+	io::io<T_metadata> io_metadata;
+
+	std::map<std::string,T_metadata> attributes;
 	attributes["N"] = this->system.N;
 	attributes["D"] = this->system.D;
 	attributes["d"] = this->system.d;
@@ -112,12 +116,28 @@ void Tensor<T>::dump(std::string path){
 
     io_metadata.dump(path,this->system.group,this->system.name,attributes);
 
+
+    // Parameters
+	typedef T T_parameters;    
+	io::io<T_parameters> io_parameters;
+
+	std::map<std::string,T_parameters> parameters;
+	parameters["J"] = this->system.parameters[0];
+	parameters["h"] = this->system.parameters[1];
+	parameters["U"] = this->system.parameters[2];
+
+    io_parameters.dump(path,this->system.group,this->system.name,parameters);
+
     return;
 };
 
 template <typename T>
-void Tensor<T>::load(std::string path){
+void Tensor<T>::load(){
+
+	// Path
+	std::string path = this->system.path;
 	
+	// Data
 	io::io<T> io;
 
 	std::vector<std::vector<T>> file;
@@ -139,11 +159,9 @@ void Tensor<T>::load(std::string path){
 };
 
 template class Tensor<double>;
-template class Tensor<float>;
+// template class Tensor<float>;
 template class System<double>;
-template class System<float>;
-template class Observables<double>;
-template class Observables<float>;
+// template class System<float>;
 
 };
 
