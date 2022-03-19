@@ -39,7 +39,7 @@ int spin(unsigned int x, unsigned int j);
 int spinphase(unsigned int x, unsigned int j);
 int spinflip(unsigned int x, unsigned int j);
 int spinphaseflip(unsigned int x, unsigned int j);
-int spincount(unsigned int x);
+int spincount(unsigned int x, unsigned int n);
 
 
 

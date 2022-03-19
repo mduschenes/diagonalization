@@ -33,7 +33,8 @@ struct System {
 	int D; // dimension of qudits
 	int d; // spatial dimensions
 	int n; // Total dimension of space
-	int K; // Number of parameters	
+	int k; // Number of parameters	
+	int s; // Number of states
 	int size; // Data size
 	int dim = 2; // Data dimension
 	std::vector<type> parameters; // parameters	
@@ -42,7 +43,10 @@ struct System {
 	std::string name = "data"; // object name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::vector<std::string> attributes = {"N","D","d","n","K"}; // settings names
+	std::string state = "state"; // state name
+	std::vector<std::string> names = {"N","D","d","n","k","s"}; // variable names
+	std::vector<std::string> params; // parameter names
+	std::vector<std::string> states; // state names
 };	
 
 // Observables variables
@@ -77,10 +81,16 @@ class Tensor {
 		// Type
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
+		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
+		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
 
 		// Data
 		type data;
+
+		// State
+		vector state;
+		matrix states;
 
 		// Setup
 		void setup(tensor::System<T> & system);
@@ -97,6 +107,8 @@ class Tensor {
 
 		// Solve
 		Eigen::SelfAdjointEigenSolver<type> solver;
+		vector eigenvalues;
+		matrix_complex eigenvectors;
 		void eig();
 
 	private:

@@ -75,8 +75,8 @@ int spinphaseflip(unsigned int x, unsigned int j){
 	return spin(x,j) * flip(x,j);
 };
 
-int spincount(unsigned int x){
-	return __builtin_popcount(x);
+int spincount(unsigned int x,unsigned int n){
+	return 2*__builtin_popcount(x) - n;
 };
 
 

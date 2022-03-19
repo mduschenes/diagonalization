@@ -20,6 +20,9 @@ class Hamiltonian : public tensor::Tensor<T> {
 		// Set
 		void set();
 
+		// Compute
+		void compute();
+
 	private:
 
 };
