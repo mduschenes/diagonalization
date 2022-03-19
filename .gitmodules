@@ -1,0 +1,3 @@
+[submodule "code/lib/itertools"]
+	path = code/lib/itertools
+	url = https://github.com/ryanhaining/cppitertools.git

@@ -19,6 +19,9 @@ T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Ei
 template<typename T>
 void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a);
 
+template<typename T>
+void check(Eigen::Vector<T, Eigen::Dynamic> & a);
+
 template <typename T, typename U>
 void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
 

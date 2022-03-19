@@ -88,7 +88,7 @@ endif
 
 
 # User Libraries
-CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include
+CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include -I$(LIB_DIR)/itertools
 LD_FLAGS +=
 LD_LIBS += -lpthread
 
@@ -126,9 +126,9 @@ endif
 
 
 # Rules
-all: $(EXE)
+all: clean $(EXE)
 
-run : clean_data $(EXE)
+run : $(EXE)
 	$(RUN)$(EXE) $(RUN_ARGS)
 	h5dump $(PROCESS_DEP)
 

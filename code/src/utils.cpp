@@ -14,6 +14,12 @@ void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a){
 	return;
 }
 
+template<typename T>
+void check(Eigen::Vector<T, Eigen::Dynamic> & a){
+	a.array() += 0;
+	return;
+}
+
 
 template <typename T, typename U>
 void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other){
@@ -98,6 +104,18 @@ template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a,Ei
 template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a);
 template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a);
 template void check<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a);
+
+template void check<std::complex<double>>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & a);
+template void check<std::complex<float>>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & a);
+template void check<std::complex<int>>(Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & a);
+
+template void check<double>(Eigen::Vector<double, Eigen::Dynamic> & a);
+template void check<float>(Eigen::Vector<float, Eigen::Dynamic> & a);
+template void check<int>(Eigen::Vector<int, Eigen::Dynamic> & a);
+
+template void check<std::complex<double>>(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & a);
+template void check<std::complex<float>>(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & a);
+template void check<std::complex<int>>(Eigen::Vector<std::complex<int>, Eigen::Dynamic> & a);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);

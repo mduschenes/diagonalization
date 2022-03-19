@@ -45,7 +45,9 @@ class io{
 		void load(std::string & path,std::vector<std::vector<T>> & data);
 
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
+		void dump(std::string & path,std::string & group,std::string & name,Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & data);
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data);
+		void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data);
 
 		void dump(std::string & path,std::string & group,std::string & name, std::map<std::string,T> & attributes);
 

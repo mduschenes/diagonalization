@@ -33,28 +33,54 @@ from lib.utils.plot import plot
 def main(args):
 
 	path = args[0]
-	group = args[1]
-	name = args[2]
 
 	file = h5py.File(path,'r')
-	try:
-		name_real = "%s.%s"%(name,'real')
-		data_real = file[group][name_real][...]
+	attributes = ['eigenvalues','eigenvectors']
 
-		name_imag = "%s.%s"%(name,'imag')
-		data_imag = file[group][name_imag][...]
+	data = {}
+	attrs = {}
+	for group in file:
+		data[group] = {}
+		attrs[group] = {}
 
-		data = data_real + 1j*data_imag
-	except:
-		data = file[group][name][...]
+		names = list(set((name.replace('.real','').replace('.imag','') for name in file[group])))
+		for name in names:
 
-	try:
-		attrs = dict(file[group].attrs.items())
-	except:
-		attrs = dict(file[group].attrs.items())
+			try:
+				name_real = "%s.%s"%(name,'real')
+				data_real = file[group][name_real][...]
+
+				name_imag = "%s.%s"%(name,'imag')
+				data_imag = file[group][name_imag][...]
+
+				data[group][name] = data_real + 1j*data_imag
+			except:
+				data[group][name] = file[group][name][...]
+
+		names = list(set((name for name in file[group].attrs)))
+		for name in names:
+			attrs[group][name] = file[group].attrs[name]
+
+			# try:
+			# 	attrs = dict(file[group].attrs.items())
+			# except:
+			# 	attrs = dict(file[group].attrs.items())
+
+			# for name in attributes:
+			# 	try:
+			# 		name_real = "%s.%s"%(name,'real')
+			# 		data_real = file[group][name_real][...]
+
+			# 		name_imag = "%s.%s"%(name,'imag')
+			# 		data_imag = file[group][name_imag][...]
+
+			# 		attrs[name] = data_real + 1j*data_imag
+			# 	except:
+			# 		attrs[name] = file[group][name]
 
 
-	print(data.shape,data.dtype)
+
+	# print(data.shape,data.dtype)
 	print(data)
 	print(attrs)
 

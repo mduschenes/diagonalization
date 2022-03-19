@@ -16,6 +16,8 @@
 #include <Eigen/Eigenvalues> 
 
 #include <LBFGS.h>
+
+#include <itertools.hpp>
 	
 #include "utils.hpp"
 #include "io.hpp"
