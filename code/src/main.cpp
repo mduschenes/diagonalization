@@ -33,10 +33,12 @@ int main(int argc, char *argv[]){
 	int D = 2;
 	int d = 1;
 	int k = 3;
-	int s = 3;
+	int s = 7;
 	T J = 1;
 	T h = 1;
 	T U = 0;
+
+	std::vector<std::string> states = {"order_0","order_1","order_2","energy_0","energy_1","energy_2","gap"};
 
 	argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
 	argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
@@ -62,7 +64,7 @@ int main(int argc, char *argv[]){
 	system.data = "data"; // data name
 	system.metadata = "metadata"; // metadata name
 	system.state = "state"; // state name
-	system.states = {"order","energy","gap"}; // state names
+	system.states = states; // state names
 	system.params = {"J","h","U"}; // parameter names
 	system.parameters = {J,h,U}; // Parameters of length k
 

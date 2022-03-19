@@ -34,7 +34,8 @@ void Hamiltonian<T>::set(){
 		// State
 		for (k=0; k<s; k++){
 			switch (k){
-				case 0:
+				// case :0 case: 1 case: 2:
+				case 0 ... 2:
 					states(i,k) = utils::spincount(i,N);
 					break;
 				default:
@@ -62,8 +63,8 @@ void Hamiltonian<T>::set(){
 	this->states = states;
 	this->state = state;
 
-    std::cout << this->data << std::endl;
-    std::cout << this->states.col(0) << std::endl;
+    // std::cout << this->data << std::endl;
+    // std::cout << this->states.col(0) << std::endl;
 
 
 	return;
@@ -74,31 +75,45 @@ void Hamiltonian<T>::set(){
 template <typename T>
 void Hamiltonian<T>::compute(){
 	
-	unsigned int i,k;
+	unsigned int k;
 	unsigned int n = this->system.n;
 	unsigned int s = this->system.s;
+
+	// Unique sorted eigenvalue indices
+	unsigned int i,j;
+	std::vector<std::vector<int>> indices;
+
+	i = 0;
+	indices.push_back(std::vector<int>());
+	indices.back().push_back(i);
+
+	for (i=1;i<n;i++){
+		if (this->eigenvalues(i) > this->eigenvalues(indices.back().back())){
+			indices.push_back(std::vector<int>());
+			indices.back().push_back(i);			
+		}
+		else if (this->eigenvalues(i) == this->eigenvalues(indices.back().back())){
+			indices.back().push_back(i);			
+		};
+	};
 
 	// State
 	for (k=0; k<s; k++){
 		switch (k){
 
-			// Spin
-			case 0:
-				this->state(k) = this->eigenvalues.array().abs().matrix().dot(this->states.col(k));
+			// Ground ... Second State Spin
+			case 0 ... 2:
+				this->state(k) = this->eigenvectors.col(indices[k].front()).array().abs().pow(2).matrix().dot(this->states.col(k));
 				break;
 
-			// Ground State Energy
-			case 1:
-				this->state(k) = this->eigenvalues(0);
+			// Ground ... Second State Energy
+			case 3 ... 5:
+				this->state(k) = this->eigenvalues(indices[k-3].front());
 				break;
-			
-			// Ground State Energy
-			case 2:
-				this->state(k) = 0;
-				for (i=0;i<n;i++){
-					this->state(k) = this->eigenvalues(i) - this->eigenvalues(0);
-					if (this->state(k) != 0){break;};
-				};
+
+			// Ground State Gap
+			case 6:
+				this->state(k) = this->eigenvalues(indices[1].front()) - this->eigenvalues(indices[0].front());
 				break;
 
 			default:

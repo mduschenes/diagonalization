@@ -49,18 +49,6 @@ struct System {
 	std::vector<std::string> states; // state names
 };	
 
-// Observables variables
-template <class type>
-struct Observables {
-	std::vector<type> energy;
-	std::vector<type> energy_mean;
-	std::vector<type> energy_var;
-	std::vector<type> order;
-	std::vector<type> order_mean;
-	std::vector<type> order_var;
-};
-
-
 
 //  Class for Tensor
 template <typename T>

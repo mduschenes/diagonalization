@@ -128,7 +128,7 @@ void Tensor<T>::dump(){
     io_parameters.dump(path,group,name,parameters);
 
 
-    // state
+    // State
 	typedef T T_state;
 	io::io<T_state> io_state;
 
@@ -138,7 +138,7 @@ void Tensor<T>::dump(){
 	};
 
     io_state.dump(path,group,name,states);
-    io_state.dump(path,group,state,this->state);
+    // io_state.dump(path,group,state,this->state);
 
     return;
 };

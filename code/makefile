@@ -128,7 +128,7 @@ endif
 # Rules
 all: clean $(EXE)
 
-run : $(EXE)
+run : clean $(EXE)
 	$(RUN)$(EXE) $(RUN_ARGS)
 	h5dump $(PROCESS_DEP)
 
