@@ -2,8 +2,8 @@
 #define _HAMILTONIAN_
 
 #include "tensor.hpp"
-#include "utils.hpp"
 #include "io.hpp"
+#include "utils.hpp"
 
 
 namespace hamiltonian {

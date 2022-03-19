@@ -3,20 +3,16 @@
 namespace utils {
 
 template<typename T>
-Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> commutator(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B){
-	return A*B - B*A;
+T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b){
+	return (a.transpose()*b).trace();
 };
+
 
 template<typename T>
-T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B){
-	return (A.transpose()*B).trace();
-};
-
-
-bool ends_with(std::string const & value, std::string const & pattern){
-    if (pattern.size() > value.size()) return false;
-    return std::equal(pattern.rbegin(), pattern.rend(), value.rbegin());
-};
+void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a){
+	a.array() += 0;
+	return;
+}
 
 
 template <typename T, typename U>
@@ -25,6 +21,12 @@ void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix
 	other = data.template cast<U>();	
 
 	return;
+};
+
+
+bool ends_with(std::string const & value, std::string const & pattern){
+    if (pattern.size() > value.size()) return false;
+    return std::equal(pattern.rbegin(), pattern.rend(), value.rbegin());
 };
 
 
@@ -47,13 +49,28 @@ unsigned int phaseflip(unsigned int x, unsigned int j){
 
 unsigned int bitcount(unsigned int x){
 	return __builtin_popcount(x);
-	// unsigned int p = 0;
-	// unsigned int j = 0;
-	// while((p<=m)&&(j<n)){
-	// 	p += bit(x,j);
-	// 	j++;
-	// };
-	// return p==m;
+};
+
+
+
+int spin(unsigned int x, unsigned int j){
+	return 2*((x >> j) & 1) - 1;
+};
+
+int spinphase(unsigned int x, unsigned int j){
+	return spin(x,j)*x;
+};
+
+int spinflip(unsigned int x, unsigned int j){
+	return x ^ (1 << j);
+};
+
+int spinphaseflip(unsigned int x, unsigned int j){
+	return spin(x,j) * flip(x,j);
+};
+
+int spincount(unsigned int x){
+	return __builtin_popcount(x);
 };
 
 
@@ -74,20 +91,19 @@ unsigned int bitcount(unsigned int x){
 
 
 
-template double norm<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &);
-// template float norm<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &);
-// template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &);
+template double norm<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & b);
+template float norm<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & b);
+template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & b);
 
-template Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> commutator<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &);
-// template Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> commutator<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &);
-// template Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> commutator<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> &);
-
+template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a);
+template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a);
+template void check<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
-// template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
-// template void cast<float,float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
-// template void cast<float,double>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
-// template void cast<int,double>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
-// template void cast<int,float>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<float,float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<float,double>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<int,double>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
+template void cast<int,float>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
 
 };

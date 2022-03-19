@@ -8,8 +8,10 @@
 #include <complex>
 #include <cmath>
 #include <random>
+#include <typeinfo>
 
 #define EIGEN_USE_MKL_ALL   
+#define NUM_THREADS 7
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues> 
 
@@ -72,6 +74,8 @@ class Tensor {
 
 		// Type
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
+		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
+		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 
 		// Data
 		type data;
@@ -90,12 +94,8 @@ class Tensor {
 		void rand();
 
 		// Solve
-		Eigen::SelfAdjointEigenSolver<Tensor<T>::type> solver;
+		Eigen::SelfAdjointEigenSolver<type> solver;
 		void eig();
-		void eig(std::vector<T> & eigenvalues, Tensor<T>::type & eigenvectors);
-
-		// Convert
-		// void convert(std::vector<std::vector<T>> & data);		
 
 	private:
 

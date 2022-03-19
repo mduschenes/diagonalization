@@ -26,89 +26,37 @@ for PATH in PATHS:
 	sys.path.append(os.path.abspath(os.path.join(ROOT,PATH)))
 
 from lib.utils.io import setup,load,dump
-from lib.utils.utils import dictionary,objs,array,asarray,ones,zeros,arange,eye,identity,hadamard,phasehadamard,cnot,toffoli
-from lib.utils.utils import jit,grad,finitegrad,norm,expm,tensordot,tensorprod,multi_matmul,inner,abs,repeat,allclose,isclose,PRNG,gradinner,prod
-from lib.utils.utils import trotter,trottergrad,cos,sin
-from lib.utils.parallel import Pooler,Parallelize
 from lib.utils.plot import plot
 
 
 
 def main(args):
 
-	defaults = [
-			{
-				"io":{
-					"verbose":"Info",
-					"path":""
-				},
-				"logging":{
-					"version": 1,
-					"disable_existing_loggers":0,
-					"formatters": {"file": {"format": "%(asctime)s :: %(message)s","datefmt":"%Y-%m-%d %H:%M:%S"},
-								   "stdout": {"format": "%(message)s","datefmt":"%Y-%m-%d %H:%M:%S"}},
-					"handlers": {"file": {"class": "logging.FileHandler",
-											 "filename": "log.log",
-											 "formatter": "file",
-											 "level": "INFO",
-											 "mode": "w"},
-								"stdout": {"class": "logging.StreamHandler",
-											  "formatter": "stdout",
-											  "level": "INFO",
-											  "stream": "ext://sys.stdout"}},
-					"root": {"handlers": ["stdout", "file"], "level": "DEBUG"}
-				},
-				"plotting":{
-					"names":["energy","order"],
-					"path":"figures",
-					"verbose":"info"
-				},
-				"data":"data/test.csv",
-				"model":{
-					"N":3,
-					"D":2,
-					"d":1,
-					"lattice":"square",
-					"system":{
-						"dtype":"complex",
-						"format":"array",
-						"device":"cpu",
-						"verbose":"info"		
-					},								
-				},
-				"parameters":{
-					"J": {"start":-2.0,"stop":2.0,"length":5,"type":"range"},
-					"g": [1]
-				}
-			}
-			]
-
-	# params = setup(args,defaults)
-
 	path = args[0]
 	group = args[1]
 	name = args[2]
 
+	file = h5py.File(path,'r')
 	try:
 		name_real = "%s.%s"%(name,'real')
-		data_real = h5py.File(path,'r')[group][name_real][...]
+		data_real = file[group][name_real][...]
 
 		name_imag = "%s.%s"%(name,'imag')
-		data_imag = h5py.File(path,'r')[group][name_imag][...]
+		data_imag = file[group][name_imag][...]
 
 		data = data_real + 1j*data_imag
 	except:
-		data = h5py.File(path,'r')[group][name][...]
+		data = file[group][name][...]
+
+	try:
+		attrs = dict(file[group].attrs.items())
+	except:
+		attrs = dict(file[group].attrs.items())
 
 
-	# data = load(data,header='infer')
 	print(data.shape,data.dtype)
 	print(data)
-
-
-	n = h5py.File(path,'r')[group].attrs.get('N')
-	print("N = ",n)
-
+	print(attrs)
 
 	# data = load(params['data'])
 

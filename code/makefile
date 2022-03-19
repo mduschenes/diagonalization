@@ -1,7 +1,7 @@
 # Commands
 CC 		:= g++
 MKDIR 	:= mkdir -p
-RMDIR 	:= rm -rf
+RM 	:= rm -rf
 RUN     := ./
 
 # Directories
@@ -24,7 +24,7 @@ EXE_EXT := out
 PROCESS_EXT:= py
 
 # Targets
-SRC := main utils io hdf5 tensor hamiltonian
+SRC := main tensor hamiltonian io hdf5 utils
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
@@ -38,8 +38,8 @@ EXE := $(patsubst %,$(EXE_DIR)/%.$(EXE_EXT),$(EXE))
 
 PROCESS := process
 PROCESS := $(patsubst %,$(PROCESS_DIR)/%.$(PROCESS_EXT),$(PROCESS))
-PROCESS_FLAGS :=
-PROCESS_DEP := data/data.csv
+PROCESS_FLAGS := data data
+PROCESS_DEP := data/data.hdf5
 
 PROFILE := gprof
 PROFILE_FLAGS := gprof -b -pset
@@ -128,27 +128,35 @@ endif
 # Rules
 all: $(EXE)
 
-run : $(EXE)
-	$(RUN)$< $(RUN_ARGS)
+run : clean_data $(EXE)
+	$(RUN)$(EXE) $(RUN_ARGS)
+	h5dump $(PROCESS_DEP)
 
 test :
 
-clean :
-	@$(RMDIR) $(OBJ_DIR)
-	@$(RMDIR) $(EXE_DIR)
+clean : clean_obj clean_data
 
-process : $(PROCESS) $(PROCESS_DEP)
-	$(PROCESS) $(PROCESS_FLAGS) $(PROCESS_DEP)
+process : clean $(PROCESS) $(PROCESS_DEP)
+	h5dump $(PROCESS_DEP)
+	$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) 
 
 profile : $(PROFILE_DEP)
 	$(PROFILE) $(PROFILE_FLAGS) $(EXE) $(PROFILE_DEP) > $(PROFILE_OUT)
 
 
+clean_obj :
+	@$(RM) $(OBJ_DIR)
+	@$(RM) $(EXE_DIR)
+
+clean_data :
+	@$(RM) $(PROCESS_DEP)
+	@$(RM) $(PROFILE_DEP)
+
 $(EXE_DIR)/%.$(EXE_EXT) : $(OBJ) $(LIB) | $(EXE_DIR)
-	$(CC) $(CC_FLAGS) $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
+	@$(CC) $(CC_FLAGS) $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
 
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(LIB) | $(OBJ_DIR)
-	$(CC) $(CC_FLAGS) -c $< -o $@ $(LD_FLAGS) $(LD_LIBS)
+	@$(CC) $(CC_FLAGS) -c $< -o $@ $(LD_FLAGS) $(LD_LIBS)
 
 $(OBJ_DIR) $(EXE_DIR) : 
 	@$(MKDIR) $@

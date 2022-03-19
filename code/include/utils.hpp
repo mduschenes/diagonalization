@@ -13,12 +13,16 @@
 
 namespace utils {
 
+template<typename T>
+T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b);
 
 template<typename T>
-Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> commutator(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
+void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a);
 
-template<typename T>
-T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & A, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & B);
+template <typename T, typename U>
+void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
+
+bool ends_with(std::string const & value, std::string const & pattern);
 
 
 unsigned int bit(unsigned int x, unsigned int j);
@@ -27,11 +31,13 @@ unsigned int flip(unsigned int x, unsigned int j);
 unsigned int phaseflip(unsigned int x, unsigned int j);
 unsigned int bitcount(unsigned int x);
 
-bool ends_with(std::string const & value, std::string const & pattern);
+int spin(unsigned int x, unsigned int j);
+int spinphase(unsigned int x, unsigned int j);
+int spinflip(unsigned int x, unsigned int j);
+int spinphaseflip(unsigned int x, unsigned int j);
+int spincount(unsigned int x);
 
 
-template <typename T, typename U>
-void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
 
 
 };

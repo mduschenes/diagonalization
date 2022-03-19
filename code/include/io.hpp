@@ -10,10 +10,11 @@
 #include <algorithm>
 
 #define EIGEN_USE_MKL_ALL   
+#define NUM_THREADS 7
 #include <Eigen/Dense>
 
-#include "utils.hpp"
 #include "hdf5.hpp"
+#include "utils.hpp"
 
 namespace io {
 

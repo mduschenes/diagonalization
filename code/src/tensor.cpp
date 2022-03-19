@@ -23,60 +23,54 @@ void Tensor<T>::setup(tensor::System<T> & system){
 template <typename T>
 void Tensor<T>::rand(){
 
-	// int size = this->size;
-	// int dim = this->dim;
+	int size = this->size;
+	int dim = this->dim;
 
-	// int N = this->system.N;
-	// int D = this->system.D;
-	// int n = this->system.n;
-	// std::vector<T> parameters = this->system.parameters;
+	int N = this->system.N;
+	int D = this->system.D;
+	int n = this->system.n;
+	std::vector<T> parameters = this->system.parameters;
 	
-	// typedef T U;
+	typedef T U;
 
-	// std::random_device device;
-	// std::mt19937 seed(device());  
-	// std::uniform_real_distribution<U> distribution(-1.0, 1.0);
-	// typename tensor::Tensor<T>::type data = tensor::Tensor<T>::type::NullaryExpr(size,size,[&](){return distribution(seed);});
+	std::random_device device;
+	std::mt19937 seed(device());  
+	std::uniform_real_distribution<U> distribution(-1.0, 1.0);
+	typename tensor::Tensor<T>::type data = tensor::Tensor<T>::type::NullaryExpr(size,size,[&](){return distribution(seed);});
 
-	// utils::cast<U,T>(data,this->data);
+	utils::cast<U,T>(data,this->data);
 
 	return;
 };
 
 template <typename T>
 void Tensor<T>::eig(){
-	
-	std::vector<T> eigenvalues;
-	Tensor<T>::type eigenvectors;
 
-	this->eig(eigenvalues,eigenvectors);
-
-	return;
-};
-
-template <typename T>
-void Tensor<T>::eig(std::vector<T> & eigenvalues, Tensor<T>::type & eigenvectors){
+	// Solve
 	this->solver.compute(this->data);
-	std::cout << this->solver.eigenvalues() << std::endl;
+	typename tensor::Tensor<T>::matrix eigenvalues = this->solver.eigenvalues();
+	typename tensor::Tensor<T>::matrix eigenvectors = this->solver.eigenvectors();
 
-	std::string path;
+	utils::check(eigenvalues);
+	utils::check(eigenvectors);
+	
+	// Path
+	std::string path = this->system.path;
+	std::string group = this->system.group;
+	std::string name = this->system.name;
 
-	// std:: cout << this->solver << std:endl;//.compute(this->data);	
+	// Dump
+	io::io<T> io;
+
+	name = "eigenvalues";
+    io.dump(path,group,name,eigenvalues);
+
+	name = "eigenvectors";
+    io.dump(path,group,name,eigenvectors);
+
 	return;
 };
 
-
-// template <typename T>
-// void Tensor<T>::convert(std::vector<std::vector<T>> & data){
-	
-// 	const int n = this->data.rows();
-// 	const int m = this->data.cols();
-// 	data.clear();
-// 	data.resize(n);
-
-// 	Eigen::Map(&data[0], n) = data;
-// 	return;
-// };
 
 
 template <typename T>
@@ -91,16 +85,23 @@ void Tensor<T>::print(){
 	std::cout << std::endl;	
 };
 
+
+
 template <typename T>
 void Tensor<T>::dump(){
 
 	// Path
 	std::string path = this->system.path;
+	std::string group = this->system.group;
+	std::string name = this->system.name;
 
 	// Data
 	typedef T T_data;
 	io::io<T_data> io_data;
-    io_data.dump(path,this->system.group,this->system.name,this->data);
+
+	typename tensor::Tensor<T>::matrix data = this->data;
+
+    io_data.dump(path,group,name,data);
 
 
     // Metadata
@@ -114,7 +115,7 @@ void Tensor<T>::dump(){
 	attributes["n"] = this->system.n;
 	attributes["K"] = this->system.K;
 
-    io_metadata.dump(path,this->system.group,this->system.name,attributes);
+    io_metadata.dump(path,group,name,attributes);
 
 
     // Parameters
@@ -126,7 +127,7 @@ void Tensor<T>::dump(){
 	parameters["h"] = this->system.parameters[1];
 	parameters["U"] = this->system.parameters[2];
 
-    io_parameters.dump(path,this->system.group,this->system.name,parameters);
+    io_parameters.dump(path,group,name,parameters);
 
     return;
 };
@@ -159,9 +160,9 @@ void Tensor<T>::load(){
 };
 
 template class Tensor<double>;
-// template class Tensor<float>;
+template class Tensor<float>;
 template class System<double>;
-// template class System<float>;
+template class System<float>;
 
 };
 

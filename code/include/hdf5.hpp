@@ -10,6 +10,7 @@
 #include <map>
 
 #define EIGEN_USE_MKL_ALL   
+#define NUM_THREADS 7
 #include <Eigen/Dense>
 #include <H5Cpp.h>
 
