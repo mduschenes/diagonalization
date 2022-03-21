@@ -8,14 +8,18 @@
 #include <complex>
 #include <cmath>
 #include <random>
-#include <typeinfo>
+#include <map>
 
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues> 
+// #include <Eigen/SparseCore>
 
-#include <LBFGS.h>
+// #include <Spectra/SymEigsSolver.h>
+// #include <Spectra/MatOp/SparseGenMatProd.h>
+
+// #include <LBFGS.h>
 
 #include <itertools.hpp>
 	
@@ -37,16 +41,14 @@ struct System {
 	int s; // Number of states
 	int size; // Data size
 	int dim = 2; // Data dimension
-	std::vector<type> parameters; // parameters	
 	std::string path = "data.hdf5"; // path name
 	std::string group = "data"; // group name
 	std::string name = "data"; // object name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::string state = "state"; // state name
 	std::vector<std::string> names = {"N","D","d","n","k","s"}; // variable names
-	std::vector<std::string> params; // parameter names
-	std::vector<std::string> states; // state names
+	std::map<std::string,type> parameters; // parameters
+	std::vector<std::string> state; // state names
 };	
 
 
@@ -68,17 +70,20 @@ class Tensor {
 
 		// Type
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
+		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type_complex;		
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
 
+		// typedef Spectra::SparseSymMatProd<T> optype;
+
 		// Data
 		type data;
 
 		// State
-		vector state;
-		matrix states;
+		std::map<std::string,vector> states;
+		std::map<std::string,vector> state;
 
 		// Setup
 		void setup(tensor::System<T> & system);
@@ -95,6 +100,10 @@ class Tensor {
 
 		// Solve
 		Eigen::SelfAdjointEigenSolver<type> solver;
+
+		// Spectra::SymEigsSolver<tensor::Tensor<T>::optype> solver;
+	 	// optype op;
+
 		vector eigenvalues;
 		matrix_complex eigenvectors;
 		void eig();

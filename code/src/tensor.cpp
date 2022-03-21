@@ -15,7 +15,20 @@ Tensor<T>::~Tensor(){
 
 template <typename T>
 void Tensor<T>::setup(tensor::System<T> & system){
+	
+	unsigned int i;
+	unsigned int size = this->size;
+	unsigned int s = system.s;
+	std::string name;
+
+	for (i=0;i<system.state.size();i++){
+		name = system.state[i];
+		this->states[name] = tensor::Tensor<T>::vector::Zero(size);
+		this->state[name] = tensor::Tensor<T>::vector::Zero(s);		
+	};
+
 	this->system = system;
+
 };
 
 
@@ -29,7 +42,6 @@ void Tensor<T>::rand(){
 	int N = this->system.N;
 	int D = this->system.D;
 	int n = this->system.n;
-	std::vector<T> parameters = this->system.parameters;
 	
 	typedef T U;
 
@@ -47,7 +59,14 @@ template <typename T>
 void Tensor<T>::eig(){
 
 	// Solve
+
+	// this->op(this->data);    
+	// this->solver(this->op, this->system.s, 2*this->system.s);
+	// this->solver.init();
+	// this->solver.compute(Spectra::SortRule::SmallestMagn);
+
 	this->solver.compute(this->data);
+
 	this->eigenvalues = this->solver.eigenvalues();
 	this->eigenvectors = this->solver.eigenvectors();
 
@@ -62,10 +81,10 @@ void Tensor<T>::eig(){
 	std::string name = this->system.name;
 	
 	name = "eigenvalues";
-    io.dump(path,group,name,this->eigenvalues);
+    // io.dump(path,group,name,this->eigenvalues);
 
 	name = "eigenvectors";
-    io.dump(path,group,name,this->eigenvectors);
+    // io.dump(path,group,name,this->eigenvectors);
 
 	return;
 };
@@ -79,7 +98,6 @@ void Tensor<T>::print(){
 	std::cout << "d = " << this->system.d << std::endl;
 	std::cout << "n = " << this->system.n << std::endl;
 	std::cout << "k = " << this->system.k << std::endl;
-	std::cout << "state = " << this->state << std::endl;
 	std::cout << "|O| = " << utils::norm<T>(this->data,this->data) << std::endl;
 	std::cout << "data = \n" << this->data << std::endl;
 	std::cout << std::endl;	
@@ -94,13 +112,12 @@ void Tensor<T>::dump(){
 	std::string path = this->system.path;
 	std::string group = this->system.group;
 	std::string name = this->system.name;
-	std::string state = this->system.state;
 
 	// Data
 	typedef T T_data;
 	io::io<T_data> io_data;
 
-    io_data.dump(path,group,name,this->data);
+    // io_data.dump(path,group,name,this->data);
 
 
     // Metadata
@@ -120,25 +137,14 @@ void Tensor<T>::dump(){
 	typedef T T_parameters;    
 	io::io<T_parameters> io_parameters;
 
-	std::map<std::string,T_parameters> parameters;
-	for (int i=0;i<this->system.k;i++){
-		parameters[this->system.params[i]] = this->system.parameters[i];
-	};
-
-    io_parameters.dump(path,group,name,parameters);
+    io_parameters.dump(path,group,name,this->system.parameters);
 
 
     // State
 	typedef T T_state;
 	io::io<T_state> io_state;
 
-	std::map<std::string,T_parameters> states;
-	for (int i=0;i<this->system.s;i++){
-		states[this->system.states[i]] = this->state[i];
-	};
-
-    io_state.dump(path,group,name,states);
-    // io_state.dump(path,group,state,this->state);
+    io_state.dump(path,group,name,this->state);
 
     return;
 };

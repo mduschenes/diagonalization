@@ -29,16 +29,14 @@ int main(int argc, char *argv[]){
 
 	typedef double T;
 
-	int N = 2;
+	int N = 4;
 	int D = 2;
 	int d = 1;
 	int k = 3;
-	int s = 7;
+	int s = 4;
 	T J = 1;
 	T h = 1;
 	T U = 0;
-
-	std::vector<std::string> states = {"order_0","order_1","order_2","energy_0","energy_1","energy_2","gap"};
 
 	argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
 	argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
@@ -49,31 +47,35 @@ int main(int argc, char *argv[]){
 	argn++;if (argc >= argn){h = std::atof(argv[argn-1]);};
 	argn++;if (argc >= argn){U = std::atof(argv[argn-1]);};
 
-	tensor::System<T> system;
-	system.N = N;
-	system.D = D;
-	system.d = d;
-	system.n = pow(D,N);
-	system.k = k;
-	system.s = s;
-	system.size = pow(D,N); 
-	system.dim = 2; 
+	tensor::System<T> system; // system attributes
+	system.N = N; // number of sites
+	system.D = D; // local site dimension
+	system.d = d; // spatial dimension
+	system.n = pow(D,N); // system size
+	system.k = k; // number of parameters
+	system.s = s; // number of eigenvalues to consider
+	system.size = pow(D,N); // data size
+	system.dim = 2; // data dimension
 	system.path = "data/data.hdf5"; // path name
 	system.group = "data"; // group name
 	system.name = "data"; // dataset name
 	system.data = "data"; // data name
 	system.metadata = "metadata"; // metadata name
-	system.state = "state"; // state name
-	system.states = states; // state names
-	system.params = {"J","h","U"}; // parameter names
-	system.parameters = {J,h,U}; // Parameters of length k
+	system.state = {
+		"order","energy","gap","entanglement",
+		}; // states
+	system.parameters = {{"J",J},{"h",h},{"U",U}}; // Parameters of length k
 
 	hamiltonian::Hamiltonian<T> H(system);
 
 	H.set();
+	std::cout << "set" << std::endl;
 	H.eig();
+	std::cout << "eig" << std::endl;	
 	H.compute();
+	std::cout << "compute" << std::endl;	
 	H.dump();
+	std::cout << "dump" << std::endl;	
 
 
 	// // Iterations
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]){
 	// // 	system.data = "data"; // data name
 	// // 	system.metadata = "metadata"; // metadata name
 	// //	system.state = "state"; // state name
-	// //	system.states = {"order","energy","gap"}; // state names
+	// //	system.states = {"order_0","order_1","order_2","energy_0","energy_1","energy_2","gap","entanglement"}; // state names
 	// //	system.params = {"J","h","U"}; // parameter names
 	// // 	system.parameters = {J,h,U}; // Parameters of length k
 
