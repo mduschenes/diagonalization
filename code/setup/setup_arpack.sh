@@ -6,15 +6,17 @@
 
 # cd build
 
-export FFLAGS="-DMKL -I/opt/intel/mkl/include"
-export FCFLAGS="-DMKL -I/opt/intel/mkl/include"
-export LIBS="-Wl,--no-as-needed -L/opt/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp -lpthread -lm -ldl"
-export INTERFACE64=0
-
+export FFLAGS="-DMKL_LP64 -I${MKLROOT}/include -I/home/matt/files/uw/research/projects/diagonalization/code/lib/eigen"
+export FCFLAGS="-DMKL_LP64 -I${MKLROOT}/include -I/home/matt/files/uw/research/projects/diagonalization/code/lib/eigen"
+export CPPFLAGS="-DMKL_LP64 -I${MKLROOT}/include -I/home/matt/files/uw/research/projects/diagonalization/code/lib/eigen"
+export CXXFLAGS="-DMKL_LP64 -I${MKLROOT}/include -I/home/matt/files/uw/research/projects/diagonalization/code/lib/eigen"
+export LIBS="-Wl,--no-as-needed -Wl,--start-group -L${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_sequential.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp -lpthread -lm -ldl -leigen"
+export INTERFACE64=1
 
 # cmake -D EXAMPLES=ON -D MPI=ON -D BUILD_SHARED_LIBS=ON ..
-sh bootstrap	
-sudo FFLAGS="-DMKL_LP64 -I/opt/intel/mkl/include" FCFLAGS="-DMKL_LP64 -I/opt/intel/mkl/include" LIBS="-Wl,--no-as-needed -L/opt/intel/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp -lpthread -lm -ldl" ./configure --with-blas=mkl_intel_lp64 --with-lapack=mkl_intel_lp64
+# sudo -E sh bootstrap	
+
+sudo -E "FFLAGS=${FFLAGS} FCFLAGS=${FCFLAGS} LIBS=${LIBS} INTERFACE64=${INTERFACE64} CPPFLAGS=${CPPFLAGS} CXXFLAGS=${CXXFLAGS} ./configure --with-blas=mkl_intel_lp64 --with-lapack=mkl_intel_lp64 --enable-mpi "
 
 make
 make install

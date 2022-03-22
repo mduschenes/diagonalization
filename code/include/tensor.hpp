@@ -18,8 +18,11 @@
 
 #include <Eigen/Core>
 #include <Spectra/SymEigsSolver.h>
-#include <Spectra/MatOp/DenseSymMatProd.h>
-#include <Spectra/MatOp/SparseSymMatProd.h>
+// #include <Spectra/MatOp/DenseSymMatProd.h>
+// #include <Spectra/MatOp/SparseSymMatProd.h>
+// #include <unsupported/Eigen/ArpackSupport>
+// #include <Eigen/SparseCholesky>
+// #include <ArpackSelfAdjointEigenSolver>
 // #include <LBFGS.h>
 
 
@@ -80,6 +83,11 @@ class Tensor {
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
+		
+		// typedef Eigen::SparseMatrix<T> SparseMat;
+		// typedef Eigen::SimplicialLDLT<SparseMat> SparseChol;
+		// typedef Eigen::ArpackSelfAdjointEigenSolver<SparseMat, SparseChol> Arpack;
+		// Arpack arpack;
 
 		// Data
 		type data;
