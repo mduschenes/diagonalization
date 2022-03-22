@@ -57,8 +57,8 @@ USE_HDF5 := /usr/local/
 USE_PROFILE :=
 
 # Flags
-# CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
-CC_FLAGS := -O3 -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
+# CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wextra -g -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
+CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
 
@@ -89,7 +89,7 @@ endif
 
 # User Libraries
 # CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra
-CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools
+CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra/include
 LD_FLAGS +=
 LD_LIBS += -lpthread
 

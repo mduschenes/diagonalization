@@ -9,16 +9,48 @@ T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Ei
 
 
 template<typename T>
-void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a){
-	a.array() += 0;
-	return;
-}
+T norm(Eigen::SparseMatrix<T> & a, Eigen::SparseMatrix<T> & b){
+	return 0;
+};
+
 
 template<typename T>
-void check(Eigen::Vector<T, Eigen::Dynamic> & a){
+void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
 	a.array() += 0;
 	return;
-}
+};
+
+template<typename T>
+void check(Eigen::SparseMatrix<T> & a, T & eps){
+	a.coeffs().array() += 0;
+	return;
+};
+
+template<typename T>
+void check(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
+	a.array() += 0;
+	return;
+};
+
+template<typename T>
+void check(Eigen::SparseMatrix<std::complex<T>> & a, T & eps){
+	a.coeffs().array() += 0;
+	return;
+};
+
+template<typename T>
+void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps){
+
+	T val = 0;
+
+	a.array() += 0;
+	for (unsigned int i=0;i<a.size();i++){
+		if (std::abs(a[i]) < eps){
+			a[i] = val;
+		};
+	};
+	return;
+};
 
 
 template <typename T, typename U>
@@ -101,21 +133,24 @@ template double norm<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynami
 template float norm<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & b);
 template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & b);
 
-template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a);
-template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a);
-template void check<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a);
+template double norm<double>(Eigen::SparseMatrix<double> & a,Eigen::SparseMatrix<double> & b);
+template float norm<float>(Eigen::SparseMatrix<float> & a,Eigen::SparseMatrix<float> & b);
+template int norm<int>(Eigen::SparseMatrix<int> & a,Eigen::SparseMatrix<int> & b);
 
-template void check<std::complex<double>>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & a);
-template void check<std::complex<float>>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & a);
-template void check<std::complex<int>>(Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & a);
+template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a, double & eps);
+template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a, float & eps);
 
-template void check<double>(Eigen::Vector<double, Eigen::Dynamic> & a);
-template void check<float>(Eigen::Vector<float, Eigen::Dynamic> & a);
-template void check<int>(Eigen::Vector<int, Eigen::Dynamic> & a);
+template void check<double>(Eigen::SparseMatrix<double> & a, double & eps);
+template void check<float>(Eigen::SparseMatrix<float> & a, float & eps);
 
-template void check<std::complex<double>>(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & a);
-template void check<std::complex<float>>(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & a);
-template void check<std::complex<int>>(Eigen::Vector<std::complex<int>, Eigen::Dynamic> & a);
+template void check<double>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & a, double & eps);
+template void check<float>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & a, float & eps);
+
+template void check<double>(Eigen::SparseMatrix<std::complex<double>> & a, double & eps);
+template void check<float>(Eigen::SparseMatrix<std::complex<float>> & a, float & eps);
+
+template void check<double>(Eigen::Vector<double, Eigen::Dynamic> & a, double & eps);
+template void check<float>(Eigen::Vector<float, Eigen::Dynamic> & a, float & eps);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);

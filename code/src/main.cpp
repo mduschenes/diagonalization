@@ -33,7 +33,8 @@ int main(int argc, char *argv[]){
 	int D = 2;
 	int d = 1;
 	int k = 3;
-	int s = 4;
+	int s = 3;
+	int q = pow(D,N)-1;
 	T J = 1;
 	T h = 1;
 	T U = 0;
@@ -43,6 +44,7 @@ int main(int argc, char *argv[]){
 	argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
 	argn++;if (argc >= argn){k = std::atoi(argv[argn-1]);};
 	argn++;if (argc >= argn){s = std::atoi(argv[argn-1]);};
+	argn++;if (argc >= argn){q = std::atoi(argv[argn-1]);};
 	argn++;if (argc >= argn){J = std::atof(argv[argn-1]);};
 	argn++;if (argc >= argn){h = std::atof(argv[argn-1]);};
 	argn++;if (argc >= argn){U = std::atof(argv[argn-1]);};
@@ -52,10 +54,13 @@ int main(int argc, char *argv[]){
 	system.D = D; // local site dimension
 	system.d = d; // spatial dimension
 	system.n = pow(D,N); // system size
+	system.z = 2*d; // coordination number
 	system.k = k; // number of parameters
-	system.s = s; // number of eigenvalues to consider
+	system.s = s; // number of unique eigenvalues to consider
+	system.q = q; // number of eigenvalues to consider
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension
+	system.eps = 1e-14; // floating point tolerance
 	system.path = "data/data.hdf5"; // path name
 	system.group = "data"; // group name
 	system.name = "data"; // dataset name

@@ -12,7 +12,7 @@
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
 #include <Eigen/Dense>
-#include <Eigen/Eigenvalues> 
+#include <Eigen/Sparse>
 
 #include "hdf5.hpp"
 #include "utils.hpp"
@@ -47,6 +47,8 @@ class io{
 
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data);
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & data);
+		void dump(std::string & path,std::string & group,std::string & name,Eigen::SparseMatrix<T> & data);
+		void dump(std::string & path,std::string & group,std::string & name,Eigen::SparseMatrix<std::complex<T>> & data);
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<T, Eigen::Dynamic> & data);
 		void dump(std::string & path,std::string & group,std::string & name,Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data);
 

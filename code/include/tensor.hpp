@@ -7,19 +7,21 @@
 #include <vector> 
 #include <complex>
 #include <cmath>
-#include <random>
 #include <map>
+
 
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <Eigen/Eigenvalues> 
-// #include <Eigen/SparseCore>
 
-// #include <Spectra/SymEigsSolver.h>
-// #include <Spectra/MatOp/SparseGenMatProd.h>
-
+#include <Eigen/Core>
+#include <Spectra/SymEigsSolver.h>
+#include <Spectra/MatOp/DenseSymMatProd.h>
+#include <Spectra/MatOp/SparseSymMatProd.h>
 // #include <LBFGS.h>
+
 
 #include <itertools.hpp>
 	
@@ -37,16 +39,18 @@ struct System {
 	int D; // dimension of qudits
 	int d; // spatial dimensions
 	int n; // Total dimension of space
+	int z; // coordination number
 	int k; // Number of parameters	
-	int s; // Number of states
+	int s; // Number of unique states
+	int q; // Number of states
 	int size; // Data size
 	int dim = 2; // Data dimension
+	type eps = 1e-14; // floating point tolerance
 	std::string path = "data.hdf5"; // path name
 	std::string group = "data"; // group name
 	std::string name = "data"; // object name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::vector<std::string> names = {"N","D","d","n","k","s"}; // variable names
 	std::map<std::string,type> parameters; // parameters
 	std::vector<std::string> state; // state names
 };	
@@ -70,13 +74,12 @@ class Tensor {
 
 		// Type
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
+		// typedef Eigen::SparseMatrix<T> type;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type_complex;		
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
-
-		// typedef Spectra::SparseSymMatProd<T> optype;
 
 		// Data
 		type data;
@@ -95,14 +98,17 @@ class Tensor {
 		// Print
 		void print();
 
-		// Random Set
-		void rand();
-
 		// Solve
-		Eigen::SelfAdjointEigenSolver<type> solver;
+		
+		typedef Eigen::SelfAdjointEigenSolver<type> solver;
+		
+		// typedef Spectra::SymEigsSolver<Spectra::DenseSymMatProd<T>> solver;
+		// typedef Spectra::DenseSymMatProd<T> op;
 
-		// Spectra::SymEigsSolver<tensor::Tensor<T>::optype> solver;
-	 	// optype op;
+		// typedef Spectra::SymEigsSolver<Spectra::SparseSymMatProd<T>> solver;
+		// typedef Spectra::SparseSymMatProd<T> op;
+
+		// Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
 
 		vector eigenvalues;
 		matrix_complex eigenvectors;

@@ -10,7 +10,7 @@
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
-#include <Eigen/Eigenvalues> 
+#include <Eigen/Sparse>
 
 namespace utils {
 
@@ -18,10 +18,22 @@ template<typename T>
 T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b);
 
 template<typename T>
-void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a);
+T norm(Eigen::SparseMatrix<T> & a, Eigen::SparseMatrix<T> & b);
 
 template<typename T>
-void check(Eigen::Vector<T, Eigen::Dynamic> & a);
+void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps);
+
+template<typename T>
+void check(Eigen::SparseMatrix<T> & a, T & eps);
+
+template<typename T>
+void check(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps);
+
+template<typename T>
+void check(Eigen::SparseMatrix<std::complex<T>> & a, T & eps);
+
+template<typename T>
+void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps);
 
 template <typename T, typename U>
 void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
