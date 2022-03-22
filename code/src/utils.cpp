@@ -45,11 +45,33 @@ void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps){
 
 	a.array() += 0;
 	for (unsigned int i=0;i<a.size();i++){
-		if (std::abs(a[i]) < eps){
+		if (close(a[i],eps)){
 			a[i] = val;
 		};
 	};
 	return;
+};
+
+
+template<typename T>
+bool close(T & a, T & eps){
+	return (std::abs(a) < eps);
+};
+
+
+template<typename T>
+bool close(std::complex<T> & a, T & eps){
+	return (std::abs(a) < eps);
+};
+
+template<typename T>
+bool close(T & a, T & b, T & eps){
+	return ((std::abs(a-b)/std::max(std::abs(a),std::abs(b))) < eps);
+};
+
+template<typename T>
+bool close(std::complex<T> & a, std::complex<T> & b, T & eps){
+	return ((std::abs(a-b)/std::max(std::abs(a),std::abs(b))) < eps);
 };
 
 
@@ -151,6 +173,19 @@ template void check<float>(Eigen::SparseMatrix<std::complex<float>> & a, float &
 
 template void check<double>(Eigen::Vector<double, Eigen::Dynamic> & a, double & eps);
 template void check<float>(Eigen::Vector<float, Eigen::Dynamic> & a, float & eps);
+
+template bool close<double>(double & a, double & eps);
+template bool close<float>(float & a, float & eps);
+template bool close<int>(int & a, int & eps);
+
+template bool close<double>(std::complex<double> & a, double & eps);
+template bool close<float>(std::complex<float> & a, float & eps);
+
+template bool close<double>(double & a, double & b, double & eps);
+template bool close<float>(float & a, float & b, float & eps);
+template bool close<int>(int & a, int & b, int & eps);
+template bool close<double>(std::complex<double> & a, std::complex<double> & b, double & eps);
+template bool close<float>(std::complex<float> & a, std::complex<float> & b, float & eps);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);

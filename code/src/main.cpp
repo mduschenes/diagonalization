@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 	int d = 1;
 	int k = 3;
 	int s = 3;
-	int q = pow(D,N)-1;
+	int q = 10;
 	T J = 1;
 	T h = 1;
 	T U = 0;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 	system.z = 2*d; // coordination number
 	system.k = k; // number of parameters
 	system.s = s; // number of unique eigenvalues to consider
-	system.q = q; // number of eigenvalues to consider
+	system.q = std::max(q,int(pow(D,N))); // number of eigenvalues to consider
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension
 	system.eps = 1e-14; // floating point tolerance

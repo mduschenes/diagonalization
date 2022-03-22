@@ -35,6 +35,18 @@ void check(Eigen::SparseMatrix<std::complex<T>> & a, T & eps);
 template<typename T>
 void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps);
 
+template<typename T>
+bool close(T & a, T & eps);
+
+template<typename T>
+bool close(std::complex<T> & a, T & eps);
+
+template<typename T>
+bool close(T & a, T & b, T & eps);
+
+template<typename T>
+bool close(std::complex<T> & a, std::complex<T> & b, T & eps);
+
 template <typename T, typename U>
 void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
 

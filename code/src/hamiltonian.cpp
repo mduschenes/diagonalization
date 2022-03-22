@@ -92,6 +92,9 @@ void Hamiltonian<T>::compute(){
 	std::string name;
 	T value;
 
+	std::cout << s << std::endl;
+	std::cout << q << std::endl;
+
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
 	std::vector<std::vector<unsigned int>> indices;
@@ -101,19 +104,19 @@ void Hamiltonian<T>::compute(){
 	indices.back().push_back(i);
 
 	for (i=1;i<q;i++){
-		if (std::abs(this->eigenvalues(i) - this->eigenvalues(indices.back().back())) >= this->system.eps){
+		if (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), this->system.eps)) {
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
 		}
-		else if (std::abs(this->eigenvalues(i) - this->eigenvalues(indices.back().back())) < this->system.eps){
+		else {
 			indices.back().push_back(i);			
 		};
 	};
 
-	std::cout << this->eigenvalues << std::endl;
-	std::cout << "-------------" << std::endl;
-
 	// State
+
+	s = std::min((unsigned int)(indices.size()),s);
+
 	for (k=0; k<s; k++){
 		
 		// Spin
@@ -127,12 +130,6 @@ void Hamiltonian<T>::compute(){
 		this->state[name](k) = value;
 		
 		for (i=0;i<indices[k].size();i++){
-
-
-			std::cout << this->eigenvectors.col(indices[k][i]).cwiseAbs2() << std::endl;
-			std::cout << "--" << std::endl;
-			std::cout << this->states["order"] << std::endl;
-			std::cout << std::endl;
 
 			// Spin
 			name = "order";

@@ -100,8 +100,6 @@ class Tensor {
 
 		// Solve
 		
-		typedef Eigen::SelfAdjointEigenSolver<type> solver;
-		
 		// typedef Spectra::SymEigsSolver<Spectra::DenseSymMatProd<T>> solver;
 		// typedef Spectra::DenseSymMatProd<T> op;
 
@@ -109,6 +107,8 @@ class Tensor {
 		// typedef Spectra::SparseSymMatProd<T> op;
 
 		// Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
+
+		typedef Eigen::SelfAdjointEigenSolver<type> solver;
 
 		vector eigenvalues;
 		matrix_complex eigenvectors;

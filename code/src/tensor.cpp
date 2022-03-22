@@ -39,7 +39,7 @@ void Tensor<T>::eig(){
 
 	// Solve
 
-	// int q = this->system.q; // Number of eigenvalues
+	// int q = std::min(this->system.size-1,this->system.q); // Number of eigenvalues
 	// int r =  std::min(3*this->system.q,this->system.size); // Solver tolerance
 
 	// T shift = 1*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
@@ -51,9 +51,6 @@ void Tensor<T>::eig(){
 	// // this->data.coeffs() *= factor;
 	// // this->data.diagonal().array() += shift;
 	// // utils::check(this->data,this->system.eps);
-
-	// std::cout << shift << std::endl;
-	// std::cout << this->data << std::endl;
 
 	// typename tensor::Tensor<T>::op op(this->data);
 	// typename tensor::Tensor<T>::solver solver(op,q,r);
