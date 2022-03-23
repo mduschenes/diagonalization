@@ -16,7 +16,18 @@ T norm(Eigen::SparseMatrix<T> & a, Eigen::SparseMatrix<T> & b){
 
 template<typename T>
 void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
+
+	T val = 0;
+
 	a.array() += 0;
+
+	for (unsigned int i=0;i<a.rows();i++){
+		for (unsigned int j=0;j<a.cols();j++){
+			if (close(a(i,j),eps)){
+				a(i,j) = val;
+			};
+		};
+	};
 	return;
 };
 

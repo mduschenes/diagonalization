@@ -8,7 +8,7 @@
 #include <complex>
 #include <cmath>
 #include <map>
-
+#include <thread>
 
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
@@ -17,12 +17,10 @@
 #include <Eigen/Eigenvalues> 
 
 #include <Eigen/Core>
-#include <Spectra/SymEigsSolver.h>
+// #include <Spectra/SymEigsSolver.h>
 // #include <Spectra/MatOp/DenseSymMatProd.h>
 // #include <Spectra/MatOp/SparseSymMatProd.h>
-// #include <unsupported/Eigen/ArpackSupport>
-// #include <Eigen/SparseCholesky>
-// #include <ArpackSelfAdjointEigenSolver>
+#include <unsupported/Eigen/ArpackSupport>
 // #include <LBFGS.h>
 
 
@@ -46,9 +44,12 @@ struct System {
 	int k; // Number of parameters	
 	int s; // Number of unique states
 	int q; // Number of states
+	int tol; // Solve parameter
 	int size; // Data size
 	int dim = 2; // Data dimension
 	type eps = 1e-14; // floating point tolerance
+	int nnz = 0; // number of data elements
+	bool sparse = false; // sparsity of data
 	std::string path = "data.hdf5"; // path name
 	std::string group = "data"; // group name
 	std::string name = "data"; // object name
@@ -74,20 +75,22 @@ class Tensor {
 		// Size and Dimension
 		const unsigned int size;
 		const unsigned int dim;
+		const unsigned int nnz;
+		const bool sparse;
 
 		// Type
-		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
-		// typedef Eigen::SparseMatrix<T> type;
+		// typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;				
+		typedef Eigen::SparseMatrix<T> type;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type_complex;		
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
-		
-		// typedef Eigen::SparseMatrix<T> SparseMat;
-		// typedef Eigen::SimplicialLDLT<SparseMat> SparseChol;
-		// typedef Eigen::ArpackSelfAdjointEigenSolver<SparseMat, SparseChol> Arpack;
-		// Arpack arpack;
+		typedef Eigen::SimplicialLDLT<type> algorithm;
+		typedef Eigen::Triplet<T,int> indices;
+
+		// Parallel
+		void parallel(){Eigen::initParallel();};
 
 		// Data
 		type data;
@@ -116,10 +119,11 @@ class Tensor {
 
 		// Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
 
-		typedef Eigen::SelfAdjointEigenSolver<type> solver;
+		typedef Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
+		// typedef Eigen::SelfAdjointEigenSolver<type> solver;
 
 		vector eigenvalues;
-		matrix_complex eigenvectors;
+		matrix eigenvectors;
 		void eig();
 
 	private:

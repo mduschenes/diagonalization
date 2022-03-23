@@ -58,7 +58,7 @@ USE_PROFILE :=
 
 # Flags
 # CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wextra -g -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
-CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
+CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wunused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
 
@@ -75,10 +75,9 @@ endif
 
 # User Libraries
 # CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra
-# CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra/include
-CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/arpack
-LD_FLAGS += -L$(LIB_DIR)/arpack/lib
-LD_LIBS += -lpthread -larpack
+CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra/include
+LD_FLAGS +=
+LD_LIBS += -lpthread
 
 # BLAS Libraries
 ifdef USE_MKL
@@ -101,7 +100,7 @@ endif
 ifdef USE_HDF5
 HDF5_DIR := $(USE_HDF5)
 USE_HDF5 := 1
-CC_FLAGS += -DUSE_HDF5 -DOLD_HEADER_FILENAME -DHDF_NO_NAMESPACE -DNO_STATIC_CAST -I$(HDF5_DIR)
+CC_FLAGS += -I$(HDF5_DIR) -DUSE_HDF5 -DOLD_HEADER_FILENAME -DHDF_NO_NAMESPACE -DNO_STATIC_CAST
 LD_FLAGS += -L$(HDF5_DIR)lib 
 LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/lib
 endif
@@ -130,7 +129,7 @@ endif
 # Rules
 all: clean $(EXE)
 
-run : clean_data $(EXE)
+run : $(EXE)
 	$(RUN)$(EXE) $(RUN_ARGS)
 	h5dump $(PROCESS_DEP)
 

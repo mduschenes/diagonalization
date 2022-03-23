@@ -18,6 +18,7 @@ void Hamiltonian<T>::set(){
 
 	unsigned int n = this->system.n;
 	unsigned int N = this->system.N;
+	unsigned int nnz = this->system.nnz;
 	std::map<std::string,T> parameters = this->system.parameters;
 
 	unsigned int m = N/2;
@@ -31,8 +32,15 @@ void Hamiltonian<T>::set(){
 	std::map<std::string,typename tensor::Tensor<T>::vector> states = this->states;
 	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
 
+	data.reserve(nnz);
+	
+	// typename typedef tensor::Tensor<T>::index index;
+	// typename std::vector<index> indices;
+	// indices.push_back(index(i,j,value));
+	// data.setFromTriplets(indices.begin(),indices.end());
 
-	#pragma omp parallel for private(i,j,k,name) shared(data,state)
+	// this->parallel();
+	// #pragma omp parallel for private(i,j,k,name) shared(data,states,parameters)
 	for (i=0;i<n;i++){
 
 		// State
@@ -44,8 +52,7 @@ void Hamiltonian<T>::set(){
 		for (k=0; k<N; k++){
 			j = i;
 			value = -parameters["J"]*utils::spin(i,k)*utils::spin(j,(k+1)%N);
-			data(i,j) += value;		
-			// data.coeffRef(i,j) += value;	
+			data.coeffRef(i,j) += value;	
 		};
 
 		// if (utils::bitcount(i) == m) {
@@ -53,14 +60,13 @@ void Hamiltonian<T>::set(){
 		// 		j = utils::flip(i,k%N);
 		// 		value = parameters["h"]*utils::bit(j,k);
 		// 		data(i,j) += value;
-		// 		data.insert(i,j) += value;
+		// 		data.coeffRef(i,j) += value;
 		// 		// utils::bit(utils::phaseflip(i,k),k);
 		// 		// utils::bit(utils::phase(i,k),k);
 		// 	};
 		// };
 	};
 
-	
 	this->data = data;
 	this->states = states;
 	this->state = state;
@@ -92,24 +98,29 @@ void Hamiltonian<T>::compute(){
 	std::string name;
 	T value;
 
-	std::cout << s << std::endl;
-	std::cout << q << std::endl;
-
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
 	std::vector<std::vector<unsigned int>> indices;
+	std::vector<unsigned int> size;
 
-	i = 0;
-	indices.push_back(std::vector<unsigned int>());
-	indices.back().push_back(i);
+	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.size())),q);
 
-	for (i=1;i<q;i++){
-		if (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), this->system.eps)) {
+	for (i=0;i<q;i++){
+		if (i==0){
+			indices.push_back(std::vector<unsigned int>());
+			indices.back().push_back(i);
+			size.push_back(0);
+			size.back()++;
+		}
+		else if (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), this->system.eps)) {
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
+			size.push_back(0);
+			size.back()++;
 		}
 		else {
 			indices.back().push_back(i);			
+			size.back()++;			
 		};
 	};
 
@@ -129,17 +140,17 @@ void Hamiltonian<T>::compute(){
 		value = 0;
 		this->state[name](k) = value;
 		
-		for (i=0;i<indices[k].size();i++){
+		for (i=0;i<size[k];i++){
 
 			// Spin
 			name = "order";
-			value = std::abs(this->eigenvectors.col(indices[k][i]).cwiseAbs2().dot(this->states[name]))/N;
-			this->state[name](k) += value/indices[k].size();
+			value = std::abs(this->eigenvectors.col(indices[k][i]).cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
+			this->state[name](k) += value/size[k];
 
 			// Energy
 			name = "energy";
 			value = this->eigenvalues(indices[k][i])/N;
-			this->state[name](k) += value/indices[k].size();
+			this->state[name](k) += value/size[k];
 
 		};
 
@@ -159,6 +170,7 @@ void Hamiltonian<T>::compute(){
 	for (i=0;i<this->system.state.size();i++){
 		utils::check(this->state[this->system.state[i]],this->system.eps);
 	};
+
 
 	return;
 

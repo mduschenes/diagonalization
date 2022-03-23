@@ -1,0 +1,12 @@
+prefix=/home/matt/spack/opt/spack/linux-ubuntu18.04-x86_64_v4/gcc-7.5.0/arpack-ng-3.8.0-idhicmext3jxv66i2nsvz3r76cvglwqf
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: arpack
+Description: Collection of Fortran77 subroutines designed to solve large scale eigenvalue problems
+Version: 3.8.0
+URL: https://github.com/opencollab/arpack-ng/
+Libs: -L${libdir} -larpack
+Libs.private: BLAS::BLAS
+Cflags: -I${includedir}/arpack

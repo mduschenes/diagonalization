@@ -30,6 +30,10 @@ conda install --file requirements.pkg.txt
 pip install -r requirements.pip.txt
 cd ${cwd}
 
+# Install spack
+git clone https://github.com/spack/spack.git lib/spack
+source lib/spack/share/spack/setup-env.sh
+
 
 # Install HDF5
 ./setup_hdf5.sh
