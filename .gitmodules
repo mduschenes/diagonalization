@@ -4,3 +4,6 @@
 [submodule "code/lib/spectra"]
 	path = code/lib/spectra
 	url = https://github.com/yixuan/spectra.git
+[submodule "code/lib/eigen"]
+	path = code/lib/eigen
+	url = https://gitlab.com/libeigen/eigen.git
