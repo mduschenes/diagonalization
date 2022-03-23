@@ -57,11 +57,11 @@ int main(int argc, char *argv[]){
 	system.z = 2*d; // coordination number
 	system.k = k; // number of parameters
 	system.s = 3; // number of unique eigenvalues to consider
-	system.q = 2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+	system.q = 3;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
 	system.tol = 100; // solver parameter
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension
-	system.eps = 1e-10; // floating point tolerance
+	system.eps = 1e-8; // floating point tolerance
 	system.sparse = false; // sparsity of data
 	system.nnz = 2*pow(D,N)*N; // number of data elements
 	system.path = "data/data.hdf5"; // path name

@@ -52,6 +52,8 @@ void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix
 
 bool ends_with(std::string const & value, std::string const & pattern);
 
+template <typename T> 
+std::string to_string(const T & obj);
 
 unsigned int bit(unsigned int x, unsigned int j);
 unsigned int phase(unsigned int x, unsigned int j);

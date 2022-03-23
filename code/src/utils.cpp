@@ -101,6 +101,13 @@ bool ends_with(std::string const & value, std::string const & pattern){
 };
 
 
+template <typename T> 
+std::string to_string(const T & obj){ 
+   std::ostringstream stream; 
+   stream << obj; 
+   return stream.str(); 
+};
+
 
 unsigned int bit(unsigned int x, unsigned int j){
 	return (x >> j) & 1;
@@ -197,6 +204,12 @@ template bool close<float>(float & a, float & b, float & eps);
 template bool close<int>(int & a, int & b, int & eps);
 template bool close<double>(std::complex<double> & a, std::complex<double> & b, double & eps);
 template bool close<float>(std::complex<float> & a, std::complex<float> & b, float & eps);
+
+
+template std::string to_string(const double & obj);
+template std::string to_string(const float & obj);
+template std::string to_string(const int & obj);
+
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);
