@@ -80,30 +80,32 @@ void Tensor<T>::eig(){
 	// Solve
 
 	int q = std::min(this->system.size-1,this->system.q); // Number of eigenvalues
-	std::string sigma = utils::to_string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
+	// std::string sigma = utils::to_string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
+	std::string sigma = utils::to_string(0.0); // Eigenvalue to centre around
 
-	T factor = 1.0/this->system.N;
+	// T factor = -1.0/this->system.N;
+	T factor = 1.0; // /(T)(this->system.N);
 	T shift = 0;//this->system.tol*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
 
 	this->data.coeffs() *= factor;
 	// this->data.array() *= factor;
-	this->data.diagonal().array() += shift;
+	// this->data.diagonal().array() += shift;
 	// utils::check(this->data,this->system.eps);
 
 	typename tensor::Tensor<T>::solver solver;
-	solver.compute(this->data,q,sigma,0,this->system.eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
-	// solver.compute(this->data,q,sigma); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+	// solver.compute(this->data,q,sigma,0,this->system.eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+	solver.compute(this->data,q,sigma); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
 	// solver.compute(this->data);
 
 	this->eigenvalues = solver.eigenvalues();
 	this->eigenvectors = solver.eigenvectors();
 
-	this->eigenvalues.array() -= shift;
+	// this->eigenvalues.array() -= shift;
 	this->eigenvalues.array() /= factor;
 	utils::check(this->eigenvalues,this->system.eps);
 	utils::check(this->eigenvectors,this->system.eps);
 
-	this->data.diagonal().array() -= shift;
+	// this->data.diagonal().array() -= shift;
 	this->data.coeffs() /= factor;
 	// this->data.array() /= factor;
 	// utils::check(this->data,this->system.eps);	

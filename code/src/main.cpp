@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 	system.z = 2*d; // coordination number
 	system.k = k; // number of parameters
 	system.s = 3; // number of unique eigenvalues to consider
-	system.q = 3;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+	system.q = 10;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
 	system.tol = 100; // solver parameter
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension
