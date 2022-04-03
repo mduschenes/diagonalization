@@ -29,12 +29,12 @@ int main(int argc, char *argv[]){
 
 	typedef double T;
 
-	int N = 4;
-	int D = 2;
-	int d = 1;
-	int k = 3;
-	int s = 2;
-	int q = 2*N+4;
+	unsigned int N = 4;
+	unsigned int D = 2;
+	unsigned int d = 1;
+	unsigned int k = 3;
+	unsigned int s = 2;
+	unsigned int q = 2*N+4;
 	T J = 1;
 	T h = 1;
 	T U = 0;
@@ -56,8 +56,12 @@ int main(int argc, char *argv[]){
 	system.n = pow(D,N); // system size
 	system.z = 2*d; // coordination number
 	system.k = k; // number of parameters
-	system.s = 3; // number of unique eigenvalues to consider
-	system.q = 10;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+	system.space = "spin"; // Local site space
+	system.lattice = "square"; // Lattice type
+	system.s = 1; // number of unique eigenvalues to consider
+	system.q = 2;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+	system.sigma = "SA"; // State shift parameter
+	system.sorting = "<="; // Sorting for states
 	system.tol = 100; // solver parameter
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension

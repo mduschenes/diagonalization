@@ -36,19 +36,23 @@ namespace tensor {
 // System variables
 template <class type>
 struct System {
-	int N; // number of qubits
-	int D; // dimension of qudits
-	int d; // spatial dimensions
-	int n; // Total dimension of space
-	int z; // coordination number
-	int k; // Number of parameters	
-	int s; // Number of unique states
-	int q; // Number of states
-	int tol; // Solve parameter
-	int size; // Data size
-	int dim = 2; // Data dimension
+	unsigned int N; // number of sites
+	unsigned int D; // dimension of sites
+	unsigned int d; // spatial dimensions
+	unsigned int n; // Total dimension of space
+	unsigned int z; // coordination number
+	unsigned int k; // Number of parameters	
+	std::string space = "spin"; // Local space
+	std::string lattice = "square"; // Lattice type
+	unsigned int s; // Number of unique states
+	unsigned int q; // Number of states
+	std::string sigma; // State shift parameter
+	std::string sorting; // Sorting for states
+	unsigned int tol; // Solve parameter
+	unsigned int size; // Data size
+	unsigned int dim = 2; // Data dimension
 	type eps = 1e-14; // floating point tolerance
-	int nnz = 0; // number of data elements
+	unsigned int nnz = 0; // number of data elements
 	bool sparse = false; // sparsity of data
 	std::string path = "data.hdf5"; // path name
 	std::string group = "data"; // group name
@@ -73,10 +77,10 @@ class Tensor {
 		tensor::System<T> system;
 
 		// Size and Dimension
-		const unsigned int size;
-		const unsigned int dim;
-		const unsigned int nnz;
-		const bool sparse;
+		unsigned int size;
+		unsigned int dim;
+		unsigned int nnz;
+		bool sparse;
 
 		// Type
 		// typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;				
@@ -87,7 +91,7 @@ class Tensor {
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
 		typedef Eigen::SimplicialLDLT<type> algorithm;
-		typedef Eigen::Triplet<T,int> indices;
+		typedef Eigen::Triplet<T,unsigned int> indexes;
 
 		// Parallel
 		void parallel(){Eigen::initParallel();};
@@ -122,6 +126,7 @@ class Tensor {
 		typedef Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
 		// typedef Eigen::SelfAdjointEigenSolver<type> solver;
 
+		std::vector<unsigned int> indices;
 		vector eigenvalues;
 		matrix eigenvectors;
 		void eig();

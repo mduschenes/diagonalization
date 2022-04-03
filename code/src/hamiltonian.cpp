@@ -21,55 +21,87 @@ void Hamiltonian<T>::set(){
 	unsigned int nnz = this->system.nnz;
 	std::map<std::string,T> parameters = this->system.parameters;
 
-	unsigned int m = N/2;
+	std::vector<int> subspaces;
+	// subspaces.push_back(0);
+	subspaces.resize(2*N+1);
+	std::iota(subspaces.begin(),subspaces.end(),-N);
 
-	unsigned int i,j,k;
+	int subspace;
+	unsigned int size;
+	std::vector<unsigned int> indices;
+
+	unsigned int i,j,k,s,t;
 	std::string name;
 	T value;
 
 	// typename tensor::Tensor<T>::type data = tensor::Tensor<T>::type::Zero(n,n);
-	typename tensor::Tensor<T>::type data(n,n);
 	std::map<std::string,typename tensor::Tensor<T>::vector> states = this->states;
-	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
 
+	for (i=0;i<n;i++){
+		subspace = utils::spincount(i,N);
+		if (utils::isin(subspaces,subspace)) {
+			indices.push_back(i);
+		};
+	};
+	size = indices.size();
+
+	typename tensor::Tensor<T>::type data(size,size);
 	data.reserve(nnz);
 	
+	for (i=0;i<this->system.state.size();i++){
+		name = this->system.state[i];
+		typename states[name] = tensor::Tensor<T>::vector::Zero(size)
+	};
+
 	// typename typedef tensor::Tensor<T>::index index;
-	// typename std::vector<index> indices;
-	// indices.push_back(index(i,j,value));
-	// data.setFromTriplets(indices.begin(),indices.end());
+	// typename std::vector<index> indexes;
+	// indexes.push_back(index(i,j,value));
+	// data.setFromTriplets(indexes.begin(),indexes.end());
+
+
 
 	// this->parallel();
-	// #pragma omp parallel for private(i,j,k,name) shared(data,states,parameters)
-	for (i=0;i<n;i++){
+	// #pragma omp parallel for private(i,j,k,s,t,name) shared(data,states,parameters)
+	for (s=0;s<size;s++){
+
+		// Index
+		i = indices[s];
 
 		// State
 		name = "order";
 		value = utils::spincount(i,N);
-		states[name](i) = value;
+		states[name](s) = value;
 
 		// ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
+			t = s;
 			value = -parameters["J"]*utils::spin(i,k)*utils::spin(j,(k+1)%N);
-			data.coeffRef(i,j) += value;	
+			data.coeffRef(s,t) += value;	
 		};
 
-		// if (utils::bitcount(i) == m) {
+		// X Term
 		// 	for (k=0; k<N; k++){
 		// 		j = utils::flip(i,k%N);
+		// if (utils::isin(subspaces,j)){
+		// 	t = utils::find(subspaces,j);
+		// };
 		// 		value = parameters["h"]*utils::bit(j,k);
-		// 		data(i,j) += value;
-		// 		data.coeffRef(i,j) += value;
+		// 		data.coeffRef(s,t) += value;
 		// 		// utils::bit(utils::phaseflip(i,k),k);
 		// 		// utils::bit(utils::phase(i,k),k);
 		// 	};
-		// };
 	};
 
+
+	this->size = size;
 	this->data = data;
-	this->states = states;
-	this->state = state;
+
+	for (i=0;i<this->system.state.size();i++){
+		name = this->system.state[i];
+		this->states[name] = states[name];
+	};
+
 
  //    std::cout << this->data << std::endl;
 
@@ -110,27 +142,28 @@ void Hamiltonian<T>::compute(){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);
 			size.push_back(0);
-			size.back()++;
 		}
 		else if (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), this->system.eps)) {
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
 			size.push_back(0);
-			size.back()++;
 		}
 		else {
 			indices.back().push_back(i);			
-			size.back()++;			
 		};
+		size.back()++;			
+
 	};
 
 	// State
 
 	s = std::min((unsigned int)(indices.size()),s);
 
+	std::cout << s << std::endl;
+
 	for (k=0; k<s; k++){
-		
-		// Spin
+
+		// Order
 		name = "order";
 		value = 0;
 		this->state[name](k) = value;
@@ -142,7 +175,14 @@ void Hamiltonian<T>::compute(){
 		
 		for (i=0;i<size[k];i++){
 
-			// Spin
+			
+			std::cout << k << " " << i << std::endl;
+			std::cout << indices[k][i] << std::endl;
+			std::cout << std::endl;
+
+
+
+			// Order
 			name = "order";
 			value = std::abs(this->eigenvectors.col(indices[k][i]).cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
 			this->state[name](k) += value/size[k];

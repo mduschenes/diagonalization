@@ -95,18 +95,67 @@ void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix
 };
 
 
-bool ends_with(std::string const & value, std::string const & pattern){
-    if (pattern.size() > value.size()) return false;
-    return std::equal(pattern.rbegin(), pattern.rend(), value.rbegin());
+bool endswith(std::string const & value, std::string const & pattern){
+	 if (pattern.size() > value.size()) return false;
+	 return std::equal(pattern.rbegin(), pattern.rend(), value.rbegin());
+};
+
+
+template <typename T>
+bool isin(std::vector<T> & a,T & value){
+	return (std::find(a.begin(), a.end(), value) != a.end());
+};
+
+template < typename T>
+unsigned int find(std::vector<T> & a, T & value){
+	typename std::vector<T>::iterator iterator = std::find(a.begin(), a.end(), value);
+	unsigned int index = std::distance(a.begin(),iterator);
+	return index;
+};
+
+template <typename T> 
+std::string string(const T & obj){ 
+	std::ostringstream stream; 
+	stream << obj; 
+	std::string string = stream.str();
+	return string;
 };
 
 
 template <typename T> 
-std::string to_string(const T & obj){ 
-   std::ostringstream stream; 
-   stream << obj; 
-   return stream.str(); 
+T number(const std::string & obj){
+	T number = std::stod(obj);
+	return number;
 };
+
+
+// template <typename T>
+// void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting){
+
+// 	indices.resize(a.size());
+// 	std::iota(indices.begin(),indices.end(),0);
+
+// 	if (sorting == "<="){
+// 		auto algorithm = std::less_equal<T>();
+// 	}
+// 	else if (sorting == "<"){
+// 		auto algorithm = std::less<T>();
+// 	}
+// 	else if (sorting == ">="){
+// 		auto algorithm = std::greater_equal<T>();			
+// 	}
+// 	else if (sorting == ">"){
+// 		auto algorithm = std::greater<T>();			
+// 	}
+// 	else {
+// 		auto algorithm = std::less_equal<T>();
+// 	};
+
+// 	std::stable_sort(indices.begin(), indices.end(),[&a](unsigned int i, unsigned int j,auto algorithm=algorithm) {return algorithm(a(i),a(j));}); 
+
+// 	return;
+// };
+
 
 
 unsigned int bit(unsigned int x, unsigned int j){
@@ -206,10 +255,29 @@ template bool close<double>(std::complex<double> & a, std::complex<double> & b, 
 template bool close<float>(std::complex<float> & a, std::complex<float> & b, float & eps);
 
 
-template std::string to_string(const double & obj);
-template std::string to_string(const float & obj);
-template std::string to_string(const int & obj);
+template bool isin<double>(std::vector<double> & a,double & value);
+template bool isin<float>(std::vector<float> & a,float & value);
+template bool isin<int>(std::vector<int> & a,int & value);
+template bool isin<unsigned int>(std::vector<unsigned int> & a,unsigned int & value);
 
+template unsigned int find<double>(std::vector<double> & a,double & value);
+template unsigned int find<float>(std::vector<float> & a,float & value);
+template unsigned int find<int>(std::vector<int> & a,int & value);
+template unsigned int find<unsigned int>(std::vector<unsigned int> & a,unsigned int & value);
+
+template std::string string(const double & obj);
+template std::string string(const float & obj);
+template std::string string(const int & obj);
+template std::string string(const std::string & obj);
+
+template double number<double>(const std::string & obj);
+template float number<float>(const std::string & obj);
+template int number<int>(const std::string & obj);
+
+
+// template void argsort<double>(Eigen::Vector<double, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting);
+// template void argsort<float>(Eigen::Vector<float, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting);
+// template void argsort<int>(Eigen::Vector<int, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);

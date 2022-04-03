@@ -516,56 +516,66 @@ void dump(std::string & path, std::string & name, std::vector<T> & data){
 };
 
 
-
-
 template <> H5::DataType H5TypeMap<double>::h5_type = H5::PredType::NATIVE_DOUBLE;
 template <> H5::DataType H5TypeMap<float>::h5_type = H5::PredType::NATIVE_FLOAT;
 template <> H5::DataType H5TypeMap<int>::h5_type = H5::PredType::NATIVE_INT32;
+template <> H5::DataType H5TypeMap<unsigned int>::h5_type = H5::PredType::NATIVE_INT32;
 
 
 template void dump(std::string & path, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<double> & data);
 template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<float> & data);
 template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<int> & data);
+template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<double> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<float> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<int> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<double, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<float, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<int, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<unsigned int, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<unsigned int>, Eigen::Dynamic, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<double>> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<float>> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<int>> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<unsigned int>> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data);
 template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<int>, Eigen::Dynamic> & data);
+template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<unsigned int>, Eigen::Dynamic> & data);
 
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,double> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,float> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,int> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,unsigned int> & attributes);
 
 
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<double, Eigen::Dynamic>> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<float, Eigen::Dynamic>> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<int, Eigen::Dynamic>> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<unsigned int, Eigen::Dynamic>> & attributes);
 
 template void dump(std::string & path, std::string & name, std::vector<double> & data);
 template void dump(std::string & path, std::string & name, std::vector<float> & data);
 template void dump(std::string & path, std::string & name, std::vector<int> & data);
+template void dump(std::string & path, std::string & name, std::vector<unsigned int> & data);
 
 };

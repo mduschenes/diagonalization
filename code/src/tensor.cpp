@@ -29,6 +29,21 @@ void Tensor<T>::setup(tensor::System<T> & system){
 	};
 
 	this->system = system;
+
+	if (this->system.space == "spin"){
+		this->system.n = pow(this->system.D,this->system.N);
+	}
+	else {
+		this->system.n = pow(this->system.D,this->system.N);		
+	};
+
+	if (this->system.lattice == "square"){
+		this->system.z = 2*this->system.d;
+	}
+	else {
+		this->system.z = 2*this->system.d;
+	};
+
 	// this->data = tensor::Tensor<T>::type(size,size);
 	// this->data.reserve(nnz);
 };
@@ -41,16 +56,16 @@ void Tensor<T>::eig(){
 
 	// Solve
 
-	// int q = std::min(this->system.size-1,this->system.q); // Number of eigenvalues
-	// int r =  std::min(3*this->system.q,this->system.size); // Solver tolerance
+	// unsigned int q = std::min(this->size-1,this->system.q); // Number of eigenvalues
+	// unsigned int r =  std::min(3*this->system.q,this->size); // Solver tolerance
 
 	// T shift = 1*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
-	// T factor = -1;
-	// this->data.array() *= factor;
+	// T scale = -1;
+	// this->data.array() *= scale;
 	// this->data.diagonal().array() += shift;
 	// utils::check(this->data,this->system.eps);
 
-	// // this->data.coeffs() *= factor;
+	// // this->data.coeffs() *= scale;
 	// // this->data.diagonal().array() += shift;
 	// // utils::check(this->data,this->system.eps);
 
@@ -64,50 +79,52 @@ void Tensor<T>::eig(){
 	// this->eigenvectors = solver.eigenvectors();
 
 	// this->eigenvalues.array() -= shift;
-	// this->eigenvalues.array() /= factor;
+	// this->eigenvalues.array() /= scale;
 	// utils::check(this->eigenvalues,this->system.eps);
 	// utils::check(this->eigenvectors,this->system.eps);
 
 	// this->data.diagonal().array() -= shift;
-	// this->data.array() /= factor;
+	// this->data.array() /= scale;
 	// utils::check(this->data,this->system.eps);
 
 	// // this->data.diagonal().array() -= shift;
-	// // this->data.coeffs() /= factor;
+	// // this->data.coeffs() /= scale;
 	// // utils::check(this->data,this->system.eps);	
 
 
 	// Solve
 
-	int q = std::min(this->system.size-1,this->system.q); // Number of eigenvalues
-	// std::string sigma = utils::to_string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
-	std::string sigma = utils::to_string(0.0); // Eigenvalue to centre around
+	unsigned int q = std::min(this->size-1,this->system.q); // Number of eigenvalues
+	std::string sigma = this->system.sigma; // Eigenvalue to centre around
+	// std::string sigma = utils::string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
+	// std::string sigma = utils::string(this->system.sigma); // Eigenvalue to centre around
 
-	// T factor = -1.0/this->system.N;
-	T factor = 1.0; // /(T)(this->system.N);
-	T shift = 0;//this->system.tol*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
+	// T scale = -1.0/this->system.N;
+	T scale = 1.0; // /(T)(this->system.N);
+	T shift = this->system.tol*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
 
-	this->data.coeffs() *= factor;
-	// this->data.array() *= factor;
-	// this->data.diagonal().array() += shift;
+	// this->data.array() *= scale;
+	this->data.coeffs() *= scale;
+	this->data.diagonal().array() += shift;
 	// utils::check(this->data,this->system.eps);
 
 	typename tensor::Tensor<T>::solver solver;
-	// solver.compute(this->data,q,sigma,0,this->system.eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
-	solver.compute(this->data,q,sigma); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+	solver.compute(this->data,q,sigma,0,this->system.eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
 	// solver.compute(this->data);
 
-	this->eigenvalues = solver.eigenvalues();
-	this->eigenvectors = solver.eigenvectors();
+	this->eigenvalues = solver.eigenvalues().reverse();
+	this->eigenvectors = solver.eigenvectors().colwise().reverse();
 
-	// this->eigenvalues.array() -= shift;
-	this->eigenvalues.array() /= factor;
+	// utils::argsort(this->eigenvalues,this->indices,this->system.sorting);
+
+	this->eigenvalues.array() -= shift;
+	this->eigenvalues.array() /= scale;
 	utils::check(this->eigenvalues,this->system.eps);
 	utils::check(this->eigenvectors,this->system.eps);
 
-	// this->data.diagonal().array() -= shift;
-	this->data.coeffs() /= factor;
-	// this->data.array() /= factor;
+	this->data.diagonal().array() -= shift;
+	this->data.coeffs() /= scale;
+	// this->data.array() /= scale;
 	// utils::check(this->data,this->system.eps);	
 	
 
@@ -121,19 +138,6 @@ void Tensor<T>::eig(){
 
 	// utils::check(this->eigenvalues,this->system.eps);
 	// utils::check(this->eigenvectors,this->system.eps);
-
-
-	// Dump
-	io::io<T> io;
-	std::string path = this->system.path;
-	std::string group = this->system.group;
-	std::string name = this->system.name;
-	
-	name = "eigenvalues";
-	io.dump(path,group,name,this->eigenvalues);
-
-	// name = "eigenvectors";
-	// io.dump(path,group,name,this->eigenvectors);
 
 	return;
 };
@@ -165,30 +169,48 @@ void Tensor<T>::dump(){
 	// Data
 	typedef T T_data;
 	io::io<T_data> io_data;
-
+	group = this->system.group;
+	name = "data";
 	// io_data.dump(path,group,name,this->data);
 
 
 	// Attributes
-	typedef int T_attributes;    
+	typedef unsigned int T_attributes;    
 	io::io<T_attributes> io_attributes;
 	std::map<std::string,T_attributes> attributes = {
 		{"N",this->system.N},{"D",this->system.D},{"d",this->system.d},
 		{"n",this->system.n},{"k",this->system.k},{"s",this->system.s},
 	};
+	group = this->system.group;
+	name = this->system.name;	
 	io_attributes.dump(path,group,name,attributes);
 
 
 	// Parameters
 	typedef T T_parameters;    
 	io::io<T_parameters> io_parameters;
+	group = this->system.group;
+	name = this->system.name;
 	io_parameters.dump(path,group,name,this->system.parameters);
 
 
 	// State
 	typedef T T_state;
 	io::io<T_state> io_state;
+	group = this->system.group;
+	name = this->system.name;
 	io_state.dump(path,group,name,this->state);
+
+
+	// Eigenvalues
+	typedef T T_eig;
+	io::io<T_eig> io_eig;
+	group = this->system.group;
+	name = "eigenvalues";
+	io_eig.dump(path,group,name,this->eigenvalues);
+	group = this->system.group;
+	name = "eigenvectors";
+	// io_eig.dump(path,group,name,this->eigenvectors);
 
 	return;
 };
@@ -206,12 +228,12 @@ void Tensor<T>::load(){
 
 	io.load(path,file);
 
-	int size = this->system.size;
+	unsigned int size = this->size;
 	
 	typename tensor::Tensor<T>::type data(size,size);
 
-	for (int i = 0; i < size; i++){
-		for (int j = 0; j < size; j++){
+	for (unsigned int i = 0; i < size; i++){
+		for (unsigned int j = 0; j < size; j++){
 			data.coeffRef(i,j) = file[i][j];
 		};
 	};

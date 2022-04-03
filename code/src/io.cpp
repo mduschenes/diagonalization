@@ -21,8 +21,6 @@ template <class T>
 io<T>::~io(){};
 
 
-
-
 template <class T>
 void io<T>::dump(std::string & path,std::vector<std::string> & header,std::vector<T> & data){
 	
@@ -220,10 +218,10 @@ void io<T>::load(std::string & path,std::vector<std::vector<T>> & data){
 template <class T>
 void io<T>::dump(std::string & path, std::string & name, std::vector<std::string> & header , std::vector<T> & data){
 
-	if (utils::ends_with(path,".csv")){
+	if (utils::endswith(path,".csv")){
 		io<T>::dump(path,header,data);
 	}
-	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
+	else if (utils::endswith(path,".hdf5") or utils::endswith(path,".h5")){
 		std::cout << path << " , " << name << std::endl;
 		hdf5::dump<T>(path,name,data);
 	};
@@ -233,10 +231,10 @@ void io<T>::dump(std::string & path, std::string & name, std::vector<std::string
 template <class T>
 void io<T>::dump(std::string & path, std::string & name, std::vector<T> & data){
 
-	if (utils::ends_with(path,".csv")){
+	if (utils::endswith(path,".csv")){
 		io<T>::dump(path,data);
 	}
-	else if (utils::ends_with(path,".hdf5") or utils::ends_with(path,".h5")){
+	else if (utils::endswith(path,".hdf5") or utils::endswith(path,".h5")){
 		hdf5::dump<T>(path,name,data);
 	};
 	return;
@@ -338,6 +336,7 @@ void io<T>::shape(std::vector<std::vector<T>> & data, unsigned int &N, unsigned 
 template class io<double>;
 template class io<float>;
 template class io<int>;
+template class io<unsigned int>;
 
 
 };

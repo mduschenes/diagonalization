@@ -7,6 +7,8 @@
 #include <vector> 
 #include <complex>
 #include <cmath>
+#include <numeric>
+#include <algorithm>
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
@@ -50,10 +52,23 @@ bool close(std::complex<T> & a, std::complex<T> & b, T & eps);
 template <typename T, typename U>
 void cast(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<U, Eigen::Dynamic, Eigen::Dynamic> & other);
 
-bool ends_with(std::string const & value, std::string const & pattern);
+bool endswith(std::string const & value, std::string const & pattern);
+
+template <typename T>
+bool isin(std::vector<T> & a,T & value);
+
+template < typename T>
+unsigned int find(std::vector<T> & a, T & value);
 
 template <typename T> 
-std::string to_string(const T & obj);
+std::string string(const T & obj);
+
+template <typename T> 
+T number(const std::string & obj);
+
+
+template <typename T>
+void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting);
 
 unsigned int bit(unsigned int x, unsigned int j);
 unsigned int phase(unsigned int x, unsigned int j);
