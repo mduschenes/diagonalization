@@ -140,7 +140,7 @@ def main(args):
 		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
 			{'energy': y,
 			 'order':y,
-			 'gap': y,
+			 'gap': y - np.array([(data[name]['energy'][(2)%sizes[yattr]]-data[name]['energy'][(0)%sizes[yattr]]) for name in data if data[name][iattr] == i]),
 			}[yattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -162,7 +162,7 @@ def main(args):
 					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'marker':['o','^','*'][j] if subplots else 'o',
-					'color':getattr(plt.cm,'tab10')(l) if (key[1] != 'gap') else getattr(plt.cm,'viridis')(l/len(x[key][j])),
+					'color':getattr(plt.cm,'tab10')(l) if (key[1] != 'gap') else getattr(plt.cm,'RdBu')(l/len(x[key][j])),
 					'label':texify(i) if j==(0) else None,
 					}
 					for l,i in enumerate(x[key][j])
