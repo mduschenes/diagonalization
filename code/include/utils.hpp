@@ -9,6 +9,7 @@
 #include <cmath>
 #include <numeric>
 #include <algorithm>
+#include <variant>
 
 #define EIGEN_USE_MKL_ALL   
 #include <Eigen/Dense>
@@ -64,7 +65,14 @@ template <typename T>
 void permute(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
 
 template <typename T>
+void permute(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
+
+template <typename T>
 void permute(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices);
+
+template <typename T>
+void permute(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & a, std::vector<int> & indices);
+
 
 template <typename T> 
 std::string string(const T & obj);
@@ -77,6 +85,12 @@ Eigen::Vector<T,Eigen::Dynamic> Vector(std::vector<T> & vector);
 
 template <typename T>
 void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
+
+template <typename T, std::size_t... indices>
+void _assign(T & tuple, std::map<std::string,T> & map, std::vector<std::string> & keys, std::index_sequence<indices...>);
+
+template <typename T, std::size_t size = std::tuple_size<T>::value>
+void assign(T & tuple, std::map<std::string,T> & map, std::vector<std::string> & keys);
 
 unsigned int bit(unsigned int x, unsigned int j);
 unsigned int phase(unsigned int x, unsigned int j);

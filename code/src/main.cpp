@@ -4,6 +4,8 @@
 #include <complex> 
 
 #include "hamiltonian.hpp"
+#include "utils.hpp"
+
 
 
 int main(int argc, char *argv[]){
@@ -26,9 +28,16 @@ int main(int argc, char *argv[]){
 	T U = 0;
 
 	// Iterations
-	unsigned int i;
+	unsigned int i,j;
+	bool multiple;
+	using types = std::variant<T,unsigned int>;
+	unsigned int size = 0;
+	std::vector<std::string> names;
+	std::map<std::string,unsigned int> sizes;
+	std::map<std::string,types> variable;
+	std::map<std::string,std::vector<types>> variables;
 
-	if (argc > 0){
+	if (argc > 1){
 		argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
 		argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
 		argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
@@ -39,78 +48,88 @@ int main(int argc, char *argv[]){
 		argn++;if (argc >= argn){h = std::atof(argv[argn-1]);};
 		argn++;if (argc >= argn){U = std::atof(argv[argn-1]);};
 		
+		names.push_back("N");	
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(N);
 
-		unsigned int _N_ = 5;
-		std::vector<unsigned int> _N = {N};
-		// for (i=0;i<_N_;i++){_N.push_back(2+2*i);};	
-		_N_ = _N.size();
+		names.push_back("J");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(J);
 
-		unsigned int _J_ = 1;
-		std::vector<T> _J = {J};
-		// for (i=0;i<_J_;i++){_J.push_back(1);};
-		_J_ = _J.size();
+		names.push_back("h");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(h);
 
-		unsigned int _h_ = 1;
-		std::vector<T> _h = {h};
-		// for (i=0;i<_h_;i++){_h.push_back(2.0*(i+1)/(_h_-1+1));};
-		_h_ = _h.size();
-
-		unsigned int _U_ = 1;
-		std::vector<T> _U = {U};
-		// for (i=0;i<_U_;i++){_U.push_back(2+2*i);};
-		_U_ = _U.size();
+		names.push_back("U");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(U);
 
 	}
 	else {
 
-		unsigned int _N_ = 5;
-		std::vector<unsigned int> _N = {6,8,10,12,14};
-		// for (i=0;i<_N_;i++){_N.push_back(2+2*i);};	
-		_N_ = _N.size();
+		names.push_back("N");
+		sizes[names.back()] = 6;
+		variables[names.back()].insert(variables[names.back()].end(),{
+			(unsigned int)4,
+			(unsigned int)6,
+			(unsigned int)8,
+			(unsigned int)10,
+			(unsigned int)12,
+			(unsigned int)14,
+			(unsigned int)16,
+			(unsigned int)18,
+			(unsigned int)20,
+		});
 
-		unsigned int _J_ = 1;
-		std::vector<T> _J = {1};
-		// for (i=0;i<_J_;i++){_J.push_back(1);};
-		_J_ = _J.size();
+		names.push_back("J");
+		sizes[names.back()] = 1;
+		variables[names.back()].insert(variables[names.back()].end(),{(T)1});
 
-		unsigned int _h_ = 20;
-		std::vector<T> _h;
-		for (i=0;i<_h_;i++){_h.push_back(2.0*(i+1)/(_h_-1+1));};
-		_h_ = _h.size();
+		names.push_back("h");
+		sizes[names.back()] = 64;
+		for (j=0;j<sizes[names.back()];j++){variables[names.back()].push_back((T)2*(j+1)/(sizes[names.back()]-1+1));};
 
-		unsigned int _U_ = 1;
-		std::vector<T> _U = {0};
-		// for (i=0;i<_U_;i++){_U.push_back(2+2*i);};
-		_U_ = _U.size();
+		names.push_back("U");
+		sizes[names.back()] = 1;
+		variables[names.back()].insert(variables[names.back()].end(),{(T)0});
 
 	};
 
-	i = -1;
-	for (auto&& [N,J,h,U] : iter::product(_N,_J,_h,_U)){
+	size = variables.size();
+	multiple = false;
+	for (j=0;j<size;j++){sizes[names[j]] = variables[names[j]].size();};
+	for (j=0;j<size;j++){multiple |= sizes[names[j]]>1;};
 
-		i ++;
+	for (auto&& [i,iterable] : iter::enumerate(iter::product(variables[names[0]],variables[names[1]],variables[names[2]],variables[names[3]]))){
+
+		// assign(iterable,variable,names);
+		variable[names[0]] = std::get<0>(iterable); variable[names[1]] = std::get<1>(iterable);
+		variable[names[2]] = std::get<2>(iterable); variable[names[3]] = std::get<3>(iterable);
+
+		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
+		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
 
 		tensor::System<T> system;
 		system.N = N; // number of sites
 		system.D = D; // local site dimension
 		system.d = d; // spatial dimension
-		system.n = pow(D,N); // system size
+		system.n = pow(system.D,system.N); // system size
 		system.z = 2*d; // coordination number
 		system.k = k; // number of parameters
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
-		system.s = 4; // number of unique eigenvalues to consider
-		system.q = 4;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+		system.s = 3; // number of unique eigenvalues to consider
+		system.q = 4;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
 		system.sigma = "LA"; // State shift parameter
+		system.scale = 100; // solver parameter
 		system.sorting = "<="; // Sorting for states
-		system.tol = 100; // solver parameter
-		system.size = pow(D,N); // data size
+		system.size = pow(system.D,system.N); // data size
 		system.dim = 2; // data dimension
-		system.eps = 1e-13; // floating point tolerance
-		system.sparse = false; // sparsity of data
-		system.nnz = 2*pow(D,N)*N; // number of data elements
+		system.eps = 1e-6; // floating point tolerance
+		system.sparse = true; // sparsity of data
+		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
 		system.path = "data/data.hdf5"; // path name
-		system.group = "data_" + std::to_string(i); // group name
+		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
 		system.metadata = "metadata"; // metadata name

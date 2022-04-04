@@ -53,15 +53,11 @@ void Hamiltonian<T>::set(){
 		states[name] = tensor::Tensor<T>::vector::Zero(size);
 	};
 
-	// typename typedef tensor::Tensor<T>::index index;
-	// typename std::vector<index> indexes;
-	// indexes.push_back(index(i,j,value));
-	// data.setFromTriplets(indexes.begin(),indexes.end());
-
-
-
-	// this->parallel();
-	// #pragma omp parallel for private(i,j,k,s,t,name) shared(data,states,parameters)
+	typedef typename tensor::Tensor<T>::index index;
+	std::vector<index> indexes;
+	
+	this->parallel();
+	#pragma omp parallel for private(i,j,k,s,t,name,value) shared(states,indexes)
 	for (s=0;s<size;s++){
 
 		// Index
@@ -72,12 +68,16 @@ void Hamiltonian<T>::set(){
 		value = utils::spincount(i,N);
 		states[name](s) = value;
 
+
 		// ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
 			value = -parameters["J"]*utils::spin(i,k%N)*utils::spin(j,(k+1)%N);
-			data.coeffRef(s,t) += value;	
+			// data.coeffRef(s,t) += value;	
+
+			#pragma omp critical
+			indexes.push_back(index(s,t,value));
 		};
 
 		// X Term
@@ -85,8 +85,15 @@ void Hamiltonian<T>::set(){
 			j = utils::flip(i,k%N);
 			t = j;
 			value = -parameters["h"]*utils::bit(j,k%N);
-			data.coeffRef(s,t) += value;
-			data.coeffRef(t,s) += value;
+			// data.coeffRef(s,t) += value;
+			// data.coeffRef(t,s) += value;
+
+			#pragma omp critical
+			indexes.push_back(index(s,t,value));
+
+			#pragma omp critical
+			indexes.push_back(index(t,s,value));
+
 			// if (utils::isin(indices,j)){
 			// 	t = utils::find(indices,j);
 			// 	value = -parameters["h"]*utils::bit(j,k%N);
@@ -95,6 +102,9 @@ void Hamiltonian<T>::set(){
 			// };
 		};
 	};
+
+
+	data.setFromTriplets(indexes.begin(),indexes.end());
 
 	this->size = size;
 	this->data = data;
@@ -143,8 +153,9 @@ void Hamiltonian<T>::compute(){
 	utils::argsort(this->eigenvalues,argsort,sorting);
 	utils::permute(this->eigenvalues,argsort);
 	utils::permute(this->eigenvectors,argsort,axis);
-	utils::check(this->eigenvalues,eps);
-	utils::check(this->eigenvectors,eps);
+	// utils::check(this->eigenvalues,eps);
+	// utils::check(this->eigenvectors,eps);
+
 
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
@@ -153,7 +164,7 @@ void Hamiltonian<T>::compute(){
 
 	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.cols())),q);
 	for (i=0;i<q;i++){
-		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), eps))){
+		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()),eps))){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
 			size.push_back(0);
@@ -201,7 +212,7 @@ void Hamiltonian<T>::compute(){
 
 		// Gap
 		name = "gap";
-		value = this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front());
+		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
 		state[name](k) = value;
 
 		// Entanglement

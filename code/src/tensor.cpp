@@ -99,11 +99,11 @@ void Tensor<T>::eig(){
 	// std::string sigma = utils::string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
 	// std::string sigma = utils::string(this->system.sigma); // Eigenvalue to centre around
 	int options = -1; // Eigenvalues options
-	T eps = this->system.eps; // Eigenvalues tolerance
+	T eps = 0; // Eigenvalues tolerance
 
 	// T scale = -1.0/this->system.N;
 	T scale = -1.0; // /(T)(this->system.N);
-	T shift = this->system.tol*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
+	T shift = this->system.scale*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
 
 	// this->data.array() *= scale;
 	this->data.coeffs() *= scale;

@@ -9,19 +9,19 @@
 #include <cmath>
 #include <map>
 #include <thread>
+#include <variant>
 
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
+#include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues> 
+#include <unsupported/Eigen/ArpackSupport>
 
-#include <Eigen/Core>
 // #include <Spectra/SymEigsSolver.h>
 // #include <Spectra/MatOp/DenseSymMatProd.h>
 // #include <Spectra/MatOp/SparseSymMatProd.h>
-#include <unsupported/Eigen/ArpackSupport>
-// #include <LBFGS.h>
 
 #include <itertools.hpp>
 	
@@ -46,13 +46,13 @@ struct System {
 	unsigned int s; // Number of unique states
 	unsigned int q; // Number of states
 	std::string sigma; // State shift parameter
+	type scale; // State scaling
 	std::string sorting; // Sorting for states
-	unsigned int tol; // Solve parameter
 	unsigned int size; // Data size
 	unsigned int dim = 2; // Data dimension
 	type eps = 1e-14; // floating point tolerance
 	unsigned int nnz = 0; // number of data elements
-	bool sparse = false; // sparsity of data
+	bool sparse = true; // sparsity of data
 	std::string path = "data.hdf5"; // path name
 	std::string group = "data"; // group name
 	std::string name = "data"; // object name
@@ -83,14 +83,14 @@ class Tensor {
 
 		// Type
 		// typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;				
-		typedef Eigen::SparseMatrix<T> type;
+		typedef Eigen::SparseMatrix<T,Eigen::ColMajor> type;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type_complex;		
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
 		typedef Eigen::SimplicialLDLT<type> algorithm;
-		typedef Eigen::Triplet<T,unsigned int> indexes;
+		typedef Eigen::Triplet<T,unsigned int> index;
 
 		// Parallel
 		void parallel(){Eigen::initParallel();};
@@ -126,7 +126,7 @@ class Tensor {
 		// typedef Eigen::SelfAdjointEigenSolver<type> solver;
 
 		vector eigenvalues;
-		matrix eigenvectors;
+		matrix_complex eigenvectors;
 		void eig();
 
 	private:

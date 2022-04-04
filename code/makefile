@@ -132,7 +132,7 @@ all: clean $(EXE)
 
 run : clean_data $(EXE)
 	$(RUN)$(EXE) $(RUN_ARGS)
-	h5dump $(PROCESS_DEP)
+# 	h5dump $(PROCESS_DEP)
 
 test :
 
