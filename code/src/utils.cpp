@@ -28,6 +28,7 @@ void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
 			};
 		};
 	};
+	a.array() += 0;	
 	return;
 };
 
@@ -53,13 +54,13 @@ template<typename T>
 void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps){
 
 	T val = 0;
-
-	a.array() += 0;
+	a.array() += 0;	
 	for (unsigned int i=0;i<a.size();i++){
 		if (close(a[i],eps)){
 			a[i] = val;
 		};
 	};
+	a.array() += 0;	
 	return;
 };
 

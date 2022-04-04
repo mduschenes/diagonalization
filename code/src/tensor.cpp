@@ -122,7 +122,8 @@ void Tensor<T>::eig(){
 	this->data.diagonal().array() -= shift;
 	this->data.coeffs() /= scale;
 	// this->data.array() /= scale;
-	
+
+
 	// Solve
 
 	// typename tensor::Tensor<T>::solver solver;
@@ -138,13 +139,16 @@ void Tensor<T>::eig(){
 
 template <typename T>
 void Tensor<T>::print(){
+	std::cout << "group = " << this->system.group << std::endl;
 	std::cout << "N = " << this->system.N << std::endl;
 	std::cout << "D = " << this->system.D << std::endl;
 	std::cout << "d = " << this->system.d << std::endl;
 	std::cout << "n = " << this->system.n << std::endl;
 	std::cout << "k = " << this->system.k << std::endl;
-	std::cout << "|data| = " << utils::norm<T>(this->data,this->data) << std::endl;
-	std::cout << "data = \n" << this->data << std::endl;
+	std::cout << "J = " << this->system.parameters["J"] << std::endl;
+	std::cout << "h = " << this->system.parameters["h"] << std::endl;
+	// std::cout << "|data| = " << utils::norm<T>(this->data,this->data) << std::endl;
+	// std::cout << "data = \n" << this->data << std::endl;
 	std::cout << std::endl;	
 };
 
@@ -175,8 +179,8 @@ void Tensor<T>::dump(){
 	};
 	group = this->system.group;
 	name = this->system.name;	
-	io_attributes.dump(path,group,name,attributes);
 
+	io_attributes.dump(path,group,name,attributes);
 
 	// Parameters
 	typedef T T_parameters;    

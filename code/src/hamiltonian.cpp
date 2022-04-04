@@ -141,6 +141,8 @@ void Hamiltonian<T>::compute(){
 	utils::argsort(this->eigenvalues,argsort,sorting);
 	utils::permute(this->eigenvalues,argsort);
 	utils::permute(this->eigenvectors,argsort,axis);
+	utils::check(this->eigenvalues,eps);
+	utils::check(this->eigenvectors,eps);
 
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;

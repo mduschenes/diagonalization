@@ -23,7 +23,6 @@
 #include <unsupported/Eigen/ArpackSupport>
 // #include <LBFGS.h>
 
-
 #include <itertools.hpp>
 	
 #include "utils.hpp"

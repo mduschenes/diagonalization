@@ -222,7 +222,6 @@ void io<T>::dump(std::string & path, std::string & name, std::vector<std::string
 		io<T>::dump(path,header,data);
 	}
 	else if (utils::endswith(path,".hdf5") or utils::endswith(path,".h5")){
-		std::cout << path << " , " << name << std::endl;
 		hdf5::dump<T>(path,name,data);
 	};
 	return;
@@ -277,13 +276,13 @@ void io<T>::dump(std::string & path,std::string & group,std::string & name,Eigen
 
 template <class T>
 void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,T> & attributes){
-	hdf5::dump<T>(path,name,group,attributes);
+	hdf5::dump<T>(path,group,name,attributes);
 };
 
 
 template <class T>
 void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,Eigen::Vector<T, Eigen::Dynamic>> & attributes){
-	hdf5::dump<T>(path,name,group,attributes);
+	hdf5::dump<T>(path,group,name,attributes);
 };
 
 

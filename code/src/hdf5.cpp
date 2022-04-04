@@ -408,6 +408,7 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 	};
 	H5::H5File file(path,H5F_ACC_RDWR);
 
+
 	try {
 		H5::Group obj = file.openGroup(group);
 	}
