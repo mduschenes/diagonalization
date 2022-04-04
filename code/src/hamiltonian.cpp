@@ -83,11 +83,16 @@ void Hamiltonian<T>::set(){
 		// X Term
 		for (k=0; k<N; k++){
 			j = utils::flip(i,k%N);
-			if (utils::isin(indices,j)){
-				t = utils::find(indices,j);
-				value = -parameters["h"]*utils::bit(j,k%N);
-				data.coeffRef(s,t) += value;
-			};
+			t = j;
+			value = -parameters["h"]*utils::bit(j,k%N);
+			data.coeffRef(s,t) += value;
+			data.coeffRef(t,s) += value;
+			// if (utils::isin(indices,j)){
+			// 	t = utils::find(indices,j);
+			// 	value = -parameters["h"]*utils::bit(j,k%N);
+			// 	data.coeffRef(s,t) += value;
+			// 	data.coeffRef(t,s) += value;
+			// };
 		};
 	};
 

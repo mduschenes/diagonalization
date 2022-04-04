@@ -153,6 +153,23 @@ def _load(obj,wr,ext,**kwargs):
 			for name in names:
 				data[group][name] = file[group].attrs[name]
 
+
+		# for group in list(data):
+		# 	for name in list(data[group]):
+		# 		if isinstance(data[group][name],np.ndarray):
+		# 			if data[group][name].ndim == 1:
+		# 				for i in range(data[group][name].size):
+		# 					data[group]["%s_%d"%(name,i)] = data[group][name][i]
+		# 				data[group].pop(name);
+		# 			else:
+		# 				data[group][name] = data[group][name].tolist()
+
+		# data = pd.concat([
+		# 	pd.DataFrame.from_dict(data[name])
+		# 	for name in data],
+		# 	axis=0,ignore_index=True)
+		# data.reset_index(drop=False,inplace=True)
+
 	return data
 
 # Dump data - General file save/export

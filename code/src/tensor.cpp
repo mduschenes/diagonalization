@@ -149,7 +149,7 @@ void Tensor<T>::print(){
 	std::cout << "h = " << this->system.parameters["h"] << std::endl;
 	// std::cout << "|data| = " << utils::norm<T>(this->data,this->data) << std::endl;
 	// std::cout << "data = \n" << this->data << std::endl;
-	std::cout << std::endl;	
+	// std::cout << std::endl;	
 };
 
 
@@ -167,9 +167,7 @@ void Tensor<T>::dump(){
 	io::io<T_data> io_data;
 	group = this->system.group;
 	name = "data";
-	io_data.dump(path,group,name,this->data);
-
-	std::cout << this->data << std::endl;
+	// io_data.dump(path,group,name,this->data);
 
 	// Attributes
 	typedef unsigned int T_attributes;    
