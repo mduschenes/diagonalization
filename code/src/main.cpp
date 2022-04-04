@@ -75,6 +75,7 @@ int main(int argc, char *argv[]){
 	H.dump();
 	std::cout << "dump" << std::endl;	
 
+	return 0;
 
 	// // Iterations
 	unsigned int i;
@@ -141,7 +142,6 @@ int main(int argc, char *argv[]){
 
 	};
 
-
-	// return 0;
+	return 0;
 };
 

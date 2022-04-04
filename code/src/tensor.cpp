@@ -167,8 +167,9 @@ void Tensor<T>::dump(){
 	io::io<T_data> io_data;
 	group = this->system.group;
 	name = "data";
-	// io_data.dump(path,group,name,this->data);
+	io_data.dump(path,group,name,this->data);
 
+	std::cout << this->data << std::endl;
 
 	// Attributes
 	typedef unsigned int T_attributes;    

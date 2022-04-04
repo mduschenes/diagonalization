@@ -76,23 +76,20 @@ void Hamiltonian<T>::set(){
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,k)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*utils::spin(i,k%N)*utils::spin(j,(k+1)%N);
 			data.coeffRef(s,t) += value;	
 		};
 
 		// X Term
-		// 	for (k=0; k<N; k++){
-		// 		j = utils::flip(i,k%N);
-		// if (utils::isin(subspaces,j)){
-		// 	t = utils::find(subspaces,j);
-		// };
-		// 		value = parameters["h"]*utils::bit(j,k);
-		// 		data.coeffRef(s,t) += value;
-		// 		// utils::bit(utils::phaseflip(i,k),k);
-		// 		// utils::bit(utils::phase(i,k),k);
-		// 	};
+		for (k=0; k<N; k++){
+			j = utils::flip(i,k%N);
+			if (utils::isin(indices,j)){
+				t = utils::find(indices,j);
+				value = -parameters["h"]*utils::bit(j,k%N);
+				data.coeffRef(s,t) += value;
+			};
+		};
 	};
-
 
 	this->size = size;
 	this->data = data;

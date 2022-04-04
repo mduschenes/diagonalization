@@ -79,7 +79,11 @@ void dump(std::string & path, std::string & name, Eigen::SparseMatrix<T> & data)
 
 	// T * values = data.coeffs().data();
 
-	// dataset.write(values,datatype);
+
+	Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> _data = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>(data);
+	T * values = _data.data();
+
+	dataset.write(values,datatype);
 
 	return;
 };
@@ -156,10 +160,16 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Sp
 	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
 
 	// TODO: Memory Leak
-
+	
 	// T * values = data.coeffs().data();
 
 	// dataset.write(values,datatype);
+
+	Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> _data = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>(data);
+	T * values = _data.data();
+
+	dataset.write(values,datatype);
+
 
 	return;
 };
@@ -308,14 +318,19 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Sp
 
 	H5::DataSpace dataspace_imag(dim, shape);
 	H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+
+
+	// TODO: Memory Leak
 	
 	T values_real[row][col];
 	T values_imag[row][col];
 
+	Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> _data = Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic>(data);
+
 	for (i=0;i<row;i++){
 		for (j=0;j<col;j++){
-			values_real[i][j] = data.coeffs().real()(i,j);    	
-			values_imag[i][j] = data.coeffs().imag()(i,j);
+			values_real[i][j] = _data.real()(i,j);    	
+			values_imag[i][j] = _data.imag()(i,j);
 		};
 	};
 

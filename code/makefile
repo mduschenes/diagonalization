@@ -138,8 +138,7 @@ test :
 
 clean : clean_obj clean_data
 
-process : clean $(PROCESS) $(PROCESS_DEP)
-	h5dump $(PROCESS_DEP)
+process : clean_data $(PROCESS) $(PROCESS_DEP)
 	$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) 
 
 profile : $(PROFILE_DEP)

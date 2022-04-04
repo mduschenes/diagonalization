@@ -32,40 +32,13 @@ from lib.utils.plot import plot
 def main(args):
 
 	path = args[0]
+	wr = 'r'
+	default = {}
+	kwargs = {}
 
-	file = h5py.File(path,'r')
-	attributes = ['eigenvalues','eigenvectors']
+	data = load(path,wr=wr,default=default,**kwargs)
 
-	data = {}
-
-	for group in file:
-		data[group] = {}
-
-		names = list(set((name.replace('.real','').replace('.imag','') for name in file[group])))
-		for name in names:
-
-			try:
-				name_real = "%s.%s"%(name,'real')
-				data_real = file[group][name_real][...]
-
-				name_imag = "%s.%s"%(name,'imag')
-				data_imag = file[group][name_imag][...]
-
-				data[group][name] = data_real + 1j*data_imag
-			except:
-				data[group][name] = file[group][name][...]
-
-		names = list(set((name for name in file[group].attrs)))
-		for name in names:
-			data[group][name] = file[group].attrs[name]
-
-	# print(data.shape,data.dtype)
 	print(data)
-
-	# data = load(params['data'])
-
-	# plot(data)
-
 
 
 if __name__ == '__main__':
