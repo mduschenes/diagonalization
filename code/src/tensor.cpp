@@ -98,36 +98,31 @@ void Tensor<T>::eig(){
 	std::string sigma = this->system.sigma; // Eigenvalue to centre around
 	// std::string sigma = utils::string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
 	// std::string sigma = utils::string(this->system.sigma); // Eigenvalue to centre around
+	int options = -1; // Eigenvalues options
+	T eps = this->system.eps; // Eigenvalues tolerance
 
 	// T scale = -1.0/this->system.N;
-	T scale = 1.0; // /(T)(this->system.N);
+	T scale = -1.0; // /(T)(this->system.N);
 	T shift = this->system.tol*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
 
 	// this->data.array() *= scale;
 	this->data.coeffs() *= scale;
 	this->data.diagonal().array() += shift;
-	// utils::check(this->data,this->system.eps);
 
 	typename tensor::Tensor<T>::solver solver;
-	solver.compute(this->data,q,sigma,0,this->system.eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+	solver.compute(this->data,q,sigma,options,eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
 	// solver.compute(this->data);
 
-	this->eigenvalues = solver.eigenvalues().reverse();
-	this->eigenvectors = solver.eigenvectors().colwise().reverse();
-
-	// utils::argsort(this->eigenvalues,this->indices,this->system.sorting);
+	this->eigenvalues = solver.eigenvalues();
+	this->eigenvectors = solver.eigenvectors();
 
 	this->eigenvalues.array() -= shift;
 	this->eigenvalues.array() /= scale;
-	utils::check(this->eigenvalues,this->system.eps);
-	utils::check(this->eigenvectors,this->system.eps);
 
 	this->data.diagonal().array() -= shift;
 	this->data.coeffs() /= scale;
 	// this->data.array() /= scale;
-	// utils::check(this->data,this->system.eps);	
 	
-
 	// Solve
 
 	// typename tensor::Tensor<T>::solver solver;
@@ -135,9 +130,6 @@ void Tensor<T>::eig(){
 	
 	// this->eigenvalues = solver.eigenvalues();
 	// this->eigenvectors = solver.eigenvectors();
-
-	// utils::check(this->eigenvalues,this->system.eps);
-	// utils::check(this->eigenvectors,this->system.eps);
 
 	return;
 };

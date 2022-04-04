@@ -50,7 +50,7 @@ void Hamiltonian<T>::set(){
 	
 	for (i=0;i<this->system.state.size();i++){
 		name = this->system.state[i];
-		typename states[name] = tensor::Tensor<T>::vector::Zero(size)
+		states[name] = tensor::Tensor<T>::vector::Zero(size);
 	};
 
 	// typename typedef tensor::Tensor<T>::index index;
@@ -130,20 +130,26 @@ void Hamiltonian<T>::compute(){
 	std::string name;
 	T value;
 
+	// Sort eigenvalues
+	std::vector<int> argsort; // Sorting indices of eigenvalues
+	std::string sorting = this->system.sorting; // Sorting algorithm of eigenvalues
+	int axis = 1; // Axis of eigenvectors for sorting
+	T eps = this->system.eps; // Tolerance of closeness of sorted eigenvalues
+
+	utils::check(this->eigenvalues,eps);
+	utils::check(this->eigenvectors,eps);
+	utils::argsort(this->eigenvalues,argsort,sorting);
+	utils::permute(this->eigenvalues,argsort);
+	utils::permute(this->eigenvectors,argsort,axis);
+
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
-	std::vector<std::vector<unsigned int>> indices;
-	std::vector<unsigned int> size;
+	std::vector<std::vector<unsigned int>> indices; // vector of vectors of grouped indices of equal eigenvectors
+	std::vector<unsigned int> size; // size of each group of equal eigenvectors
 
-	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.size())),q);
-
+	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.cols())),q);
 	for (i=0;i<q;i++){
-		if (i==0){
-			indices.push_back(std::vector<unsigned int>());
-			indices.back().push_back(i);
-			size.push_back(0);
-		}
-		else if (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), this->system.eps)) {
+		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()), eps))){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
 			size.push_back(0);
@@ -152,65 +158,62 @@ void Hamiltonian<T>::compute(){
 			indices.back().push_back(i);			
 		};
 		size.back()++;			
-
 	};
 
+
 	// State
-
 	s = std::min((unsigned int)(indices.size()),s);
-
-	std::cout << s << std::endl;
+	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
+	for (k=0;k<this->system.state.size();k++){
+		name = this->system.state[k];
+		state[name] = tensor::Tensor<T>::vector::Zero(s);
+	};
 
 	for (k=0; k<s; k++){
 
 		// Order
 		name = "order";
 		value = 0;
-		this->state[name](k) = value;
-
+		state[name](k) = value;
+	
 		// Energy
 		name = "energy";
 		value = 0;
-		this->state[name](k) = value;
+		state[name](k) = value;
 		
 		for (i=0;i<size[k];i++){
-
-			
-			std::cout << k << " " << i << std::endl;
-			std::cout << indices[k][i] << std::endl;
-			std::cout << std::endl;
-
-
 
 			// Order
 			name = "order";
 			value = std::abs(this->eigenvectors.col(indices[k][i]).cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
-			this->state[name](k) += value/size[k];
+			state[name](k) += value/size[k];
 
 			// Energy
 			name = "energy";
 			value = this->eigenvalues(indices[k][i])/N;
-			this->state[name](k) += value/size[k];
+			state[name](k) += value/size[k];
 
 		};
 
 		// Gap
 		name = "gap";
 		value = this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front());
-		this->state[name](k) = value;
+		state[name](k) = value;
 
 		// Entanglement
 		name = "entanglement";
 		value = 0;
-		this->state[name](k) = 0;
+		state[name](k) = 0;
 
 	};
+
 
 	// Check
-	for (i=0;i<this->system.state.size();i++){
-		utils::check(this->state[this->system.state[i]],this->system.eps);
+	for (k=0;k<this->system.state.size();k++){
+		name = this->system.state[k];
+		utils::check(state[name],eps);
+		this->state[name] = state[name];
 	};
-
 
 	return;
 

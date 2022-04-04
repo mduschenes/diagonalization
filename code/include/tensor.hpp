@@ -126,7 +126,6 @@ class Tensor {
 		typedef Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
 		// typedef Eigen::SelfAdjointEigenSolver<type> solver;
 
-		std::vector<unsigned int> indices;
 		vector eigenvalues;
 		matrix eigenvectors;
 		void eig();

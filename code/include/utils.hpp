@@ -60,15 +60,23 @@ bool isin(std::vector<T> & a,T & value);
 template < typename T>
 unsigned int find(std::vector<T> & a, T & value);
 
+template <typename T>
+void permute(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
+
+template <typename T>
+void permute(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices);
+
 template <typename T> 
 std::string string(const T & obj);
 
 template <typename T> 
 T number(const std::string & obj);
 
+template <typename T>
+Eigen::Vector<T,Eigen::Dynamic> Vector(std::vector<T> & vector);
 
 template <typename T>
-void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<unsigned int> & indices, std::string & sorting);
+void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
 
 unsigned int bit(unsigned int x, unsigned int j);
 unsigned int phase(unsigned int x, unsigned int j);

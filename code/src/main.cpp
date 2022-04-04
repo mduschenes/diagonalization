@@ -58,14 +58,14 @@ int main(int argc, char *argv[]){
 	system.k = k; // number of parameters
 	system.space = "spin"; // Local site space
 	system.lattice = "square"; // Lattice type
-	system.s = 1; // number of unique eigenvalues to consider
-	system.q = 2;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
-	system.sigma = "SA"; // State shift parameter
+	system.s = 3; // number of unique eigenvalues to consider
+	system.q = 2+2*D*N+2;//2*pow(N,2)+4 + N; //std::max(q,int(pow(D,N))); // number of eigenvalues to consider
+	system.sigma = "LA"; // State shift parameter
 	system.sorting = "<="; // Sorting for states
 	system.tol = 100; // solver parameter
 	system.size = pow(D,N); // data size
 	system.dim = 2; // data dimension
-	system.eps = 1e-8; // floating point tolerance
+	system.eps = 1e-13; // floating point tolerance
 	system.sparse = false; // sparsity of data
 	system.nnz = 2*pow(D,N)*N; // number of data elements
 	system.path = "data/data.hdf5"; // path name
