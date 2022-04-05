@@ -50,48 +50,6 @@ def main(args):
 
 	data = load(path,wr=wr,default=default,**kwargs)
 
-	X,Y,Z,I = np.array([[0,1],[1,0]]),np.array([[0,-1j],[1j,0]]),np.array([[1,0],[0,-1]]),np.array([[1,0],[0,1]])
-	def tensorprod(a):
-		out = a[0]
-		for i in range(1,len(a)):
-			out = np.kron(out,a[i])
-		return out
-
-	# for name in data:
-	# 	N = data[name]['N']
-	# 	D = data[name]['D']
-	# 	J = data[name]['J']
-	# 	h = data[name]['h']
-	# 	e = data[name]['energy']
-	# 	o = data[name]['order']
-
-
-	# 	if N >= 12 or h>0.5:
-	# 		continue
-
-	# 	print(N,h)
-	# 	H = [
-	# 		*[[(1j*(J)**(1./2))*Z if k in [i,j] else I for k in range(N)] for i in range(N) for j in [(i+1)%N]],
-	# 		*[[(-(h)**(1./1))*X if k in [i] else I  for k in range(N)] for i in range(N)]
-	# 		]
-	# 	H = np.sum([tensorprod(u).real for u in H],0)
-
-
-
-	# 	eigenvalues,eigenvectors = np.linalg.eigh(H)
-
-	# 	eigenvalues = np.unique(eigenvalues.round(10))
-
-	# 	assert all(np.allclose(eigenvalues[i]/N,e[i]) for i in range(e.size)), "%r, %r"%(eigenvalues[:3]/N,e);
-
-	# 	print(eigenvalues[:3]/N)
-	# 	print()
-
-
-
-
-
-
 	attrs = list(set([attr for name in data for attr in data[name]]))
 
 	parameters = {attr: list(sorted(set([data[name][attr] 
@@ -103,9 +61,6 @@ def main(args):
 	values = {attr: values[attr] for attr in values if len(values[attr])>0}
 	
 	sizes = {attr: min([data[name][attr].size for name in data]) for attr in values}
-
-
-
 
 
 
@@ -140,7 +95,7 @@ def main(args):
 		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
 			{'energy': y,
 			 'order':y,
-			 'gap': y - np.array([(data[name]['energy'][(2)%sizes[yattr]]-data[name]['energy'][(0)%sizes[yattr]]) for name in data if data[name][iattr] == i]),
+			 'gap': y,
 			}[yattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -155,6 +110,7 @@ def main(args):
 	subplots = False
 
 	settings = {
+		**{
 		key:{
 		j: {
 			'ax': {
@@ -162,18 +118,17 @@ def main(args):
 					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'marker':['o','^','*'][j] if subplots else 'o',
-					'color':getattr(plt.cm,'tab10')(l) if (key[1] != 'gap') else getattr(plt.cm,'RdBu')(l/len(x[key][j])),
+					'color':getattr(plt.cm,'tab10')(l),
 					'label':texify(i) if j==(0) else None,
 					}
 					for l,i in enumerate(x[key][j])
 					],
 				'set_title':{'label':r'$\textrm{Level %d}$'%(j)},
-				'set_xlabel':{'xlabel':texify(key[0]) if (key[1] != 'gap') else texify(r'1/%s'%(key[0]))},
+				'set_xlabel':{'xlabel':texify(key[0])},
 				'set_ylabel':{'ylabel':texify(key[1])},
-				'set_xscale':{'value':'linear' if (key[1] != 'gap') else 'log'},				
-				# 'set_yscale':{'value':'linear' if (key[1] != 'gap') else 'log'},				
-				**({'set_xticks':{'ticks':[0,1,2]}} if (key[1] != 'gap') else {}),
-				'legend':{'title':texify(key[2]),'ncol':1 if (key[1] != 'gap') else 4},
+				'set_xscale':{'value':'linear'},				
+				'set_xticks':{'ticks':[0,1,2]},
+				'legend':{'title':texify(key[2]),'ncol':1},
 				'grid':{'visible':True},
 			},	
 			'fig':{
@@ -184,14 +139,11 @@ def main(args):
 				},
 			},
 			'style':{
-				# 'texify':texify,
-				# 'mplstyle':settings['plot']['mplstyle'][name],	
-				# 'rcParams':{'font.size':settings['plot']['settings'][key][name]['other']['fontsize']},						        		
 				'layout':{
 					'nrows':1,
 					'ncols':1,
 					'index':1,
-				} if subplots or (key[1] == 'gap') else
+				} if subplots else
 				{
 					'nrows':1,
 					'ncols':sizes[key[1]],
@@ -199,8 +151,52 @@ def main(args):
 				},
 			},			
 		}
-	for j in (range(sizes[key[1]]) if key[1] != 'gap' else [0])}
-	for k,key in enumerate(x)
+		for j in range(sizes[key[1]])}
+		for key in [('h','energy','N'),('h','order','N')]},
+		**{
+		key:{
+		j: {
+			'ax': {
+				'plot':[{
+					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
+					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
+					'marker':['o','^','*'][j] if subplots else 'o',
+					'color':getattr(plt.cm,'RdYlBu')(l/len(x[key][j])),
+					'label':texify(i) if j==(0) else None,
+					}
+					for l,i in enumerate(x[key][j])
+					],
+				# 'set_title':{'label':r'$\textrm{Level %d}$'%(j)},
+				'set_xlabel':{'xlabel':texify(r'1/%s'%(key[0]))},
+				'set_ylabel':{'ylabel':texify(key[1])},
+				'set_xscale':{'value':'linear'},				
+				# 'legend':{'title':texify(key[2]),'ncol':4},
+				'grid':{'visible':True},
+				'set_colorbar':{
+					'values':[2*(l/len(x[key][j])) for l,i in enumerate(x[key][j])],
+					'colors':[getattr(plt.cm,'RdYlBu')(l/len(x[key][j])) for l,i in enumerate(x[key][j])],
+					'size':'3%',
+					'pad':0.1,
+					'set_ylabel':{'ylabel':texify(key[2])},
+					},			
+			},	
+			'fig':{
+				'set_size_inches':{'w':18,'h':12},
+				'savefig':{
+					'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2])),
+				'close':{'fig':True},
+				},
+			},
+			'style':{
+				'layout':{
+					'nrows':1,
+					'ncols':1,
+					'index':1,
+				}
+			},			
+		}
+		for j in range(sizes[key[1]]-2)}
+		for key in [('N','gap','h')]},	
 	}
 
 

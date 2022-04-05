@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Import user modules
 paths = set([os.getcwd(),os.path.abspath(os.path.dirname(__file__)),os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))])
@@ -325,17 +326,20 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 				getattr(getattr(getattr(obj,'%saxis'%(axis)),'offsetText'),'set_fontsize')(**kwargs)
 				call = False
 
-
 			elif attr in ['set_colorbar']:
-				values = kwargs.get('values')
-				colors = kwargs.get('colors')
+				_kwargs = copy.deepcopy(kwargs)
+				values = _kwargs.pop('values')
+				colors = _kwargs.pop('colors')
 				norm = matplotlib.colors.Normalize(vmin=min(values), vmax=max(values))  
 				normed_values = norm(values)
-				cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=len(normed_vals)*10)  
-				colorbar = matplotlib.colorbar.ColorbarBase(cax=obj, cmap=cmap, norm=norm, orientation='vertical')
-				obj = colorbar
-				call = True
-
+				cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=len(normed_values)*10)  
+				divider = make_axes_locatable(obj)
+				cax = divider.append_axes('right', size=_kwargs.pop('size','5%'),pad=_kwargs.pop('pad',0.05))
+				colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
+				obj = cax	
+				for attr in _kwargs:
+					getattr(obj,attr)(**_kwargs[attr])			
+				call = False
 
 			elif attr in ['savefig']:
 				path = kwargs.get('fname')

@@ -87,7 +87,10 @@ int main(int argc, char *argv[]){
 
 		names.push_back("h");
 		sizes[names.back()] = 64;
-		for (j=0;j<sizes[names.back()];j++){variables[names.back()].push_back((T)2*(j+1)/(sizes[names.back()]-1+1));};
+		for (j=0;j<sizes[names.back()]/4-1;j++){variables[names.back()].push_back((T)(0.+0.8*(j+1)/(sizes[names.back()]/4.-1+1)));};
+		for (j=0;j<sizes[names.back()]/4;j++){variables[names.back()].push_back((T)(0.8+0.2*(j+1)/(sizes[names.back()]/4.-1+1)));};
+		for (j=0;j<sizes[names.back()]/4;j++){variables[names.back()].push_back((T)(1.+0.2*(j+1)/(sizes[names.back()]/4.-1+1)));};
+		for (j=0;j<sizes[names.back()]/4-1;j++){variables[names.back()].push_back((T)(1.2+0.8*(j+1)/(sizes[names.back()]/4.-1+1)));};
 
 		names.push_back("U");
 		sizes[names.back()] = 1;
@@ -125,7 +128,7 @@ int main(int argc, char *argv[]){
 		system.sorting = "<="; // Sorting for states
 		system.size = pow(system.D,system.N); // data size
 		system.dim = 2; // data dimension
-		system.eps = 1e-6; // floating point tolerance
+		system.eps = 1e-20; // floating point tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
 		system.path = "data/data.hdf5"; // path name
