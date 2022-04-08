@@ -45,12 +45,15 @@ struct System {
 	std::string lattice = "square"; // Lattice type
 	unsigned int s; // Number of unique states
 	unsigned int q; // Number of states
+	unsigned int r; // Number of symmetries
 	std::string sigma; // State shift parameter
-	type scale; // State scaling
+	type shift = 0; // State shift value
+	type scale = 1; // State scale value	
 	std::string sorting; // Sorting for states
 	unsigned int size; // Data size
 	unsigned int dim = 2; // Data dimension
-	type eps = 1e-14; // floating point tolerance
+	type eps = 1e-14; // Floating point tolerance
+	type tol = 1e-14; // State degeneracy tolerance
 	unsigned int nnz = 0; // number of data elements
 	bool sparse = true; // sparsity of data
 	std::string path = "data.hdf5"; // path name
@@ -58,8 +61,9 @@ struct System {
 	std::string name = "data"; // object name
 	std::string data = "data"; // data name
 	std::string metadata = "metadata"; // metadata name
-	std::map<std::string,type> parameters; // parameters
 	std::vector<std::string> state; // state names
+	std::map<std::string,type> parameters; // parameters
+	std::map<std::string,std::vector<type>> symmetries; // symmetries	
 };	
 
 
@@ -101,6 +105,8 @@ class Tensor {
 		// State
 		std::map<std::string,vector> states;
 		std::map<std::string,vector> state;
+		std::vector<unsigned int> subspaces;
+		std::map<unsigned int,int> included;
 
 		// Setup
 		void setup(tensor::System<T> & system);

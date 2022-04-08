@@ -69,39 +69,36 @@ int main(int argc, char *argv[]){
 
 		names.push_back("N");
 		sizes[names.back()] = 6;
-		variables[names.back()].insert(variables[names.back()].end(),{
-			(unsigned int)4,
-			(unsigned int)6,
-			(unsigned int)8,
-			(unsigned int)10,
-			(unsigned int)12,
-			(unsigned int)14,
-			(unsigned int)16,
-			(unsigned int)18,
-			(unsigned int)20,
-		});
+		variables[names.back()].push_back(4u);
+		variables[names.back()].push_back(6u);
+		variables[names.back()].push_back(8u);
+		variables[names.back()].push_back(12u);
+		variables[names.back()].push_back(14u);
+		variables[names.back()].push_back(16u);
+		variables[names.back()].push_back(18u);
+		variables[names.back()].push_back(20u);
 
 		names.push_back("J");
 		sizes[names.back()] = 1;
-		variables[names.back()].insert(variables[names.back()].end(),{(T)1});
+		variables[names.back()].push_back(1.0);		
 
 		names.push_back("h");
 		sizes[names.back()] = 64;
-		for (j=0;j<sizes[names.back()]/4-1;j++){variables[names.back()].push_back((T)(0.+0.8*(j+1)/(sizes[names.back()]/4.-1+1)));};
-		for (j=0;j<sizes[names.back()]/4;j++){variables[names.back()].push_back((T)(0.8+0.2*(j+1)/(sizes[names.back()]/4.-1+1)));};
-		for (j=0;j<sizes[names.back()]/4;j++){variables[names.back()].push_back((T)(1.+0.2*(j+1)/(sizes[names.back()]/4.-1+1)));};
-		for (j=0;j<sizes[names.back()]/4-1;j++){variables[names.back()].push_back((T)(1.2+0.8*(j+1)/(sizes[names.back()]/4.-1+1)));};
+
+		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.+0.8*(j)/((sizes[names.back()])/4.-1)));};
+		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.8+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
+		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
+		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.2+0.8*(j+1)/((sizes[names.back()])/4.-1+1)));};
 
 		names.push_back("U");
 		sizes[names.back()] = 1;
-		variables[names.back()].insert(variables[names.back()].end(),{(T)0});
+		variables[names.back()].push_back(0.0);
 
 	};
 
 	size = variables.size();
 	multiple = false;
-	for (j=0;j<size;j++){sizes[names[j]] = variables[names[j]].size();};
-	for (j=0;j<size;j++){multiple |= sizes[names[j]]>1;};
+	for (j=0;j<size;j++){sizes[names[j]] = variables[names[j]].size();multiple |= sizes[names[j]]>1;};
 
 	for (auto&& [i,iterable] : iter::enumerate(iter::product(variables[names[0]],variables[names[1]],variables[names[2]],variables[names[3]]))){
 
@@ -122,13 +119,16 @@ int main(int argc, char *argv[]){
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
-		system.q = 4;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
+		system.q = 5;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
+		system.r = 0;// Number of symmetries
 		system.sigma = "LA"; // State shift parameter
-		system.scale = 100; // solver parameter
+		system.shift = 100.0*(J*((2*d)*N/2) + h*N); // State shift value
+		system.scale = -1; // State scale value
 		system.sorting = "<="; // Sorting for states
 		system.size = pow(system.D,system.N); // data size
 		system.dim = 2; // data dimension
-		system.eps = 1e-20; // floating point tolerance
+		system.eps = 0.0; // Floating point tolerance
+		system.tol = 0.0; // State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
 		system.path = "data/data.hdf5"; // path name
@@ -136,15 +136,14 @@ int main(int argc, char *argv[]){
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
 		system.metadata = "metadata"; // metadata name
-		system.state = {
-			"order","energy","gap","entanglement",
-			}; // states
+		system.state = {"order","energy","gap","entanglement"}; // States
 		system.parameters = {{"J",J},{"h",h},{"U",U}}; // Parameters of length k
+		system.symmetries = {{"order",{0}}}; // Symmetries
 
 		hamiltonian::Hamiltonian<T> H(system);
 
-		H.print();
 		H.set();
+		H.print();
 		std::cout << "set" << std::endl;	
 		H.eig();
 		std::cout << "eig" << std::endl;	

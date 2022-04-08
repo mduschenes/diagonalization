@@ -327,19 +327,22 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 				call = False
 
 			elif attr in ['set_colorbar']:
-				_kwargs = copy.deepcopy(kwargs)
-				values = _kwargs.pop('values')
-				colors = _kwargs.pop('colors')
-				norm = matplotlib.colors.Normalize(vmin=min(values), vmax=max(values))  
-				normed_values = norm(values)
-				cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=len(normed_values)*10)  
-				divider = make_axes_locatable(obj)
-				cax = divider.append_axes('right', size=_kwargs.pop('size','5%'),pad=_kwargs.pop('pad',0.05))
-				colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
-				obj = cax	
-				for attr in _kwargs:
-					getattr(obj,attr)(**_kwargs[attr])			
-				call = False
+				if kwargs != {}:
+					_kwargs = copy.deepcopy(kwargs)
+					values = _kwargs.pop('values')
+					colors = _kwargs.pop('colors')
+					norm = matplotlib.colors.Normalize(vmin=min(values), vmax=max(values))  
+					normed_values = norm(values)
+					cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=len(normed_values)*10)  
+					divider = make_axes_locatable(obj)
+					cax = divider.append_axes('right', size=_kwargs.pop('size','5%'),pad=_kwargs.pop('pad',0.05))
+					colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
+					obj = cax	
+					for attr in _kwargs:
+						getattr(obj,attr)(**_kwargs[attr])			
+					call = False
+				else:
+					call = False
 
 			elif attr in ['savefig']:
 				path = kwargs.get('fname')

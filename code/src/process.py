@@ -107,7 +107,6 @@ def main(args):
 	x = {key: {j: {i: x[key][j][i][argsort[key][j][i]] for i in x[key][j]} for j in x[key]} for key in x}
 	y = {key: {j: {i: y[key][j][i][argsort[key][j][i]] for i in y[key][j]} for j in y[key]} for key in y}
 
-	subplots = False
 
 	settings = {
 		**{
@@ -117,7 +116,7 @@ def main(args):
 				'plot':[{
 					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
-					'marker':['o','^','*'][j] if subplots else 'o',
+					'marker':'o',
 					'color':getattr(plt.cm,'tab10')(l),
 					'label':texify(i) if j==(0) else None,
 					}
@@ -133,18 +132,11 @@ def main(args):
 			},	
 			'fig':{
 				'set_size_inches':{'w':18,'h':12},
-				'savefig':{
-					'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2])),
-				'close':{'fig':True},
-				},
+				'savefig':{'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2]))},
+				# 'close':{'fig':True},
 			},
 			'style':{
 				'layout':{
-					'nrows':1,
-					'ncols':1,
-					'index':1,
-				} if subplots else
-				{
 					'nrows':1,
 					'ncols':sizes[key[1]],
 					'index':j+1,
@@ -160,7 +152,7 @@ def main(args):
 				'plot':[{
 					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
-					'marker':['o','^','*'][j] if subplots else 'o',
+					'marker':'o',
 					'color':getattr(plt.cm,'RdYlBu')(l/len(x[key][j])),
 					'label':texify(i) if j==(0) else None,
 					}
@@ -178,14 +170,12 @@ def main(args):
 					'size':'3%',
 					'pad':0.1,
 					'set_ylabel':{'ylabel':texify(key[2])},
-					},			
+					}  if j == 0 else {},			
 			},	
 			'fig':{
 				'set_size_inches':{'w':18,'h':12},
-				'savefig':{
-					'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2])),
-				'close':{'fig':True},
-				},
+				'savefig':{'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2]))},
+				# 'close':{'fig':True},
 			},
 			'style':{
 				'layout':{
@@ -195,14 +185,14 @@ def main(args):
 				}
 			},			
 		}
-		for j in range(sizes[key[1]]-2)}
+		for j in [0]} #range(sizes[key[1]]-1)}
 		for key in [('N','gap','h')]},	
 	}
 
 
 
 
-	for k,key in enumerate(x):
+	for k,key in enumerate(settings):
 		plot(settings=settings[key])
 
 

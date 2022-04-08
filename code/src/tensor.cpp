@@ -17,8 +17,11 @@ template <typename T>
 void Tensor<T>::setup(tensor::System<T> & system){
 	
 	unsigned int i;
+	typename std::map<std::string,std::vector<T>>::iterator iterator;	
 	unsigned int size = this->size;
 	unsigned int nnz = this->nnz;
+	unsigned int N = system.N;
+	unsigned int D = system.D;
 	unsigned int s = system.s;
 	std::string name;
 
@@ -26,6 +29,16 @@ void Tensor<T>::setup(tensor::System<T> & system){
 		name = system.state[i];
 		this->states[name] = tensor::Tensor<T>::vector::Zero(size);
 		this->state[name] = tensor::Tensor<T>::vector::Zero(s);		
+	};
+
+	for (iterator=system.symmetries.begin();iterator!=system.symmetries.end();iterator++){
+		name = iterator->first;
+		if (name == "order"){
+			if (system.symmetries[name].size() == 0){
+				system.symmetries[name].resize(D*N+1);
+				std::iota(system.symmetries[name].begin(),system.symmetries[name].end(),-1.0*N);
+			};
+		};
 	};
 
 	this->system = system;
@@ -44,8 +57,6 @@ void Tensor<T>::setup(tensor::System<T> & system){
 		this->system.z = 2*this->system.d;
 	};
 
-	// this->data = tensor::Tensor<T>::type(size,size);
-	// this->data.reserve(nnz);
 };
 
 
@@ -57,7 +68,7 @@ void Tensor<T>::eig(){
 	// Solve
 
 	// unsigned int q = std::min(this->size-1,this->system.q); // Number of eigenvalues
-	// unsigned int r =  std::min(3*this->system.q,this->size); // Solver tolerance
+	// unsigned int tol =  std::min(3*this->system.q,this->size); // Solver tolerance
 
 	// T shift = 1*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
 	// T scale = -1;
@@ -70,7 +81,7 @@ void Tensor<T>::eig(){
 	// // utils::check(this->data,this->system.eps);
 
 	// typename tensor::Tensor<T>::op op(this->data);
-	// typename tensor::Tensor<T>::solver solver(op,q,r);
+	// typename tensor::Tensor<T>::solver solver(op,q,tol);
 
 	// solver.init();
 	// solver.compute(this->sort);
@@ -102,8 +113,8 @@ void Tensor<T>::eig(){
 	T eps = 0; // Eigenvalues tolerance
 
 	// T scale = -1.0/this->system.N;
-	T scale = -1.0; // /(T)(this->system.N);
-	T shift = this->system.scale*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
+	T scale = this->system.scale; // /(T)(this->system.N);
+	T shift = this->system.shift;
 
 	// this->data.array() *= scale;
 	this->data.coeffs() *= scale;
@@ -140,6 +151,9 @@ void Tensor<T>::eig(){
 template <typename T>
 void Tensor<T>::print(){
 	std::cout << "group = " << this->system.group << std::endl;
+	std::cout << "size = " << this->size << std::endl;
+	std::cout << "dim = " << this->dim << std::endl;
+	std::cout << "sparse = " << this->sparse << std::endl;
 	std::cout << "N = " << this->system.N << std::endl;
 	std::cout << "D = " << this->system.D << std::endl;
 	std::cout << "d = " << this->system.d << std::endl;
