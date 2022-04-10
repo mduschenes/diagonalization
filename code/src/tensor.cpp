@@ -5,58 +5,11 @@ namespace tensor {
 // Constructor and Destructor
 template <typename T>
 Tensor<T>::Tensor(tensor::System<T> & system) : size(system.size), dim(system.dim), nnz(system.nnz), sparse(system.sparse){
-	this->setup(system);
+	this->system = system;
 };
 
 template <typename T>
 Tensor<T>::~Tensor(){
-};
-
-
-template <typename T>
-void Tensor<T>::setup(tensor::System<T> & system){
-	
-	unsigned int i;
-	typename std::map<std::string,std::vector<T>>::iterator iterator;	
-	unsigned int size = this->size;
-	unsigned int nnz = this->nnz;
-	unsigned int N = system.N;
-	unsigned int D = system.D;
-	unsigned int s = system.s;
-	std::string name;
-
-	for (i=0;i<system.state.size();i++){
-		name = system.state[i];
-		this->states[name] = tensor::Tensor<T>::vector::Zero(size);
-		this->state[name] = tensor::Tensor<T>::vector::Zero(s);		
-	};
-
-	for (iterator=system.symmetries.begin();iterator!=system.symmetries.end();iterator++){
-		name = iterator->first;
-		if (name == "order"){
-			if (system.symmetries[name].size() == 0){
-				system.symmetries[name].resize(D*N+1);
-				std::iota(system.symmetries[name].begin(),system.symmetries[name].end(),-1.0*N);
-			};
-		};
-	};
-
-	this->system = system;
-
-	if (this->system.space == "spin"){
-		this->system.n = pow(this->system.D,this->system.N);
-	}
-	else {
-		this->system.n = pow(this->system.D,this->system.N);		
-	};
-
-	if (this->system.lattice == "square"){
-		this->system.z = 2*this->system.d;
-	}
-	else {
-		this->system.z = 2*this->system.d;
-	};
-
 };
 
 
@@ -151,19 +104,17 @@ void Tensor<T>::eig(){
 template <typename T>
 void Tensor<T>::print(){
 	std::cout << "group = " << this->system.group << std::endl;
-	std::cout << "size = " << this->size << std::endl;
-	std::cout << "dim = " << this->dim << std::endl;
+	std::cout << "model = " << this->system.model << std::endl;
+	std::cout << "size = " << this->size << "\t";
+	std::cout << "dim = " << this->dim << "\t";
 	std::cout << "sparse = " << this->sparse << std::endl;
-	std::cout << "N = " << this->system.N << std::endl;
-	std::cout << "D = " << this->system.D << std::endl;
-	std::cout << "d = " << this->system.d << std::endl;
+	std::cout << "N = " << this->system.N << "\t";
+	std::cout << "D = " << this->system.D << "\t";
+	std::cout << "d = " << this->system.d << "\t";
 	std::cout << "n = " << this->system.n << std::endl;
-	std::cout << "k = " << this->system.k << std::endl;
-	std::cout << "J = " << this->system.parameters["J"] << std::endl;
-	std::cout << "h = " << this->system.parameters["h"] << std::endl;
-	// std::cout << "|data| = " << utils::norm<T>(this->data,this->data) << std::endl;
-	// std::cout << "data = \n" << this->data << std::endl;
-	// std::cout << std::endl;	
+	std::cout << "J = " << this->system.parameters["J"] << "\t";
+	std::cout << "h = " << this->system.parameters["h"] << "\t";
+	std::cout << "U = " << this->system.parameters["U"] << std::endl;
 };
 
 
@@ -202,14 +153,12 @@ void Tensor<T>::dump(){
 	name = this->system.name;
 	io_parameters.dump(path,group,name,this->system.parameters);
 
-
 	// State
 	typedef T T_state;
 	io::io<T_state> io_state;
 	group = this->system.group;
 	name = this->system.name;
 	io_state.dump(path,group,name,this->state);
-
 
 	// Eigenvalues
 	typedef T T_eig;

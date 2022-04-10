@@ -331,15 +331,28 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 					_kwargs = copy.deepcopy(kwargs)
 					values = _kwargs.pop('values')
 					colors = _kwargs.pop('colors')
+					N = min(len(values),len(colors))
 					norm = matplotlib.colors.Normalize(vmin=min(values), vmax=max(values))  
 					normed_values = norm(values)
-					cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=len(normed_values)*10)  
+					cmap = matplotlib.colors.LinearSegmentedColormap.from_list('colorbar', list(zip(normed_values,colors)), N=N*10)  
+					pos = obj.get_position()
+					pad = _kwargs.pop('pad',0.05)
+					size = _kwargs.pop('size','5%')
+					relative = size if isinstance(size,(int,np.integer,float,np.float)) else float(size.replace('%',''))/100
+
+					# pos = [pos.x0+pad, pos.y0, pos.width*relative, pos1.height] 
+					# cax = plt.add_axes()
+					# cax.set_position(pos)
+
 					divider = make_axes_locatable(obj)
-					cax = divider.append_axes('right', size=_kwargs.pop('size','5%'),pad=_kwargs.pop('pad',0.05))
-					colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
-					obj = cax	
-					for attr in _kwargs:
-						getattr(obj,attr)(**_kwargs[attr])			
+					cax = divider.append_axes('right', size=size,pad=pad)
+					if len(set(normed_values)) > 1:
+						colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
+						obj = cax	
+						for attr in _kwargs:
+							getattr(obj,attr)(**_kwargs[attr])			
+					else:
+						pass
 					call = False
 				else:
 					call = False

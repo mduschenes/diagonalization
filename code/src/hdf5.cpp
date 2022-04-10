@@ -415,6 +415,8 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 	H5::DataType type = H5Type<T>();
 	H5::DataType datatype(type);
 
+	std::filesystem::create_directory(std::filesystem::path(path).parent_path());
+
 	try {
 		H5::H5File file(path,H5F_ACC_RDWR);
 	}

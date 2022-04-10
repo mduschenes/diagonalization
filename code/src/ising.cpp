@@ -7,7 +7,6 @@
 #include "utils.hpp"
 
 
-
 int main(int argc, char *argv[]){
 
 	mkl_set_num_threads(NUM_THREADS);
@@ -72,7 +71,7 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(4u);
 		variables[names.back()].push_back(6u);
 		variables[names.back()].push_back(8u);
-		variables[names.back()].push_back(12u);
+		// variables[names.back()].push_back(12u);
 		// variables[names.back()].push_back(14u);
 		// variables[names.back()].push_back(16u);
 		// variables[names.back()].push_back(18u);
@@ -116,7 +115,7 @@ int main(int argc, char *argv[]){
 		system.n = pow(system.D,system.N); // system size
 		system.z = 2*d; // coordination number
 		system.k = k; // number of parameters
-		system.model = "hamiltonian"; // Model		
+		system.model = "ising"; // Model
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
@@ -132,7 +131,7 @@ int main(int argc, char *argv[]){
 		system.tol = 0.0; // State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
-		system.path = "data/data.hdf5"; // path name
+		system.path = "data/ising/data.hdf5"; // path name
 		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
@@ -141,7 +140,7 @@ int main(int argc, char *argv[]){
 		system.parameters = {{"J",J},{"h",h},{"U",U}}; // Parameters of length k
 		system.symmetries = {{"order",{}}}; // Symmetries
 
-		hamiltonian::Hamiltonian<T> H(system);
+		hamiltonian::Ising<T> H(system);
 
 		H.set();
 		H.print();

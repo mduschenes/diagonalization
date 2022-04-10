@@ -12,6 +12,7 @@ OBJ_DIR := obj
 DEP_DIR := obj
 EXE_DIR := bin
 PROCESS_DIR := src
+DATA_DIR := data
 DIR := SRC_DIR INC_DIR LIB_DIR OBJ_DIR EXE_DIR
 
 # Extensions
@@ -22,9 +23,10 @@ OBJ_EXT := o
 DEP_EXT := d
 EXE_EXT := out
 PROCESS_EXT:= py
+DATA_EXT := hdf5
 
 # Targets
-SRC := main tensor hamiltonian io hdf5 utils
+SRC := tensor hamiltonian io hdf5 utils
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
@@ -33,13 +35,25 @@ LIB := $(patsubst %,$(LIB_DIR)/%,$(LIB))
 
 OBJ := $(patsubst $(SRC_DIR)/%.$(SRC_EXT),$(OBJ_DIR)/%.$(OBJ_EXT),$(SRC))
 
-EXE := main
+MAIN := main
+PROGRAM := ising heisenberg
+SEQ  := $(shell seq $(words $(PROGRAM)))
+
+EXE := $(MAIN)
 EXE := $(patsubst %,$(EXE_DIR)/%.$(EXE_EXT),$(EXE))
 
-PROCESS := process
+PROCESS := main
 PROCESS := $(patsubst %,$(PROCESS_DIR)/%.$(PROCESS_EXT),$(PROCESS))
 PROCESS_FLAGS :=
-PROCESS_DEP := data/data.hdf5
+PROCESS_DEP := $(patsubst %,$(DATA_DIR)/data.$(DATA_EXT),$(MAIN))
+
+EXES := $(PROGRAM)
+EXES := $(patsubst %,$(EXE_DIR)/%.$(EXE_EXT),$(EXES))
+
+PROCESSS := $(PROGRAM)
+PROCESSS := $(patsubst %,$(PROCESS_DIR)/%.$(PROCESS_EXT),$(PROCESSS))
+PROCESSS_FLAGS :=
+PROCESSS_DEP := $(patsubst %,$(DATA_DIR)/%/data.$(DATA_EXT),$(PROGRAM))
 
 PROFILE := gprof
 PROFILE_FLAGS := gprof -b -pset
@@ -65,7 +79,7 @@ LD_LIBS  :=
 
 # Compile Options
 ifdef USE_DEP
-# CC_FLAGS += -MMD -MP
+CC_FLAGS += -MMD -MP
 endif
 
 ifdef USE_PROFILE
@@ -107,42 +121,85 @@ LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/li
 endif
 
 # CLI Arguments
+ifeq (all,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
 ifeq (run,$(firstword $(MAKECMDGOALS)))
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
 endif
 
-ifeq (process,$(firstword $(MAKECMDGOALS)))
+ifeq (runs,$(firstword $(MAKECMDGOALS)))
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
+endif
+
+ifeq (main,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
+ifeq (ising,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
+ifeq (heisenberg,$(firstword $(MAKECMDGOALS)))
+RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(RUN_ARGS):;@:)
+endif
+
+ifeq (process,$(firstword $(MAKECMDGOALS)))
+PROCESS_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(PROCESS_ARGS):;@:)
 endif
 
 
 
 
 # Make Options
-.PHONY: all run test clean process profile
-.SILENT : all run test clean process profile
+.PHONY: all run test clean process profile main ising heisenberg
+.SILENT : all run test clean process profile main ising heisenberg
 .PRECIOUS : $(OBJ_DIR)/%.$(OBJ_EXT) $(DEP_DIR)/%.$(DEP_EXT)
-
+.SECONDEXPANSION:
 
 
 # Rules
-all: clean $(EXE)
+all: clean run
 
-run : clean_data $(EXE)
-	$(RUN)$(EXE) $(RUN_ARGS)
-# 	h5dump $(PROCESS_DEP)
+run : $(EXE) clean_data
+	@$(RUN)$(EXE) $(RUN_ARGS)
+
+runs : $(EXES) clean_data
+	$(foreach i,$(SEQ),@$(RUN)$(word $(i),$(EXES)) $(RUN_ARGS);)	
 
 test :
 
 clean : clean_obj clean_data
 
-process : clean_data $(PROCESS) $(PROCESS_DEP)
-	$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) 
+process : $(PROCESS) $(PROCESS_DEP)
+	@$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) $(PROCESS_ARGS)
 
-profile : $(PROFILE_DEP)
-	$(PROFILE) $(PROFILE_FLAGS) $(EXE) $(PROFILE_DEP) > $(PROFILE_OUT)
+processs : $(PROCESSS) $(PROCESSS_DEP)
+	$(foreach i,$(SEQ),$(word $(i),$(PROCESSS)) $(word $(i),$(PROCESSS_DEP)) $(PROCESSS_FLAGS);)
+
+profile : $(EXE) $(PROFILE_DEP)
+	$(PROFILE) $(PROFILE_FLAGS) $< $(PROFILE_DEP) > $(PROFILE_OUT)
+	$(foreach i,$(SEQ),$(PROFILE) $(PROFILE_FLAGS) $(word $(i),$(EXES)) $(PROFILE_DEP) > $(PROFILE_OUT);)
+# 	h5dump $(PROCESSS_DEP)
+
+
+# ising:
+# heisenberg:
+
+$(PROGRAM) : $(EXE_DIR)/$$@.$(EXE_EXT) clean_data $(PROCESS_DIR)/$$@.$(PROCESS_EXT)
+	@$(RUN)$< $(RUN_ARGS)
+	@$(PROCESS_DIR)/$@.$(PROCESS_EXT) $(DATA_DIR)/$@/data.$(DATA_EXT) $(PROCESS_FLAGS)
+
+main: run $(PROCESS_DIR)/$$@.$(PROCESS_EXT)
+	@$(PROCESS_DIR)/$@.$(PROCESS_EXT) $(DATA_DIR)/data.$(DATA_EXT) $(PROCESS_FLAGS) 
 
 
 clean_obj :
@@ -150,11 +207,12 @@ clean_obj :
 	@$(RM) $(EXE_DIR)
 
 clean_data :
-	@$(RM) $(PROCESS_DEP)
+	@$(RM) $(DATA_DIR)/*.$(DATA_EXT)
+	@$(RM) $(DATA_DIR)/*/*.$(DATA_EXT)
 	@$(RM) $(PROFILE_DEP)
 
-$(EXE_DIR)/%.$(EXE_EXT) : $(OBJ) $(LIB) | $(EXE_DIR)
-	@$(CC) $(CC_FLAGS) $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
+$(EXE_DIR)/%.$(EXE_EXT) : $(OBJ_DIR)/%.$(OBJ_EXT) $(OBJ) $(LIB) | $(EXE_DIR)
+	@$(CC) $(CC_FLAGS) $< $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
 
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(LIB) | $(OBJ_DIR)
 	@$(CC) $(CC_FLAGS) -c $< -o $@ $(LD_FLAGS) $(LD_LIBS)
@@ -162,9 +220,13 @@ $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(LIB) | $(OBJ_DIR)
 $(OBJ_DIR) $(EXE_DIR) : 
 	@$(MKDIR) $@
 
-$(PROCESS_DEP): run
-$(PROFILE_DEP): run
+$(PROCESS_DEP):
+$(PROCESSS_DEP):
 
-# ifdef USE_DEP
+# $(PROCESS_DEP): $(patsubst $(DATA_DIR)/data.$(DATA_EXT),$(MAIN),$$@)
+# $(PROCESSS_DEP): $$($$(patsubst $(DATA_DIR)/%/data.$(DATA_EXT),%,$$@))
+
+# Make Options
+ifdef USE_DEP
 -include $(OBJ:.$(OBJ_EXT)=.$(DEP_EXT)) 
-# endif
+endif

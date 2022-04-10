@@ -37,6 +37,7 @@ int main(int argc, char *argv[]){
 	std::map<std::string,types> variable;
 	std::map<std::string,std::vector<types>> variables;
 
+
 	if (argc > 1){
 		argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
 		argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
@@ -73,10 +74,10 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(6u);
 		variables[names.back()].push_back(8u);
 		variables[names.back()].push_back(12u);
-		// variables[names.back()].push_back(14u);
-		// variables[names.back()].push_back(16u);
-		// variables[names.back()].push_back(18u);
-		// variables[names.back()].push_back(20u);
+		variables[names.back()].push_back(14u);
+		variables[names.back()].push_back(16u);
+		variables[names.back()].push_back(18u);
+		variables[names.back()].push_back(20u);
 
 		names.push_back("J");
 		sizes[names.back()] = 1;
@@ -116,7 +117,7 @@ int main(int argc, char *argv[]){
 		system.n = pow(system.D,system.N); // system size
 		system.z = 2*d; // coordination number
 		system.k = k; // number of parameters
-		system.model = "hamiltonian"; // Model		
+		system.model = "heisenberg"; // Model		
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
@@ -132,16 +133,16 @@ int main(int argc, char *argv[]){
 		system.tol = 0.0; // State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
-		system.path = "data/data.hdf5"; // path name
+		system.path = "data/heisenberg/data.hdf5"; // path name
 		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
 		system.metadata = "metadata"; // metadata name
 		system.state = {"order","energy","gap","entanglement"}; // States
 		system.parameters = {{"J",J},{"h",h},{"U",U}}; // Parameters of length k
-		system.symmetries = {{"order",{}}}; // Symmetries
+		system.symmetries = {{"order",{0}}}; // Symmetries
 
-		hamiltonian::Hamiltonian<T> H(system);
+		hamiltonian::Heisenberg<T> H(system);
 
 		H.set();
 		H.print();

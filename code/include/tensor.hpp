@@ -41,6 +41,7 @@ struct System {
 	unsigned int n; // Total dimension of space
 	unsigned int z; // coordination number
 	unsigned int k; // Number of parameters	
+	std::string model = "hamiltonian"; // Model
 	std::string space = "spin"; // Local space
 	std::string lattice = "square"; // Lattice type
 	unsigned int s; // Number of unique states
@@ -108,9 +109,6 @@ class Tensor {
 		std::vector<unsigned int> subspaces;
 		std::map<unsigned int,int> included;
 
-		// Setup
-		void setup(tensor::System<T> & system);
-
 		// Save and Load
 		void dump();
 		void load();
@@ -134,8 +132,6 @@ class Tensor {
 		vector eigenvalues;
 		matrix_complex eigenvectors;
 		void eig();
-
-	private:
 
 };
 
