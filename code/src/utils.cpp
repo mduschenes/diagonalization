@@ -262,6 +262,10 @@ unsigned int phaseflip(unsigned int x, unsigned int j){
 	return bit(x,j) * flip(x,j);
 };
 
+unsigned int swap(unsigned int x, unsigned int i, unsigned int j){
+	return x ^ ((1 << i) + (1 << j));
+};
+
 unsigned int bitcount(unsigned int x){
 	return __builtin_popcount(x);
 };
@@ -281,7 +285,11 @@ int spinflip(unsigned int x, unsigned int j){
 };
 
 int spinphaseflip(unsigned int x, unsigned int j){
-	return spin(x,j) * flip(x,j);
+	return spin(x,j) * spinflip(x,j);
+};
+
+int spinswap(unsigned int x, unsigned int i, unsigned int j){
+	return x ^ ((1 << i) + (1 << j));
 };
 
 int spincount(unsigned int x,unsigned int n){

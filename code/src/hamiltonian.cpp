@@ -139,7 +139,7 @@ void Hamiltonian<T>::set(){
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,k%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
@@ -147,17 +147,13 @@ void Hamiltonian<T>::set(){
 
 		// X Term
 		for (k=0; k<N; k++){
-			j = utils::flip(i,k%N);
-
+			j = utils::spinflip(i,(k)%N);
 			if (included[j] != -1){
 				t = included[j];
-				value = -parameters["h"]*utils::bit(j,k%N);
+				value = -parameters["h"];
 
 				#pragma omp critical
 				indexes.push_back(index(s,t,value));
-
-				#pragma omp critical
-				indexes.push_back(index(t,s,value));
 			};
 		};
 	};
@@ -440,7 +436,7 @@ void Ising<T>::set(){
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,k%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
@@ -448,17 +444,15 @@ void Ising<T>::set(){
 
 		// X Term
 		for (k=0; k<N; k++){
-			j = utils::flip(i,k%N);
+			j = utils::spinflip(i,(k)%N);
 
 			if (included[j] != -1){
 				t = included[j];
-				value = -parameters["h"]*utils::bit(j,k%N);
+				value = -parameters["h"];
 
 				#pragma omp critical
 				indexes.push_back(index(s,t,value));
 
-				#pragma omp critical
-				indexes.push_back(index(t,s,value));
 			};
 		};
 	};
@@ -741,25 +735,21 @@ void Heisenberg<T>::set(){
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,k%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
 		};
 
-		// X Term
+		// XX + YY Term
 		for (k=0; k<N; k++){
-			j = utils::flip(i,k%N);
-
+			j = utils::spinswap(i,(k)%N,(k+1));
 			if (included[j] != -1){
 				t = included[j];
-				value = -parameters["h"]*utils::bit(j,k%N);
+				value = parameters["U"]/2;
 
 				#pragma omp critical
 				indexes.push_back(index(s,t,value));
-
-				#pragma omp critical
-				indexes.push_back(index(t,s,value));
 			};
 		};
 	};
