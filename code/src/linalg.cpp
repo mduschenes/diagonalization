@@ -34,19 +34,67 @@ void eigh(Eigen::SparseMatrix<T,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eige
 	return;
 };
 
-// template<typename T>
-// void eigh(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
-// 	typedef typename Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type;
+template<typename T>
+void eigh(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+	typedef typename Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type;
 
-// 	typename Eigen::SelfAdjointEigenSolver<type> solver;
+	typename Eigen::SelfAdjointEigenSolver<type> solver;
 
-// 	solver.compute(matrix);
+	solver.compute(matrix);
 	
-// 	eigenvalues = solver.eigenvalues();
-// 	eigenvectors = solver.eigenvectors();
+	eigenvalues = solver.eigenvalues();
+	eigenvectors = solver.eigenvectors();
 
-// 	return;
-// };
+	return;
+};
+
+
+
+
+template<typename T>
+void eigh(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+
+	typedef typename Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
+
+	typename Eigen::SelfAdjointEigenSolver<type> solver;
+
+	solver.compute(matrix);
+	
+	eigenvalues = solver.eigenvalues();
+	eigenvectors = solver.eigenvectors().real();
+
+	return;
+};
+
+template<typename T>
+void eigh(Eigen::SparseMatrix<T,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+	typedef typename Eigen::SparseMatrix<T,Eigen::ColMajor> type;
+	typedef typename Eigen::SimplicialLDLT<type> algorithm;	
+	int options = -1;
+
+	Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
+
+	solver.compute(matrix,n,sigma,options,eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+
+	eigenvalues = solver.eigenvalues();
+	eigenvectors = solver.eigenvectors().real();
+
+	return;
+};
+
+template<typename T>
+void eigh(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+	typedef typename Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type;
+
+	typename Eigen::SelfAdjointEigenSolver<type> solver;
+
+	solver.compute(matrix);
+	
+	eigenvalues = solver.eigenvalues();
+	eigenvectors = solver.eigenvectors().real();
+
+	return;
+};
 
 // template<typename T>
 // void eigh(Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
@@ -59,10 +107,13 @@ void eigh(Eigen::SparseMatrix<T,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eige
 // 	solver.compute(matrix,n,sigma,options,eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
 
 // 	eigenvalues = solver.eigenvalues();
-// 	eigenvectors = solver.eigenvectors();
+// 	eigenvectors = solver.eigenvectors().real();
 
 // 	return;
 // };
+
+
+
 
 // template<typename T>
 // void eigs(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
@@ -261,6 +312,219 @@ void eigh(Eigen::SparseMatrix<T,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eige
 
 
 
+// template<typename T>
+// void eigh(Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+// 	typedef typename Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> type;
+// 	typedef typename Eigen::SimplicialLDLT<type> algorithm;	
+// 	int options = -1;
+
+// 	typename Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
+
+// 	solver.compute(matrix,n,sigma,options,eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
+
+// 	eigenvalues = solver.eigenvalues();
+// 	eigenvectors = solver.eigenvectors();
+
+// 	return;
+// };
+
+// template<typename T>
+// void eigs(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+// 	typedef typename Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;
+// 	Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
+// 	int options = -1;
+// 	Spectra::SortRule sort;
+// 	if (sigma == "LM"){
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	}
+// 	else if (sigma == "LA"){
+// 		sort = Spectra::SortRule::LargestAlge;
+// 	}	
+// 	else if (sigma == "LR"){
+// 		sort = Spectra::SortRule::LargestReal;
+// 	}
+// 	else if (sigma == "LI"){
+// 		sort = Spectra::SortRule::LargestImag;
+// 	}
+// 	else if (sigma == "SM"){
+// 		sort = Spectra::SortRule::SmallestMagn;
+// 	}
+// 	else if (sigma == "SA"){
+// 		sort = Spectra::SortRule::SmallestAlge;
+// 	}	
+// 	else if (sigma == "SR"){
+// 		sort = Spectra::SortRule::SmallestReal;
+// 	}
+// 	else if (sigma == "SI"){
+// 		sort = Spectra::SortRule::SmallestImag;
+// 	}	
+// 	else if (sigma == "BE"){
+// 		sort = Spectra::SortRule::BothEnds;
+// 	}
+// 	else {
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	};
+
+// 	typename Spectra::DenseSymMatProd<T> op(matrix);
+// 	typename Spectra::SymEigsSolver<Spectra::DenseSymMatProd<T>> solver(op,n,eps);
+
+// 	solver.init();
+// 	solver.compute(sort);
+	
+// 	eigenvalues = solver.eigenvalues();
+// 	eigenvectors = solver.eigenvectors();
+
+// 	return;
+// };
+
+
+// template<typename T>
+// void eigs(Eigen::SparseMatrix<T,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+// 	typedef typename Eigen::SparseMatrix<T,Eigen::ColMajor> type;
+// 	int options = -1;
+// 	Spectra::SortRule sort;
+// 	if (sigma == "LM"){
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	}
+// 	else if (sigma == "LA"){
+// 		sort = Spectra::SortRule::LargestAlge;
+// 	}	
+// 	else if (sigma == "LR"){
+// 		sort = Spectra::SortRule::LargestReal;
+// 	}
+// 	else if (sigma == "LI"){
+// 		sort = Spectra::SortRule::LargestImag;
+// 	}
+// 	else if (sigma == "SM"){
+// 		sort = Spectra::SortRule::SmallestMagn;
+// 	}
+// 	else if (sigma == "SA"){
+// 		sort = Spectra::SortRule::SmallestAlge;
+// 	}	
+// 	else if (sigma == "SR"){
+// 		sort = Spectra::SortRule::SmallestReal;
+// 	}
+// 	else if (sigma == "SI"){
+// 		sort = Spectra::SortRule::SmallestImag;
+// 	}	
+// 	else if (sigma == "BE"){
+// 		sort = Spectra::SortRule::BothEnds;
+// 	}
+// 	else {
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	};
+				
+// 	typename Spectra::SparseSymMatProd<T> op(matrix);
+// 	typename Spectra::SymEigsSolver<Spectra::SparseSymMatProd<T>> solver(op,n,eps);
+
+// 	solver.init();
+// 	solver.compute(sort);
+	
+// 	eigenvalues = solver.eigenvalues();
+// 	eigenvectors = solver.eigenvectors();
+
+// 	return;
+// };
+
+// template<typename T>
+// void eigs(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+// 	typedef typename Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type;
+// 	Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
+// 	int options = -1;
+// 	Spectra::SortRule sort;
+// 	if (sigma == "LM"){
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	}
+// 	else if (sigma == "LA"){
+// 		sort = Spectra::SortRule::LargestAlge;
+// 	}	
+// 	else if (sigma == "LR"){
+// 		sort = Spectra::SortRule::LargestReal;
+// 	}
+// 	else if (sigma == "LI"){
+// 		sort = Spectra::SortRule::LargestImag;
+// 	}
+// 	else if (sigma == "SM"){
+// 		sort = Spectra::SortRule::SmallestMagn;
+// 	}
+// 	else if (sigma == "SA"){
+// 		sort = Spectra::SortRule::SmallestAlge;
+// 	}	
+// 	else if (sigma == "SR"){
+// 		sort = Spectra::SortRule::SmallestReal;
+// 	}
+// 	else if (sigma == "SI"){
+// 		sort = Spectra::SortRule::SmallestImag;
+// 	}	
+// 	else if (sigma == "BE"){
+// 		sort = Spectra::SortRule::BothEnds;
+// 	}
+// 	else {
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	};
+
+// 	typename Spectra::DenseSymMatProd<std::complex<T>> op(matrix);
+// 	typename Spectra::SymEigsSolver<Spectra::DenseSymMatProd<std::complex<T>>> solver(op,n,eps);
+// 	solver.init();
+// 	solver.compute(sort);
+	
+// 	eigenvalues = solver.eigenvalues();
+// 	eigenvectors = solver.eigenvectors();
+
+// 	return;
+// };
+
+
+// template<typename T>
+// void eigs(Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps){
+// 	typedef typename Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> type;
+// 	int options = -1;
+// 	Spectra::SortRule sort;
+// 	if (sigma == "LM"){
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	}
+// 	else if (sigma == "LA"){
+// 		sort = Spectra::SortRule::LargestAlge;
+// 	}	
+// 	else if (sigma == "LR"){
+// 		sort = Spectra::SortRule::LargestReal;
+// 	}
+// 	else if (sigma == "LI"){
+// 		sort = Spectra::SortRule::LargestImag;
+// 	}
+// 	else if (sigma == "SM"){
+// 		sort = Spectra::SortRule::SmallestMagn;
+// 	}
+// 	else if (sigma == "SA"){
+// 		sort = Spectra::SortRule::SmallestAlge;
+// 	}	
+// 	else if (sigma == "SR"){
+// 		sort = Spectra::SortRule::SmallestReal;
+// 	}
+// 	else if (sigma == "SI"){
+// 		sort = Spectra::SortRule::SmallestImag;
+// 	}	
+// 	else if (sigma == "BE"){
+// 		sort = Spectra::SortRule::BothEnds;
+// 	}
+// 	else {
+// 		sort = Spectra::SortRule::LargestMagn;
+// 	};
+				
+// 	typename Spectra::SparseSymMatProd<std::complex<T>> op(matrix);
+// 	typename Spectra::SymEigsSolver<Spectra::SparseSymMatProd<std::complex<T>>> solver(op,n,eps);
+
+// 	solver.init();
+// 	solver.compute(sort);
+	
+// 	eigenvalues = solver.eigenvalues();
+// 	eigenvectors = solver.eigenvectors();
+
+// 	return;
+// };
+
+
+
 template<typename T>
 T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b){
 	return (a.transpose()*b).trace();
@@ -357,11 +621,23 @@ template void eigh<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> &
 template void eigh<double>(Eigen::SparseMatrix<double,Eigen::ColMajor> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
 template void eigh<float>(Eigen::SparseMatrix<float,Eigen::ColMajor> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
 
-// template void eigh<double>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
-// template void eigh<float>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
+template void eigh<double>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
+template void eigh<float>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
 
 // template void eigh<double>(Eigen::SparseMatrix<std::complex<double>,Eigen::ColMajor> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
 // template void eigh<float>(Eigen::SparseMatrix<std::complex<float>,Eigen::ColMajor> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
+
+template void eigh<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
+template void eigh<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
+
+template void eigh<double>(Eigen::SparseMatrix<double,Eigen::ColMajor> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
+template void eigh<float>(Eigen::SparseMatrix<float,Eigen::ColMajor> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
+
+template void eigh<double>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
+template void eigh<float>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
+
+// template void eigh<double>(Eigen::SparseMatrix<std::complex<double>,Eigen::ColMajor> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);
+// template void eigh<float>(Eigen::SparseMatrix<std::complex<float>,Eigen::ColMajor> & matrix, Eigen::Vector<float, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, float & eps);
 
 
 // template void eigs<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<double, Eigen::Dynamic> & eigenvalues, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, double & eps);

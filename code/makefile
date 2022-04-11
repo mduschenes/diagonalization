@@ -26,7 +26,7 @@ PROCESS_EXT:= py
 DATA_EXT := hdf5
 
 # Targets
-SRC := hamiltonian io hdf5 linalg utils tensor
+SRC := hamiltonian tensor physics io hdf5 linalg utils
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a

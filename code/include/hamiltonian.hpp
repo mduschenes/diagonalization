@@ -2,6 +2,7 @@
 #define _HAMILTONIAN_
 
 #include "tensor.hpp"
+#include "physics.hpp"
 #include "io.hpp"
 #include "utils.hpp"
 #include "linalg.hpp"

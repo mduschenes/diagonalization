@@ -83,11 +83,14 @@ class Tensor {
 		// Type
 		// typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;				
 		typedef Eigen::SparseMatrix<T,Eigen::ColMajor> type;
-		typedef Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> type_complex;
+		typedef Eigen::SparseMatrix<T,Eigen::ColMajor> type_complex;
+		// typedef Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> type_complex;
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
-		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
+		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
+		// typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
-		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
+		typedef Eigen::Vector<T, Eigen::Dynamic> vector_complex;
+		// typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
 		typedef Eigen::Triplet<T,unsigned int> index;
 
 		// Parallel

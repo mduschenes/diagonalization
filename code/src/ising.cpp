@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
 		system.sorting = "<="; // Sorting for states
 		system.size = pow(system.D,system.N); // data size
 		system.dim = 2; // data dimension
-		system.eps = 0.0; // Floating point tolerance
+		system.eps = 0; // Floating point tolerance
 		system.tol = 0.0; // State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements

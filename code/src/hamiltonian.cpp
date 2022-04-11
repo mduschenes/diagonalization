@@ -85,7 +85,7 @@ void Hamiltonian<T>::set(){
 		name = iterator->first;
 		if (name == "order"){
 			for (i=0;i<n;i++){
-				symmetry = utils::spincount(i,N);
+				symmetry = physics::spincount(i,N);
 				if (utils::isin(symmetries[name],symmetry)){
 					subspaces.push_back(i);
 					included[i] = subspaces.size()-1;
@@ -132,14 +132,14 @@ void Hamiltonian<T>::set(){
 
 		// State
 		name = "order";
-		value = utils::spincount(i,N);
+		value = physics::spincount(i,N);
 		states[name](s) = value;
 
 		// ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*physics::spin(i,(k)%N)*physics::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
@@ -147,7 +147,7 @@ void Hamiltonian<T>::set(){
 
 		// X Term
 		for (k=0; k<N; k++){
-			j = utils::spinflip(i,(k)%N);
+			j = physics::spinflip(i,(k)%N);
 			if (included[j] != -1){
 				t = included[j];
 				value = -parameters["h"];
@@ -181,14 +181,15 @@ template <typename T>
 void Hamiltonian<T>::compute(){
 	
 	unsigned int N = this->system.N; // Number of sites
+	unsigned int D = this->system.D; // Dimension of sites
 	unsigned int n = this->system.n; // Number of states
 	unsigned int s = this->system.s; // Number of unique states to process
 	unsigned int q = this->system.q; // Number of states to process
-	unsigned int k,j;
+	unsigned int j,k,l;
 	std::string name;
 	T value;
 	typename tensor::Tensor<T>::vector_complex eigenvector(n);
-	
+
 	// Sort eigenvalues
 	std::vector<int> argsort; // Sorting indices of eigenvalues
 	std::string sorting = this->system.sorting; // Sorting algorithm of eigenvalues
@@ -231,7 +232,7 @@ void Hamiltonian<T>::compute(){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
 		else if ((name == "entanglement")){
-			state[name] = tensor::Tensor<T>::matrix::Zero(s,N);
+			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
@@ -261,14 +262,6 @@ void Hamiltonian<T>::compute(){
 		value = 0;
 		state[name](k) = 0;
 
-// 		eigenmatrix = eigenmatrix.reshaped(j,n*n/j).eval();
-// 		map(eigenmatrix.data(),n*n
-		
-// 		Eigen::MatrixXd G(Nx+2, Ny+2); // allocate matrix
-// // set values in-place:
-// 		Eigen::VectorXd::Map(G.data(), (Nx + 2) * (Ny + 2)).setLinSpaced(0,(Nx + 2) * (Ny + 2)-1);
-
-
 		for (i=0;i<size[k];i++){
 
 			// Eigenvector in full space from subspace
@@ -284,7 +277,7 @@ void Hamiltonian<T>::compute(){
 
 			// Order
 			name = "order";
-			value = std::abs(eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
+			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
 			state[name](k) += value/size[k];
 
 			// Energy
@@ -293,11 +286,15 @@ void Hamiltonian<T>::compute(){
 			state[name](k) += value/size[k];
 
 			// Entanglement
-			// name = "entanglement";
-			// for (j=0;j<N;j++){
-			// 	value = utils::entropy(eigenvector,j);
-			// 	state[name](k,j) += value/size[k];
-			// };
+			name = "entanglement";
+			// #pragma omp parallel for private(k,j,l,value,name) shared(state)
+			for (j=0;j<state[name].cols();j++){
+				l = pow(D,j+1);
+				value = physics::entropy(eigenvector,l,eps);
+
+				// #pragma omp critical
+				state[name](k,j) += value/size[k];
+			};
 		};
 
 	};
@@ -306,6 +303,7 @@ void Hamiltonian<T>::compute(){
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
+		state[name] = (state[name].array().isFinite()).select(state[name],0);
 		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};
@@ -397,7 +395,7 @@ void Ising<T>::set(){
 		name = iterator->first;
 		if (name == "order"){
 			for (i=0;i<n;i++){
-				symmetry = utils::spincount(i,N);
+				symmetry = physics::spincount(i,N);
 				if (utils::isin(symmetries[name],symmetry)){
 					subspaces.push_back(i);
 					included[i] = subspaces.size()-1;
@@ -444,14 +442,14 @@ void Ising<T>::set(){
 
 		// State
 		name = "order";
-		value = utils::spincount(i,N);
+		value = physics::spincount(i,N);
 		states[name](s) = value;
 
 		// ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*physics::spin(i,(k)%N)*physics::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
@@ -459,7 +457,7 @@ void Ising<T>::set(){
 
 		// X Term
 		for (k=0; k<N; k++){
-			j = utils::spinflip(i,(k)%N);
+			j = physics::spinflip(i,(k)%N);
 
 			if (included[j] != -1){
 				t = included[j];
@@ -490,15 +488,15 @@ void Ising<T>::set(){
 };
 
 
-
 template <typename T>
 void Ising<T>::compute(){
 	
 	unsigned int N = this->system.N; // Number of sites
+	unsigned int D = this->system.D; // Dimension of sites
 	unsigned int n = this->system.n; // Number of states
 	unsigned int s = this->system.s; // Number of unique states to process
 	unsigned int q = this->system.q; // Number of states to process
-	unsigned int k,j;
+	unsigned int j,k,l;
 	std::string name;
 	T value;
 	typename tensor::Tensor<T>::vector_complex eigenvector(n);
@@ -545,12 +543,13 @@ void Ising<T>::compute(){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
 		else if ((name == "entanglement")){
-			state[name] = tensor::Tensor<T>::vector::Zero(N);
+			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		};
 	};
+
 
 	for (k=0; k<s; k++){
 
@@ -576,8 +575,7 @@ void Ising<T>::compute(){
 
 		for (i=0;i<size[k];i++){
 
-			// Order
-			name = "order";
+			// Eigenvector in full space from subspace
 			if (this->subspaces.size() == n){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
@@ -587,8 +585,10 @@ void Ising<T>::compute(){
 					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
 				};
 			};
-			
-			value = std::abs(eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
+
+			// Order
+			name = "order";
+			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
 			state[name](k) += value/size[k];
 
 			// Energy
@@ -596,14 +596,22 @@ void Ising<T>::compute(){
 			value = this->eigenvalues(indices[k][i])/N;
 			state[name](k) += value/size[k];
 
+			// Entanglement
+			name = "entanglement";
+			for (j=0;j<state[name].cols();j++){
+				l = pow(D,j+1);
+				value = physics::entropy(eigenvector,l,eps);
+				state[name](k,j) += value/size[k];
+			};
+
 		};
 
 	};
 
-
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
+		state[name] = (state[name].array().isFinite()).select(state[name],0);
 		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};
@@ -696,7 +704,7 @@ void Heisenberg<T>::set(){
 		name = iterator->first;
 		if (name == "order"){
 			for (i=0;i<n;i++){
-				symmetry = utils::spincount(i,N);
+				symmetry = physics::spincount(i,N);
 				if (utils::isin(symmetries[name],symmetry)){
 					subspaces.push_back(i);
 					included[i] = subspaces.size()-1;
@@ -743,14 +751,14 @@ void Heisenberg<T>::set(){
 
 		// State
 		name = "order";
-		value = utils::spincount(i,N);
+		value = physics::spincount(i,N);
 		states[name](s) = value;
 
 		// ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*utils::spin(i,(k)%N)*utils::spin(j,(k+1)%N);
+			value = -parameters["J"]*physics::spin(i,(k)%N)*physics::spin(j,(k+1)%N);
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
@@ -758,7 +766,7 @@ void Heisenberg<T>::set(){
 
 		// XX + YY Term
 		for (k=0; k<N; k++){
-			j = utils::spinswap(i,(k)%N,(k+1));
+			j = physics::spinswap(i,(k)%N,(k+1));
 			if (included[j] != -1){
 				t = included[j];
 				value = parameters["U"]/2;
@@ -787,15 +795,15 @@ void Heisenberg<T>::set(){
 };
 
 
-
 template <typename T>
 void Heisenberg<T>::compute(){
 	
 	unsigned int N = this->system.N; // Number of sites
+	unsigned int D = this->system.D; // Dimension of sites
 	unsigned int n = this->system.n; // Number of states
 	unsigned int s = this->system.s; // Number of unique states to process
 	unsigned int q = this->system.q; // Number of states to process
-	unsigned int k,j;
+	unsigned int j,k,l;
 	std::string name;
 	T value;
 	typename tensor::Tensor<T>::vector_complex eigenvector(n);
@@ -842,12 +850,13 @@ void Heisenberg<T>::compute(){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
 		else if ((name == "entanglement")){
-			state[name] = tensor::Tensor<T>::vector::Zero(N);
+			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		};
 	};
+
 
 	for (k=0; k<s; k++){
 
@@ -873,8 +882,7 @@ void Heisenberg<T>::compute(){
 
 		for (i=0;i<size[k];i++){
 
-			// Order
-			name = "order";
+			// Eigenvector in full space from subspace
 			if (this->subspaces.size() == n){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
@@ -884,8 +892,10 @@ void Heisenberg<T>::compute(){
 					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
 				};
 			};
-			
-			value = std::abs(eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
+
+			// Order
+			name = "order";
+			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
 			state[name](k) += value/size[k];
 
 			// Energy
@@ -893,6 +903,13 @@ void Heisenberg<T>::compute(){
 			value = this->eigenvalues(indices[k][i])/N;
 			state[name](k) += value/size[k];
 
+			// Entanglement
+			name = "entanglement";
+			for (j=0;j<state[name].cols();j++){
+				l = pow(D,j);
+				value = physics::entropy(eigenvector,l,eps);
+				state[name](k,j) += value/size[k];
+			};
 		};
 
 	};
@@ -901,6 +918,7 @@ void Heisenberg<T>::compute(){
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
+		state[name] = (state[name].array().isFinite()).select(state[name],0);
 		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};

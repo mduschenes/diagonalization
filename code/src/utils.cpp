@@ -182,51 +182,6 @@ unsigned int bitcount(unsigned int x){
 };
 
 
-
-int spin(unsigned int x, unsigned int j){
-	return 2*((x >> j) & 1) - 1;
-};
-
-int spinphase(unsigned int x, unsigned int j){
-	return spin(x,j)*x;
-};
-
-int spinflip(unsigned int x, unsigned int j){
-	return x ^ (1 << j);
-};
-
-int spinphaseflip(unsigned int x, unsigned int j){
-	return spin(x,j) * spinflip(x,j);
-};
-
-int spinswap(unsigned int x, unsigned int i, unsigned int j){
-	return x ^ ((1 << i) + (1 << j));
-};
-
-int spincount(unsigned int x,unsigned int n){
-	return 2*__builtin_popcount(x) - n;
-};
-
-
-template<typename T>
-T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i){
-
-};
-
-// int ditphase(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x >> j) & u;
-// };
-
-// int ditraise(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x + 1)*((d - 1 - (x&(pow(d,j))))/d);
-// };
-
-// int ditlower(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x - 1)*((d - 1 + (x&(pow(d,j))))/d);
-// };
-
-
-
 template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a, double & eps);
 template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a, float & eps);
 

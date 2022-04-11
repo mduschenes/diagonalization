@@ -32,6 +32,8 @@ def texify(string):
 		'order':r'$\sigma/N$'%(),
 		'energy':r'$\epsilon/N$'%(),
 		'gap':r'$\Delta/N$'%(),
+		'entanglement':r'$S$'%(),
+		'x':r'$L/N$'%(),
 	}
 	if not isinstance(string,str):
 		string = str(string)
@@ -60,16 +62,15 @@ def main(args):
 	parameters = {attr: parameters[attr] for attr in parameters if len(parameters[attr])>0}
 	values = {attr: values[attr] for attr in values if len(values[attr])>0}
 	
-	sizes = {attr: min([data[name][attr].size for name in data]) for attr in values}
+	sizes = {attr: min([data[name][attr].shape[0] for name in data]) for attr in values}
 
 
-
-	xattrs = ['h','h','N']
-	yattrs = ['energy','order','gap']
-	iattrs = ['N','N','h']
+	xattrs = ['h','h','N','x']
+	yattrs = ['energy','order','gap','entanglement']
+	iattrs = ['N','N','h','N']
 
 	x = {(xattr,yattr,iattr): 
-		{j: {i: np.array([data[name][xattr] for name in data if data[name][iattr] == i]) 
+		{j: {i: np.array([data[name][xattr] for name in data if data[name][iattr] == i]) if xattr in attrs else np.arange(np.array([1 for name in data if data[name][iattr] == i]).size)
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
 		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
@@ -85,6 +86,7 @@ def main(args):
 		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
 			{'h': x/np.array([data[name]['J'] for name in data if data[name][iattr] == i]),
 			 'N': 1/x if xattr =='N' else x,
+			 'x': x/np.array([data[name]['N'] for name in data if data[name][iattr] == i]),
 			}[xattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -96,6 +98,7 @@ def main(args):
 			{'energy': y,
 			 'order':y,
 			 'gap': y,
+			 'entanglement':y,
 			}[yattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -187,6 +190,43 @@ def main(args):
 		}
 		for j in [0]} #range(sizes[key[1]]-1)}
 		for key in [('N','gap','h')]},	
+	**{
+		key:{
+		j: {
+			'ax': {
+				'plot':[{
+					'x': np.arange(1,len([data[name][key[1]][j] for name in data if data[name][key[2]] == i][0])+1)/i,
+					'y': [data[name][key[1]][j] for name in data if data[name][key[2]] == i][0],
+					'marker':'o',
+					'color':getattr(plt.cm,'tab10')(l),
+					'label':texify(i) if j==(0) else None,
+					}
+					for l,i in enumerate(parameters[key[2]])
+					],
+				# 'set_title':{'label':r'$\textrm{Level %d}$'%(j)},
+				'set_xlabel':{'xlabel':texify(r'%s'%(key[0]))},
+				'set_ylabel':{'ylabel':texify(key[1])},
+				'set_xscale':{'value':'linear'},				
+				'set_xlim':{'xmin':0,'xmax':1},				
+				'set_xticks':{'ticks':[0,0.25,0.5,0.75,1]},				
+				'legend':{'title':texify(key[2]),'ncol':4},
+				'grid':{'visible':True},
+			},	
+			'fig':{
+				'set_size_inches':{'w':12,'h':12},
+				'savefig':{'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2]))},
+				# 'close':{'fig':True},
+			},
+			'style':{
+				'layout':{
+					'nrows':1,
+					'ncols':1,
+					'index':1,
+				}
+			},			
+		}
+		for j in [0]} #range(sizes[key[1]]-1)}
+		for key in [('x','entanglement','N')]},			
 	}
 
 

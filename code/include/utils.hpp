@@ -76,20 +76,6 @@ unsigned int flip(unsigned int x, unsigned int j);
 unsigned int phaseflip(unsigned int x, unsigned int j);
 unsigned int swap(unsigned int x, unsigned int i, unsigned int j);
 unsigned int bitcount(unsigned int x);
-
-int spin(unsigned int x, unsigned int j);
-int spinphase(unsigned int x, unsigned int j);
-int spinflip(unsigned int x, unsigned int j);
-int spinphaseflip(unsigned int x, unsigned int j);
-int spinswap(unsigned int x, unsigned int i, unsigned int j);
-int spincount(unsigned int x, unsigned int n);
-
-template<typename T>
-T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i);
-
-template<typename T>
-T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i);
-
 };
 
 #endif
