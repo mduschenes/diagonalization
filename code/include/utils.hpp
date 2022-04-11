@@ -84,6 +84,12 @@ int spinphaseflip(unsigned int x, unsigned int j);
 int spinswap(unsigned int x, unsigned int i, unsigned int j);
 int spincount(unsigned int x, unsigned int n);
 
+template<typename T>
+T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i);
+
+template<typename T>
+T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i);
+
 };
 
 #endif

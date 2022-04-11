@@ -98,7 +98,7 @@ class Tensor {
 
 		// State
 		std::map<std::string,vector> states;
-		std::map<std::string,vector> state;
+		std::map<std::string,matrix> state;
 		std::vector<unsigned int> subspaces;
 		std::map<unsigned int,int> included;
 

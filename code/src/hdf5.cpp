@@ -442,7 +442,7 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 
 	for (i=attributes.begin(); i!=attributes.end();i++){
 		attribute = obj.createAttribute(i->first,datatype,dataspace);
-		values = &i->second;
+		values = &attributes[i->first];
 		attribute.write(datatype,values);
 	};
 
@@ -457,7 +457,6 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 
 	H5::Exception::dontPrint();
 	
-
 	const int dim = 1;
 	unsigned int size;
 	hsize_t shape[dim];
@@ -495,12 +494,80 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 		dataspace = H5::DataSpace(dim,shape);
 
 		attribute = obj.createAttribute(i->first,datatype,dataspace);
-		values = i->second.data();
+		values = attributes[i->first].data();
 		attribute.write(datatype,values);
 	};
 
 	return;
 };
+
+
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>> & attributes){
+
+	H5::Exception::dontPrint();
+
+	H5::DataType type = H5Type<T>();
+	H5::DataType datatype(type);
+
+	typename std::map<std::string, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>::iterator i;
+
+	try {
+		H5::H5File file(path,H5F_ACC_RDWR);
+	}
+	catch (...) {
+		H5::H5File file(path,H5F_ACC_TRUNC);
+	};
+	H5::H5File file(path,H5F_ACC_RDWR);
+
+	try {
+		H5::Group obj = file.openGroup(group);
+	}
+	catch (...) {
+		H5::Group obj = file.createGroup(group);
+	};
+
+	H5::Group obj = file.openGroup(group);
+
+
+	H5::DataSpace dataspace;
+	H5::Attribute attribute;
+	T * values;
+
+	for (i=attributes.begin(); i!=attributes.end();i++){
+		
+		if (attributes[i->first].cols() == 1){
+			const int dim = 1;
+			unsigned int size;
+			hsize_t shape[dim];
+			
+			size = attributes[i->first].size();
+			shape[0] = size;
+
+			dataspace = H5::DataSpace(dim,shape);
+
+			attribute = obj.createAttribute(i->first,datatype,dataspace);
+			values = attributes[i->first].data();
+			attribute.write(datatype,values);
+		}
+		else {
+			const int dim = 2;
+			const unsigned int row = attributes[i->first].rows();
+			const unsigned int col = attributes[i->first].cols();
+			hsize_t shape[dim] = {row,col};
+
+			dataspace = H5::DataSpace(dim,shape);
+
+			attribute = obj.createAttribute(i->first,datatype,dataspace);
+			values = attributes[i->first].transpose().data();
+			attribute.write(datatype,values);
+		};
+
+	};
+
+	return;
+};
+
 
 
 template<typename T>
@@ -590,6 +657,11 @@ template void dump(std::string & path, std::string & group, std::string & name, 
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<float, Eigen::Dynamic>> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<int, Eigen::Dynamic>> & attributes);
 template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<unsigned int, Eigen::Dynamic>> & attributes);
+
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
 
 template void dump(std::string & path, std::string & name, std::vector<double> & data);
 template void dump(std::string & path, std::string & name, std::vector<float> & data);

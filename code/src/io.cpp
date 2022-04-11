@@ -285,6 +285,11 @@ void io<T>::dump(std::string & path,std::string & group,std::string & name, std:
 	hdf5::dump<T>(path,group,name,attributes);
 };
 
+template <class T>
+void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>> & attributes){
+	hdf5::dump<T>(path,group,name,attributes);
+};
+
 
 template <class T>
 void io<T>::join(std::string & path,std::string & directory,std::string & file,std::string & ext){

@@ -208,6 +208,11 @@ int spincount(unsigned int x,unsigned int n){
 };
 
 
+template<typename T>
+T entropy(Eigen::Vector<T, Eigen::Dynamic> & matrix, unsigned int i){
+
+};
+
 // int ditphase(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
 // 	return (x >> j) & u;
 // };

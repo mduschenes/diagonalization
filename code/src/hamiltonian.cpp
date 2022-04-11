@@ -188,7 +188,7 @@ void Hamiltonian<T>::compute(){
 	std::string name;
 	T value;
 	typename tensor::Tensor<T>::vector_complex eigenvector(n);
-
+	
 	// Sort eigenvalues
 	std::vector<int> argsort; // Sorting indices of eigenvalues
 	std::string sorting = this->system.sorting; // Sorting algorithm of eigenvalues
@@ -224,14 +224,14 @@ void Hamiltonian<T>::compute(){
 
 	// State
 	s = std::min((unsigned int)(indices.size()),s);
-	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
+	std::map<std::string,typename tensor::Tensor<T>::matrix> state = this->state;
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
 		if ((name == "order") or (name == "energy") or (name == "gap")){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
 		else if ((name == "entanglement")){
-			state[name] = tensor::Tensor<T>::vector::Zero(N);
+			state[name] = tensor::Tensor<T>::matrix::Zero(s,N);
 		}
 		else {
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
@@ -261,10 +261,17 @@ void Hamiltonian<T>::compute(){
 		value = 0;
 		state[name](k) = 0;
 
+// 		eigenmatrix = eigenmatrix.reshaped(j,n*n/j).eval();
+// 		map(eigenmatrix.data(),n*n
+		
+// 		Eigen::MatrixXd G(Nx+2, Ny+2); // allocate matrix
+// // set values in-place:
+// 		Eigen::VectorXd::Map(G.data(), (Nx + 2) * (Ny + 2)).setLinSpaced(0,(Nx + 2) * (Ny + 2)-1);
+
+
 		for (i=0;i<size[k];i++){
 
-			// Order
-			name = "order";
+			// Eigenvector in full space from subspace
 			if (this->subspaces.size() == n){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
@@ -274,7 +281,9 @@ void Hamiltonian<T>::compute(){
 					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
 				};
 			};
-			
+
+			// Order
+			name = "order";
 			value = std::abs(eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs()))/N;
 			state[name](k) += value/size[k];
 
@@ -283,6 +292,12 @@ void Hamiltonian<T>::compute(){
 			value = this->eigenvalues(indices[k][i])/N;
 			state[name](k) += value/size[k];
 
+			// Entanglement
+			// name = "entanglement";
+			// for (j=0;j<N;j++){
+			// 	value = utils::entropy(eigenvector,j);
+			// 	state[name](k,j) += value/size[k];
+			// };
 		};
 
 	};
@@ -523,7 +538,7 @@ void Ising<T>::compute(){
 
 	// State
 	s = std::min((unsigned int)(indices.size()),s);
-	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
+	std::map<std::string,typename tensor::Tensor<T>::matrix> state = this->state;
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
 		if ((name == "order") or (name == "energy") or (name == "gap")){
@@ -820,7 +835,7 @@ void Heisenberg<T>::compute(){
 
 	// State
 	s = std::min((unsigned int)(indices.size()),s);
-	std::map<std::string,typename tensor::Tensor<T>::vector> state = this->state;
+	std::map<std::string,typename tensor::Tensor<T>::matrix> state = this->state;
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
 		if ((name == "order") or (name == "energy") or (name == "gap")){

@@ -170,7 +170,7 @@ endif
 all: clean $(EXE)
 
 run : $(EXE) clean_data
-	@$(RUN)$(EXE) $(RUN_ARGS)
+	$(RUN)$(EXE) $(RUN_ARGS)
 
 runs : $(EXES) clean_data
 	$(foreach i,$(SEQ),@$(RUN)$(word $(i),$(EXES)) $(RUN_ARGS);)	
@@ -212,10 +212,10 @@ clean_data :
 	@$(RM) $(PROFILE_DEP)
 
 $(EXE_DIR)/%.$(EXE_EXT) : $(OBJ_DIR)/%.$(OBJ_EXT) $(OBJ) $(LIB) | $(EXE_DIR)
-	@$(CC) $(CC_FLAGS) $< $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
+	$(CC) $(CC_FLAGS) $< $(OBJ) -o $@ $(LD_FLAGS) $(LD_LIBS)
 
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT) $(LIB) | $(OBJ_DIR)
-	@$(CC) $(CC_FLAGS) -c $< -o $@ $(LD_FLAGS) $(LD_LIBS)
+	$(CC) $(CC_FLAGS) -c $< -o $@ $(LD_FLAGS) $(LD_LIBS)
 
 $(OBJ_DIR) $(EXE_DIR) : 
 	@$(MKDIR) $@
