@@ -198,9 +198,9 @@ void Hamiltonian<T>::compute(){
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
-	utils::argsort(this->eigenvalues,argsort,sorting);
-	utils::permute(this->eigenvalues,argsort);
-	utils::permute(this->eigenvectors,argsort,axis);
+	linalg::argsort(this->eigenvalues,argsort,sorting);
+	linalg::permute(this->eigenvalues,argsort);
+	linalg::permute(this->eigenvectors,argsort,axis);
 
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
@@ -251,6 +251,16 @@ void Hamiltonian<T>::compute(){
 		value = 0;
 		state[name](k) = value;
 		
+		// Gap
+		name = "gap";
+		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
+		state[name](k) = value;
+
+		// Entanglement
+		name = "entanglement";
+		value = 0;
+		state[name](k) = 0;
+
 		for (i=0;i<size[k];i++){
 
 			// Order
@@ -274,16 +284,6 @@ void Hamiltonian<T>::compute(){
 			state[name](k) += value/size[k];
 
 		};
-
-		// Gap
-		name = "gap";
-		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
-		state[name](k) = value;
-
-		// Entanglement
-		name = "entanglement";
-		value = 0;
-		state[name](k) = 0;
 
 	};
 
@@ -497,9 +497,9 @@ void Ising<T>::compute(){
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
-	utils::argsort(this->eigenvalues,argsort,sorting);
-	utils::permute(this->eigenvalues,argsort);
-	utils::permute(this->eigenvectors,argsort,axis);
+	linalg::argsort(this->eigenvalues,argsort,sorting);
+	linalg::permute(this->eigenvalues,argsort);
+	linalg::permute(this->eigenvectors,argsort,axis);
 
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
@@ -549,6 +549,16 @@ void Ising<T>::compute(){
 		value = 0;
 		state[name](k) = value;
 		
+		// Gap
+		name = "gap";
+		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
+		state[name](k) = value;
+
+		// Entanglement
+		name = "entanglement";
+		value = 0;
+		state[name](k) = 0;
+
 		for (i=0;i<size[k];i++){
 
 			// Order
@@ -572,16 +582,6 @@ void Ising<T>::compute(){
 			state[name](k) += value/size[k];
 
 		};
-
-		// Gap
-		name = "gap";
-		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
-		state[name](k) = value;
-
-		// Entanglement
-		name = "entanglement";
-		value = 0;
-		state[name](k) = 0;
 
 	};
 
@@ -794,9 +794,9 @@ void Heisenberg<T>::compute(){
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
-	utils::argsort(this->eigenvalues,argsort,sorting);
-	utils::permute(this->eigenvalues,argsort);
-	utils::permute(this->eigenvectors,argsort,axis);
+	linalg::argsort(this->eigenvalues,argsort,sorting);
+	linalg::permute(this->eigenvalues,argsort);
+	linalg::permute(this->eigenvectors,argsort,axis);
 
 	// Unique sorted and grouped eigenvalue indices
 	unsigned int i;
@@ -846,6 +846,16 @@ void Heisenberg<T>::compute(){
 		value = 0;
 		state[name](k) = value;
 		
+		// Gap
+		name = "gap";
+		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
+		state[name](k) = value;
+
+		// Entanglement
+		name = "entanglement";
+		value = 0;
+		state[name](k) = 0;
+
 		for (i=0;i<size[k];i++){
 
 			// Order
@@ -869,16 +879,6 @@ void Heisenberg<T>::compute(){
 			state[name](k) += value/size[k];
 
 		};
-
-		// Gap
-		name = "gap";
-		value = (this->eigenvalues(indices[std::min(k+1,s-1)].front()) - this->eigenvalues(indices[k].front()))/N;
-		state[name](k) = value;
-
-		// Entanglement
-		name = "entanglement";
-		value = 0;
-		state[name](k) = 0;
 
 	};
 

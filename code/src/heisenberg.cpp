@@ -4,9 +4,6 @@
 #include <complex> 
 
 #include "hamiltonian.hpp"
-#include "utils.hpp"
-
-
 
 int main(int argc, char *argv[]){
 

@@ -18,67 +18,18 @@ Tensor<T>::~Tensor(){
 template <typename T>
 void Tensor<T>::eig(){
 
-	// Solve
-
-	// unsigned int q = std::min(this->size-1,this->system.q); // Number of eigenvalues
-	// unsigned int tol =  std::min(3*this->system.q,this->size); // Solver tolerance
-
-	// T shift = 1*((this->system.parameters["J"]/2.0)*this->system.z*this->system.N);
-	// T scale = -1;
-	// this->data.array() *= scale;
-	// this->data.diagonal().array() += shift;
-	// utils::check(this->data,this->system.eps);
-
-	// // this->data.coeffs() *= scale;
-	// // this->data.diagonal().array() += shift;
-	// // utils::check(this->data,this->system.eps);
-
-	// typename tensor::Tensor<T>::op op(this->data);
-	// typename tensor::Tensor<T>::solver solver(op,q,tol);
-
-	// solver.init();
-	// solver.compute(this->sort);
- 
-	// this->eigenvalues = solver.eigenvalues();
-	// this->eigenvectors = solver.eigenvectors();
-
-	// this->eigenvalues.array() -= shift;
-	// this->eigenvalues.array() /= scale;
-	// utils::check(this->eigenvalues,this->system.eps);
-	// utils::check(this->eigenvectors,this->system.eps);
-
-	// this->data.diagonal().array() -= shift;
-	// this->data.array() /= scale;
-	// utils::check(this->data,this->system.eps);
-
-	// // this->data.diagonal().array() -= shift;
-	// // this->data.coeffs() /= scale;
-	// // utils::check(this->data,this->system.eps);	
-
-
-	// Solve
-
-	unsigned int q = std::min(this->size-1,this->system.q); // Number of eigenvalues
+	unsigned int n = std::min(this->size-1,this->system.q); // Number of eigenvalues
 	std::string sigma = this->system.sigma; // Eigenvalue to centre around
-	// std::string sigma = utils::string((this->system.parameters["J"]/2.0)*this->system.z); // Eigenvalue to centre around
-	// std::string sigma = utils::string(this->system.sigma); // Eigenvalue to centre around
-	int options = -1; // Eigenvalues options
-	T eps = 0; // Eigenvalues tolerance
+	T eps = this->system.eps; // Eigenvalues tolerance
 
-	// T scale = -1.0/this->system.N;
-	T scale = this->system.scale; // /(T)(this->system.N);
-	T shift = this->system.shift;
+	T scale = this->system.scale; // Scale data
+	T shift = this->system.shift; // Shift diagonal of data
 
 	// this->data.array() *= scale;
 	this->data.coeffs() *= scale;
 	this->data.diagonal().array() += shift;
 
-	typename tensor::Tensor<T>::solver solver;
-	solver.compute(this->data,q,sigma,options,eps); // https://docs.scipy.org/doc/scipy/tutorial/arpack.html
-	// solver.compute(this->data);
-
-	this->eigenvalues = solver.eigenvalues();
-	this->eigenvectors = solver.eigenvectors();
+	linalg::eigh(this->data,this->eigenvalues,this->eigenvectors,n,sigma,eps);
 
 	this->eigenvalues.array() -= shift;
 	this->eigenvalues.array() /= scale;
@@ -86,15 +37,6 @@ void Tensor<T>::eig(){
 	this->data.diagonal().array() -= shift;
 	this->data.coeffs() /= scale;
 	// this->data.array() /= scale;
-
-
-	// Solve
-
-	// typename tensor::Tensor<T>::solver solver;
-	// solver.compute(this->data);
-	
-	// this->eigenvalues = solver.eigenvalues();
-	// this->eigenvectors = solver.eigenvectors();
 
 	return;
 };

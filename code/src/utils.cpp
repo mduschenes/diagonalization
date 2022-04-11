@@ -3,18 +3,6 @@
 namespace utils {
 
 template<typename T>
-T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b){
-	return (a.transpose()*b).trace();
-};
-
-
-template<typename T>
-T norm(Eigen::SparseMatrix<T> & a, Eigen::SparseMatrix<T> & b){
-	return 0;
-};
-
-
-template<typename T>
 void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
 
 	T val = 0;
@@ -129,54 +117,6 @@ unsigned int find(std::vector<T> & a, T & value){
 };
 
 
-template <typename T>
-void permute(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis){
-	Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic> permuation;
-	permuation.indices() = Vector(indices);
-	if (axis == 0){
-		a = permuation * a;		
-	}
-	else if ((axis == 1) or (axis == -1)){
-		a = a * permuation;		
-	}
-	else {
-		a = permuation * a;		
-	};
-	return;
-};
-
-
-template <typename T>
-void permute(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis){
-	Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic> permuation;
-	permuation.indices() = Vector(indices);
-	if (axis == 0){
-		a = permuation * a;		
-	}
-	else if ((axis == 1) or (axis == -1)){
-		a = a * permuation;		
-	}
-	else {
-		a = permuation * a;		
-	};
-	return;
-};
-
-template <typename T>
-void permute(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices){
-	Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic> permuation;
-	permuation.indices() = Vector(indices);
-	a = permuation * a;	
-	return;
-};
-
-template <typename T>
-void permute(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & a, std::vector<int> & indices){
-	Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic> permuation;
-	permuation.indices() = Vector(indices);
-	a = permuation * a;	
-	return;
-};
 
 
 template <typename T> 
@@ -200,35 +140,6 @@ Eigen::Vector<T,Eigen::Dynamic> Vector(std::vector<T> & vector){
 	T * ptr = &vector[0];
 	Eigen::Map<Eigen::Vector<T,Eigen::Dynamic>> Vector(ptr, vector.size());
 	return Vector;
-};
-
-
-template <typename T>
-void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting){
-
-	indices.resize(a.size());
-	std::iota(indices.begin(),indices.end(),0);
-
-	bool (*algorithm)(T,T);
-	if (sorting == "<="){
-		algorithm = [](T a, T b) {return a <= b;};
-	}
-	else if (sorting == "<"){
-		algorithm = [](T a, T b) {return a < b;};
-	}
-	else if (sorting == ">="){
-		algorithm = [](T a, T b) {return a >= b;};
-	}
-	else if (sorting == ">"){
-		algorithm = [](T a, T b) {return a > b;};
-	}
-	else {
-		algorithm = [](T a, T b) {return a <= b;};
-	};
-
-	std::stable_sort(indices.begin(), indices.end(),[&a,&algorithm](unsigned int i, unsigned int j) {return algorithm(a(i),a(j));}); 
-
-	return;
 };
 
 
@@ -311,17 +222,6 @@ int spincount(unsigned int x,unsigned int n){
 
 
 
-
-
-
-template double norm<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & b);
-template float norm<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & b);
-template int norm<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & b);
-
-template double norm<double>(Eigen::SparseMatrix<double> & a,Eigen::SparseMatrix<double> & b);
-template float norm<float>(Eigen::SparseMatrix<float> & a,Eigen::SparseMatrix<float> & b);
-template int norm<int>(Eigen::SparseMatrix<int> & a,Eigen::SparseMatrix<int> & b);
-
 template void check<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a, double & eps);
 template void check<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a, float & eps);
 
@@ -361,28 +261,6 @@ template unsigned int find<float>(std::vector<float> & a,float & value);
 template unsigned int find<int>(std::vector<int> & a,int & value);
 template unsigned int find<unsigned int>(std::vector<unsigned int> & a,unsigned int & value);
 
-
-template void permute<double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<float>(Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<int>(Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<unsigned int>(Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-
-template void permute<double>(Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<float>(Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<int>(Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-template void permute<unsigned int>(Eigen::Matrix<std::complex<unsigned int>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-
-template void permute<double>(Eigen::Vector<double, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<float>(Eigen::Vector<float, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<int>(Eigen::Vector<int, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<unsigned int>(Eigen::Vector<unsigned int, Eigen::Dynamic> & a, std::vector<int> & indices);
-
-template void permute<double>(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<float>(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<int>(Eigen::Vector<std::complex<int>, Eigen::Dynamic> & a, std::vector<int> & indices);
-template void permute<unsigned int>(Eigen::Vector<std::complex<unsigned int>, Eigen::Dynamic> & a, std::vector<int> & indices);
-
-
 template std::string string(const double & obj);
 template std::string string(const float & obj);
 template std::string string(const int & obj);
@@ -396,10 +274,6 @@ template Eigen::Vector<double,Eigen::Dynamic> Vector<double>(std::vector<double>
 template Eigen::Vector<float,Eigen::Dynamic> Vector<float>(std::vector<float> & vector);
 template Eigen::Vector<int,Eigen::Dynamic> Vector<int>(std::vector<int> & vector);
 template Eigen::Vector<unsigned int,Eigen::Dynamic> Vector<unsigned int>(std::vector<unsigned int> & vector);
-
-template void argsort<double>(Eigen::Vector<double, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
-template void argsort<float>(Eigen::Vector<float, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
-template void argsort<int>(Eigen::Vector<int, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
 
 template void cast<double,double>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & other);
 template void cast<double,float>(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & other);

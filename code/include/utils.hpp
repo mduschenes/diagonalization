@@ -18,12 +18,6 @@
 namespace utils {
 
 template<typename T>
-T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b);
-
-template<typename T>
-T norm(Eigen::SparseMatrix<T> & a, Eigen::SparseMatrix<T> & b);
-
-template<typename T>
 void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps);
 
 template<typename T>
@@ -61,19 +55,6 @@ bool isin(std::vector<T> & a,T & value);
 template < typename T>
 unsigned int find(std::vector<T> & a, T & value);
 
-template <typename T>
-void permute(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-
-template <typename T>
-void permute(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, std::vector<int> & indices,int axis);
-
-template <typename T>
-void permute(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices);
-
-template <typename T>
-void permute(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & a, std::vector<int> & indices);
-
-
 template <typename T> 
 std::string string(const T & obj);
 
@@ -82,9 +63,6 @@ T number(const std::string & obj);
 
 template <typename T>
 Eigen::Vector<T,Eigen::Dynamic> Vector(std::vector<T> & vector);
-
-template <typename T>
-void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
 
 template <typename T, std::size_t... indices>
 void _assign(T & tuple, std::map<std::string,T> & map, std::vector<std::string> & keys, std::index_sequence<indices...>);

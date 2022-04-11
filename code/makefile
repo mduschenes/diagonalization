@@ -26,7 +26,7 @@ PROCESS_EXT:= py
 DATA_EXT := hdf5
 
 # Targets
-SRC := tensor hamiltonian io hdf5 utils
+SRC := hamiltonian io hdf5 linalg utils tensor
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
@@ -167,7 +167,7 @@ endif
 
 
 # Rules
-all: clean run
+all: clean $(EXE)
 
 run : $(EXE) clean_data
 	@$(RUN)$(EXE) $(RUN_ARGS)

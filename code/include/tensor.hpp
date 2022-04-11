@@ -16,18 +16,12 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <Eigen/Eigenvalues> 
-#include <unsupported/Eigen/ArpackSupport>
-
-// #include <Spectra/SymEigsSolver.h>
-// #include <Spectra/MatOp/DenseSymMatProd.h>
-// #include <Spectra/MatOp/SparseSymMatProd.h>
 
 #include <itertools.hpp>
-	
-#include "utils.hpp"
-#include "io.hpp"
 
+#include "io.hpp"	
+#include "utils.hpp"
+#include "linalg.hpp"
 
 namespace tensor {
 
@@ -89,12 +83,11 @@ class Tensor {
 		// Type
 		// typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> type;				
 		typedef Eigen::SparseMatrix<T,Eigen::ColMajor> type;
-		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> type_complex;		
+		typedef Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> type_complex;
 		typedef Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> matrix;
 		typedef Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> matrix_complex;
 		typedef Eigen::Vector<T, Eigen::Dynamic> vector;
 		typedef Eigen::Vector<std::complex<T>, Eigen::Dynamic> vector_complex;
-		typedef Eigen::SimplicialLDLT<type> algorithm;
 		typedef Eigen::Triplet<T,unsigned int> index;
 
 		// Parallel
@@ -117,18 +110,6 @@ class Tensor {
 		void print();
 
 		// Solve
-		
-		// typedef Spectra::SymEigsSolver<Spectra::DenseSymMatProd<T>> solver;
-		// typedef Spectra::DenseSymMatProd<T> op;
-
-		// typedef Spectra::SymEigsSolver<Spectra::SparseSymMatProd<T>> solver;
-		// typedef Spectra::SparseSymMatProd<T> op;
-
-		// Spectra::SortRule sort = Spectra::SortRule::LargestMagn;
-
-		typedef Eigen::ArpackGeneralizedSelfAdjointEigenSolver<type,algorithm> solver;
-		// typedef Eigen::SelfAdjointEigenSolver<type> solver;
-
 		vector eigenvalues;
 		matrix_complex eigenvectors;
 		void eig();

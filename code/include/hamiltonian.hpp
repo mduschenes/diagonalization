@@ -4,6 +4,7 @@
 #include "tensor.hpp"
 #include "io.hpp"
 #include "utils.hpp"
+#include "linalg.hpp"
 
 
 namespace hamiltonian {
