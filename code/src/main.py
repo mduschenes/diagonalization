@@ -25,7 +25,7 @@ for PATH in PATHS:
 from lib.utils.io import setup,load,dump,_load
 from lib.utils.plot import plot
 
-def texify(string):
+def texify(string,usetex=True):
 	strings = {
 		'N':r'$N$'%(),
 		'h':r'$h/J$'%(),
@@ -40,7 +40,23 @@ def texify(string):
 
 	default = r'$%s$'%(string.replace('$',''))
 
-	return strings.get(string,default)
+	string = strings.get(string,default)
+
+	if not usetex:
+		string = string.replace('$','')
+
+	return string
+
+
+def fit(x,y,intercept=True):
+	if intercept:
+		x = np.array([x,np.ones(x.size)]).T
+	else:
+		x = np.array([x]).T
+	coef = np.linalg.lstsq(x,y)[0]
+	y = x.dot(coef)
+	return y,coef
+
 
 def main(args):
 
@@ -86,7 +102,7 @@ def main(args):
 		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
 			{'h': x/np.array([data[name]['J'] for name in data if data[name][iattr] == i]),
 			 'N': 1/x if xattr =='N' else x,
-			 'x': np.arange(1,y[0].size+1)/np.array([data[name]['N'] for name in data if data[name][iattr] == i]),
+			 'x': np.arange(1,np.array([data[name]['N'] for name in data if data[name][iattr] == i])[0])/(np.array([data[name]['N'] for name in data if data[name][iattr] == i])[0]),
 			}[xattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -103,7 +119,55 @@ def main(args):
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
 		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
-		}		
+		}
+
+	xfits = {(xattr,yattr,iattr): 
+		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
+			{'h': x,
+			 'N': x,
+			 'x': x,
+			}[xattr]))
+		for i in parameters[iattr]} 
+		for j in range(sizes[yattr])}
+		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
+		}
+
+
+	yfits = {(xattr,yattr,iattr): 
+		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
+			{'energy': y,
+			 'order':y,
+			 'gap': y,
+			 'entanglement':fit(np.log((np.array([data[name]['N'] for name in data if data[name][iattr] == i])[0])/np.pi*np.sin(np.pi*x))/3,y,intercept=True)[0],
+			}[yattr]))
+		for i in parameters[iattr]} 
+		for j in range(sizes[yattr])}
+		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
+		}	
+
+	xcoefs = {(xattr,yattr,iattr): 
+		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
+			{'h': x,
+			 'N': x,
+			 'x': x,
+			}[xattr]))
+		for i in parameters[iattr]} 
+		for j in range(sizes[yattr])}
+		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
+		}
+
+
+	ycoefs = {(xattr,yattr,iattr): 
+		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
+			{'energy': y,
+			 'order':y,
+			 'gap': y,
+			 'entanglement':fit(np.log((np.array([data[name]['N'] for name in data if data[name][iattr] == i])[0])/np.pi*np.sin(np.pi*x))/3,y,intercept=True)[1],
+			}[yattr]))
+		for i in parameters[iattr]} 
+		for j in range(sizes[yattr])}
+		for (xattr,yattr,iattr) in zip(xattrs,yattrs,iattrs)
+		}						
 
 	
 	argsort = {key: {j: {i: np.argsort(x[key][j][i]) for i in x[key][j]} for j in x[key]} for key in x}
@@ -195,26 +259,38 @@ def main(args):
 		key:{
 		j: {
 			'ax': {
-				'plot':[{
+				'plot':[
+					*[{
 					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'marker':'o',
+					'linestyle':'--',
 					'color':getattr(plt.cm,'tab10')(l),
-					'label':texify(i) if j==(0) else None,
+					# 'label':texify(i) if j==(0) else None,
 					}
 					for l,i in enumerate(parameters[key[2]])
 					],
+					*[{
+					'x': xfits[key][j][i](xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),*key,i),
+					'y': yfits[key][j][i](xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),*key,i),
+					'linestyle':'-',					
+					'color':getattr(plt.cm,'tab10')(l),
+					'label':'$%s%s : c = %0.3f,~ C = %0.3f$'%(texify(i,usetex=False),r'~' if i<10 else '',*ycoefs[key][j][i](xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),*key,i)) if j==(0) else None,
+					}
+					for l,i in enumerate(parameters[key[2]])
+					]]
+					,
 				# 'set_title':{'label':r'$\textrm{Level %d}$'%(j)},
 				'set_xlabel':{'xlabel':texify(r'%s'%(key[0]))},
 				'set_ylabel':{'ylabel':texify(key[1])},
 				'set_xscale':{'value':'linear'},				
 				'set_xlim':{'xmin':0,'xmax':1},				
 				'set_xticks':{'ticks':[0,0.25,0.5,0.75,1]},				
-				'legend':{'title':texify(key[2]),'ncol':3},
+				'legend':{'title':texify(key[2]),'ncol':1,'loc':(1.1,0.35)},
 				'grid':{'visible':True},
 			},	
 			'fig':{
-				'set_size_inches':{'w':12,'h':12},
+				'set_size_inches':{'w':16,'h':12},
 				'savefig':{'fname':os.path.join(directory,'%s__%s__%s.pdf'%(key[1],key[0],key[2]))},
 				# 'close':{'fig':True},
 			},
@@ -231,18 +307,6 @@ def main(args):
 	}
 
 
-
-
-	x = [(np.log(N/np.pi*np.sin(np.pi*np.arange(1,N)/N))/3) for N in parameters['N']]
-	y = [[data[name]['entanglement'][0] for name in data if data[name]['N'] == N][0] for N in parameters['N']]
-	X = [np.array([u,np.ones(u.size)]).T for u in x]
-	Y = [np.array(v) for v in y]
-	# print([(x.shape,y.shape) for x,y in zip(X,Y)])
-	params = [np.linalg.lstsq(x,y)[0][0] for x,y in zip(X,Y)]
-	# m = [v.dot(u)/(u.dot(u)) for u,v in zip(x,y)]
-	
-	print(parameters['N'])
-	print(params)
 
 	for k,key in enumerate(settings):
 		plot(settings=settings[key])
