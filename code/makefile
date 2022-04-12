@@ -26,7 +26,7 @@ PROCESS_EXT:= py
 DATA_EXT := hdf5
 
 # Targets
-SRC := hamiltonian tensor physics io hdf5 linalg utils
+SRC := linalg hamiltonian tensor physics io hdf5 utils
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
@@ -72,7 +72,7 @@ USE_PROFILE :=
 
 # Flags
 # CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wextra -g -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
-CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
+CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -Wall -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
 
@@ -97,8 +97,8 @@ LD_LIBS += -lpthread -larpack
 # BLAS Libraries
 ifdef USE_MKL
 CC_FLAGS += -I${MKLROOT}/include
-LD_FLAGS += -L${MKLROOT}/lib/intel64
-LD_LIBS  += -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp
+LD_FLAGS += -L${MKLROOT}/lib/intel64 
+LD_LIBS  += -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp -lpthread -Wl,--no-as-needed -DMKL_LP64
 else
 CC_FLAGS +=
 LD_FLAGS +=
@@ -160,8 +160,8 @@ endif
 
 
 # Make Options
-.PHONY: all run test clean process profile main ising heisenberg
-.SILENT : all run test clean process profile main ising heisenberg
+.PHONY: all run test clean plot process profile runs plots processs main ising heisenberg
+.SILENT : all run test clean plot process profile runs plots processs main ising heisenberg
 .PRECIOUS : $(OBJ_DIR)/%.$(OBJ_EXT) $(DEP_DIR)/%.$(DEP_EXT)
 .SECONDEXPANSION:
 
@@ -179,11 +179,17 @@ test :
 
 clean : clean_obj clean_data
 
-process : $(PROCESS) $(PROCESS_DEP)
+plot : $(PROCESS) $(PROCESS_DEP)
 	@$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) $(PROCESS_ARGS)
 
-processs : $(PROCESSS) $(PROCESSS_DEP)
+
+plots : $(PROCESSS) $(PROCESSS_DEP)
 	$(foreach i,$(SEQ),$(word $(i),$(PROCESSS)) $(word $(i),$(PROCESSS_DEP)) $(PROCESSS_FLAGS);)
+
+process : run plot
+
+
+processs : runs plots
 
 profile : $(EXE) $(PROFILE_DEP)
 	$(PROFILE) $(PROFILE_FLAGS) $< $(PROFILE_DEP) > $(PROFILE_OUT)

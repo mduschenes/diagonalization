@@ -43,9 +43,15 @@ void dump(std::string & path, std::string & name, Eigen::Matrix<T, Eigen::Dynami
 	H5::DataSpace dataspace(dim, shape);
 	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
 
-	T * values = data.transpose().data();
+	T * values;
+
+	data.transposeInPlace();
+
+	values = data.data();
 
 	dataset.write(values,datatype);
+
+	data.transposeInPlace();
 
 	return;
 };
@@ -559,8 +565,16 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 			dataspace = H5::DataSpace(dim,shape);
 
 			attribute = obj.createAttribute(i->first,datatype,dataspace);
-			values = attributes[i->first].transpose().data();
+			std::cout << i->first << std::endl;
+
+			attributes[i->first].transposeInPlace();
+
+			values = attributes[i->first].data();
+
 			attribute.write(datatype,values);
+
+			attributes[i->first].transposeInPlace();
+
 		};
 
 	};

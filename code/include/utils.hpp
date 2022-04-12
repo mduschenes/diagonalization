@@ -11,7 +11,10 @@
 #include <algorithm>
 #include <variant>
 
+
 #define EIGEN_USE_MKL_ALL   
+#define NUM_THREADS 7
+#include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 

@@ -86,7 +86,7 @@ def main(args):
 		{j:{i: (lambda x,y,xattr=xattr,yattr=yattr,iattr=iattr,i=i: (
 			{'h': x/np.array([data[name]['J'] for name in data if data[name][iattr] == i]),
 			 'N': 1/x if xattr =='N' else x,
-			 'x': x/np.array([data[name]['N'] for name in data if data[name][iattr] == i]),
+			 'x': np.arange(1,y[0].size+1)/np.array([data[name]['N'] for name in data if data[name][iattr] == i]),
 			}[xattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -98,7 +98,7 @@ def main(args):
 			{'energy': y,
 			 'order':y,
 			 'gap': y,
-			 'entanglement':y,
+			 'entanglement':y[0],
 			}[yattr]))
 		for i in parameters[iattr]} 
 		for j in range(sizes[yattr])}
@@ -168,11 +168,12 @@ def main(args):
 				# 'legend':{'title':texify(key[2]),'ncol':4},
 				'grid':{'visible':True},
 				'set_colorbar':{
-					'values':[2*(l/len(x[key][j])) for l,i in enumerate(x[key][j])],
-					'colors':[getattr(plt.cm,'RdYlBu')(l/len(x[key][j])) for l,i in enumerate(x[key][j])],
+					'values':[i for i in np.linspace(min(x[key][j]),max(x[key][j]),4*len(x[key][j]))],
+					'colors':[getattr(plt.cm,'RdYlBu')(i/(4*len(x[key][j]))) for i in range(4*len(x[key][j]))],
 					'size':'3%',
 					'pad':0.1,
 					'set_ylabel':{'ylabel':texify(key[2])},
+					'set_yticks':{'ticks':np.linspace(min(x[key][j]),max(x[key][j]),5)},
 					}  if j == 0 else {},			
 			},	
 			'fig':{
@@ -195,8 +196,8 @@ def main(args):
 		j: {
 			'ax': {
 				'plot':[{
-					'x': np.arange(1,len([data[name][key[1]][j] for name in data if data[name][key[2]] == i][0])+1)/i,
-					'y': [data[name][key[1]][j] for name in data if data[name][key[2]] == i][0],
+					'x': xfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
+					'y': yfuncs[key][j][i](x[key][j][i],y[key][j][i],*key,i),
 					'marker':'o',
 					'color':getattr(plt.cm,'tab10')(l),
 					'label':texify(i) if j==(0) else None,
@@ -209,7 +210,7 @@ def main(args):
 				'set_xscale':{'value':'linear'},				
 				'set_xlim':{'xmin':0,'xmax':1},				
 				'set_xticks':{'ticks':[0,0.25,0.5,0.75,1]},				
-				'legend':{'title':texify(key[2]),'ncol':4},
+				'legend':{'title':texify(key[2]),'ncol':3},
 				'grid':{'visible':True},
 			},	
 			'fig':{
@@ -231,6 +232,17 @@ def main(args):
 
 
 
+
+	x = [(np.log(N/np.pi*np.sin(np.pi*np.arange(1,N)/N))/3) for N in parameters['N']]
+	y = [[data[name]['entanglement'][0] for name in data if data[name]['N'] == N][0] for N in parameters['N']]
+	X = [np.array([u,np.ones(u.size)]).T for u in x]
+	Y = [np.array(v) for v in y]
+	# print([(x.shape,y.shape) for x,y in zip(X,Y)])
+	params = [np.linalg.lstsq(x,y)[0][0] for x,y in zip(X,Y)]
+	# m = [v.dot(u)/(u.dot(u)) for u,v in zip(x,y)]
+	
+	print(parameters['N'])
+	print(params)
 
 	for k,key in enumerate(settings):
 		plot(settings=settings[key])

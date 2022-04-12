@@ -188,7 +188,7 @@ void Hamiltonian<T>::compute(){
 	unsigned int j,k,l;
 	std::string name;
 	T value;
-	typename tensor::Tensor<T>::vector_complex eigenvector(n);
+	typename tensor::Tensor<T>::vector_complex eigenvector;
 
 	// Sort eigenvalues
 	std::vector<int> argsort; // Sorting indices of eigenvalues
@@ -274,6 +274,8 @@ void Hamiltonian<T>::compute(){
 					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
 				};
 			};
+			// eigenvector = this->eigenvectors.col(indices[k][i]);	
+
 
 			// Order
 			name = "order";
@@ -287,13 +289,15 @@ void Hamiltonian<T>::compute(){
 
 			// Entanglement
 			name = "entanglement";
-			// #pragma omp parallel for private(k,j,l,value,name) shared(state)
-			for (j=0;j<state[name].cols();j++){
-				l = pow(D,j+1);
-				value = physics::entropy(eigenvector,l,eps);
+			if (((k == 0) and (i==0)) or false){
+				// #pragma omp parallel for private(j,l,value,eigenvector,eps) shared(k,name,state)
+				for (j=0;j<state[name].cols();j++){
+					l = pow(D,j+1);
+					value = physics::entropy(eigenvector,l,eps);
 
-				// #pragma omp critical
-				state[name](k,j) += value/size[k];
+					// #pragma omp critical
+					state[name](k,j) += value; //size[k];
+				};
 			};
 		};
 
@@ -303,8 +307,8 @@ void Hamiltonian<T>::compute(){
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
-		state[name] = (state[name].array().isFinite()).select(state[name],0);
-		utils::check(state[name],eps);
+		// state[name] = (state[name].array().isFinite()).select(state[name],0);
+		// utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};
 

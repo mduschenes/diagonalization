@@ -18,6 +18,8 @@
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues> 
 #include <unsupported/Eigen/ArpackSupport>
+#include <unsupported/Eigen/MatrixFunctions>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include "utils.hpp"
 
@@ -80,8 +82,11 @@ void eigh(Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> & matrix, Eigen::
 // template<typename T>
 // void eigs(Eigen::SparseMatrix<std::complex<T>,Eigen::ColMajor> & matrix, Eigen::Vector<T, Eigen::Dynamic> & eigenvalues,Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & eigenvectors, unsigned int & n, std::string & sigma, T & eps);
 
+template<typename T>
+void svd(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & singularvalues, unsigned int & n, std::string & sigma, T & eps);
 
-
+template<typename T>
+void svd(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, Eigen::Vector<T, Eigen::Dynamic> & singularvalues, unsigned int & n, std::string & sigma, T & eps);
 
 template<typename T>
 T norm(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & b);
@@ -104,6 +109,11 @@ void permute(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & a, std::vector<int
 template <typename T>
 void argsort(Eigen::Vector<T, Eigen::Dynamic> & a, std::vector<int> & indices, std::string & sorting);
 
+template<typename T>
+void trace(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & matrix, unsigned int & n, T & eps);
+
+template<typename T>
+void trace(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & matrix, unsigned int & n, T & eps);
 
 };
 
