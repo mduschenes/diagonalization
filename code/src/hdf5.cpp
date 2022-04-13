@@ -565,7 +565,6 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 			dataspace = H5::DataSpace(dim,shape);
 
 			attribute = obj.createAttribute(i->first,datatype,dataspace);
-			std::cout << i->first << std::endl;
 
 			attributes[i->first].transposeInPlace();
 

@@ -75,22 +75,24 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(16u);
 		variables[names.back()].push_back(18u);
 		variables[names.back()].push_back(20u);
+		// variables[names.back()].push_back(24u);
 
 		names.push_back("J");
-		sizes[names.back()] = 1;
+		sizes[names.back()] = 0;
 		variables[names.back()].push_back(1.0);		
 
 		names.push_back("h");
 		sizes[names.back()] = 64;
+		variables[names.back()].push_back(0.0);		
 
-		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.+0.8*(j)/((sizes[names.back()])/4.-1)));};
-		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.8+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
-		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
-		for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.2+0.8*(j+1)/((sizes[names.back()])/4.-1+1)));};
+		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.+0.8*(j)/((sizes[names.back()])/4.-1)));};
+		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.8+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
+		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
+		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((1.2+0.8*(j+1)/((sizes[names.back()])/4.-1+1)));};
 
 		names.push_back("U");
 		sizes[names.back()] = 1;
-		variables[names.back()].push_back(0.0);
+		variables[names.back()].push_back(2.0);
 
 	};
 
@@ -128,6 +130,7 @@ int main(int argc, char *argv[]){
 		system.dim = 2; // data dimension
 		system.eps = 0.0; // Floating point tolerance
 		system.tol = 0.0; // State degeneracy tolerance
+		system.close = 0.0; // Equal State degeneracy tolerance		
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
 		system.path = "data/heisenberg/data.hdf5"; // path name
@@ -135,7 +138,7 @@ int main(int argc, char *argv[]){
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
 		system.metadata = "metadata"; // metadata name
-		system.state = {"order","energy","gap","entanglement"}; // States
+		system.state = {"order","energy","gap","entanglement","partition"}; // States
 		system.parameters = {{"J",J},{"h",h},{"U",U}}; // Parameters of length k
 		system.symmetries = {{"order",{0}}}; // Symmetries
 

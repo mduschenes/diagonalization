@@ -2,20 +2,20 @@
 
 namespace physics {
 
-int spin(unsigned int x, unsigned int j){
-	return 2*((x >> j) & 1) - 1;
+int spin(unsigned int x, unsigned int i){
+	return 2*((x >> i) & 1) - 1;
 };
 
-int spinphase(unsigned int x, unsigned int j){
-	return spin(x,j)*x;
+int spinphase(unsigned int x, unsigned int i){
+	return spin(x,i)*x;
 };
 
-int spinflip(unsigned int x, unsigned int j){
-	return x ^ (1 << j);
+int spinflip(unsigned int x, unsigned int i){
+	return x ^ (1 << i);
 };
 
-int spinphaseflip(unsigned int x, unsigned int j){
-	return spin(x,j) * spinflip(x,j);
+int spinphaseflip(unsigned int x, unsigned int i){
+	return spin(x,i) * spinflip(x,i);
 };
 
 int spinswap(unsigned int x, unsigned int i, unsigned int j){
@@ -27,15 +27,19 @@ int spincount(unsigned int x,unsigned int n){
 };
 
 template<typename T>
-T expectation(Eigen::Vector<T, Eigen::Dynamic> & data,Eigen::Vector<T, Eigen::Dynamic> & weights, T & eps){
-	return weights.dot(data);
+T expectation(Eigen::Vector<T, Eigen::Dynamic> & data, Eigen::Vector<T, Eigen::Dynamic> & value, T & eps){
+	return data.cwiseAbs2().dot(value.cwiseAbs());
 };
 
 template<typename T>
-std::complex<T> expectation(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data,Eigen::Vector<T, Eigen::Dynamic> & weights, T & eps){
-	return weights.dot(data);
+T expectation(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data,Eigen::Vector<T, Eigen::Dynamic> & value, T & eps){
+	return data.cwiseAbs2().dot(value.cwiseAbs());
 };
 
+template<typename T>
+T expectation(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data,Eigen::Vector<std::complex<T>, Eigen::Dynamic> & value, T & eps){
+	return data.cwiseAbs2().dot(value.cwiseAbs());
+};
 
 template<typename T>
 T entropy(Eigen::Vector<T, Eigen::Dynamic> & data, unsigned int & n, T & eps){
@@ -53,9 +57,12 @@ T entropy(Eigen::Vector<T, Eigen::Dynamic> & data, unsigned int & n, T & eps){
 
 	value = -singularvalues.dot(singularvalues.array().log().matrix());
 
+	if (value < eps){
+		value = 0;
+	};
+	
 	return value;
 };
-
 
 
 template<typename T>
@@ -74,6 +81,9 @@ T entropy(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data, unsigned int & 
 
 	value = -singularvalues.dot(singularvalues.array().log().matrix());
 
+	if (value < eps){
+		value = 0;
+	};
 	return value;
 };
 
@@ -132,9 +142,6 @@ T entropy(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data, unsigned int & 
 
 // 	linalg::eigh(matrix,eigenvalues,eigenvectors,n,sigma,eps);
 
-// 	std::cout << n << " " << size << " " << eigenvalues << std::endl;
-// 	std::cout << std::endl;
-
 // 	Eigen::Vector<T,Eigen::Dynamic>::Map(data.data(),size);
 	
 // 	eigenvalues = (eigenvalues.array().abs() <= eps).select(1,eigenvalues);
@@ -162,9 +169,6 @@ T entropy(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data, unsigned int & 
 
 // 	linalg::eigh(matrix,eigenvalues,eigenvectors,n,sigma,eps);
 
-// 	std::cout << n << " " << size << " " << eigenvalues << std::endl;
-// 	std::cout << std::endl;
-
 // 	Eigen::Vector<std::complex<T>,Eigen::Dynamic>::Map(data.data(),size);
 	
 // 	eigenvalues = (eigenvalues.array().abs() < eps).select(1,eigenvalues);
@@ -174,24 +178,27 @@ T entropy(Eigen::Vector<std::complex<T>, Eigen::Dynamic> & data, unsigned int & 
 // };
 
 
-// int ditphase(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x >> j) & u;
+// int ditphase(unsigned int & x, unsigned int & d,unsigned int & i, unsigned int & u){
+// 	return (x >> i) & u;
 // };
 
-// int ditraise(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x + 1)*((d - 1 - (x&(pow(d,j))))/d);
+// int ditraise(unsigned int & x, unsigned int & d,unsigned int & i, unsigned int & u){
+// 	return (x + 1)*((d - 1 - (x&(pow(d,i))))/d);
 // };
 
-// int ditlower(unsigned int & x, unsigned int & d,unsigned int & j, unsigned int & u){
-// 	return (x - 1)*((d - 1 + (x&(pow(d,j))))/d);
+// int ditlower(unsigned int & x, unsigned int & d,unsigned int & i, unsigned int & u){
+// 	return (x - 1)*((d - 1 + (x&(pow(d,i))))/d);
 // };
 
 
-template double expectation(Eigen::Vector<double, Eigen::Dynamic> & data,Eigen::Vector<double, Eigen::Dynamic> & weights, double & eps);
-template float expectation(Eigen::Vector<float, Eigen::Dynamic> & data,Eigen::Vector<float, Eigen::Dynamic> & weights, float & eps);
+template double expectation(Eigen::Vector<double, Eigen::Dynamic> & data,Eigen::Vector<double, Eigen::Dynamic> & value, double & eps);
+template float expectation(Eigen::Vector<float, Eigen::Dynamic> & data,Eigen::Vector<float, Eigen::Dynamic> & value, float & eps);
 
-template std::complex<double> expectation(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data,Eigen::Vector<double, Eigen::Dynamic> & weights, double & eps);
-template std::complex<float> expectation(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data,Eigen::Vector<float, Eigen::Dynamic> & weights, float & eps);
+template double expectation(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data,Eigen::Vector<double, Eigen::Dynamic> & value, double & eps);
+template float expectation(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data,Eigen::Vector<float, Eigen::Dynamic> & value, float & eps);
+
+template double expectation(Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data,Eigen::Vector<std::complex<double>, Eigen::Dynamic> & value, double & eps);
+template float expectation(Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data,Eigen::Vector<std::complex<float>, Eigen::Dynamic> & value, float & eps);
 
 template double entropy(Eigen::Vector<double, Eigen::Dynamic> & data, unsigned int & n, double & eps);
 template float entropy(Eigen::Vector<float, Eigen::Dynamic> & data, unsigned int & n, float & eps);

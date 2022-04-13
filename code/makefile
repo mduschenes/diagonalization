@@ -72,7 +72,7 @@ USE_PROFILE :=
 
 # Flags
 # CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wextra -g -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
-CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -Wall -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
+CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -Wall -DNDEBUG -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
 LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
 LD_LIBS  := 
 

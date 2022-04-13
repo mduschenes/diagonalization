@@ -4,11 +4,8 @@ namespace utils {
 
 template<typename T>
 void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
-
 	T val = 0;
-
 	a.array() += 0;
-
 	for (unsigned int i=0;i<a.rows();i++){
 		for (unsigned int j=0;j<a.cols();j++){
 			if (close(a(i,j),eps)){
@@ -17,22 +14,22 @@ void check(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
 		};
 	};
 	a.array() += 0;	
+	a = (a.array().isFinite()).select(a,val);
 	return;
 };
 
 template<typename T>
 void check(Eigen::SparseMatrix<T> & a, T & eps){
+	T val = 0;	
 	a.coeffs().array() += 0;
+	// a = (a.array().isFinite()).select(a,val);	
 	return;
 };
 
 template<typename T>
 void check(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, T & eps){
-	
 	T val = 0;
-
 	a.array() += 0;
-
 	for (unsigned int i=0;i<a.rows();i++){
 		for (unsigned int j=0;j<a.cols();j++){
 			if (close(a(i,j),eps)){
@@ -41,20 +38,20 @@ void check(Eigen::Matrix<std::complex<T>, Eigen::Dynamic, Eigen::Dynamic> & a, T
 		};
 	};
 	a.array() += 0;	
-
-
+	a = (a.array().isFinite()).select(a,val);
 	return;
 };
 
 template<typename T>
 void check(Eigen::SparseMatrix<std::complex<T>> & a, T & eps){
+	T val = 0;
 	a.coeffs().array() += 0;
+	// a = (a.array().isFinite()).select(a,val);	
 	return;
 };
 
 template<typename T>
 void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps){
-
 	T val = 0;
 	a.array() += 0;	
 	for (unsigned int i=0;i<a.size();i++){
@@ -63,6 +60,7 @@ void check(Eigen::Vector<T, Eigen::Dynamic> & a, T & eps){
 		};
 	};
 	a.array() += 0;	
+	a = (a.array().isFinite()).select(a,val);
 	return;
 };
 

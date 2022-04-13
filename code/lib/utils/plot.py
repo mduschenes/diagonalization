@@ -340,13 +340,12 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 					size = _kwargs.pop('size','5%')
 					relative = size if isinstance(size,(int,np.integer,float,np.float)) else float(size.replace('%',''))/100
 
-					# pos = [pos.x0+pad, pos.y0, pos.width*relative, pos1.height] 
-					# cax = plt.add_axes()
-					# cax.set_position(pos)
-
-					divider = make_axes_locatable(obj)
-					cax = divider.append_axes('right', size=size,pad=pad)
 					if len(set(normed_values)) > 1:
+						# pos = [pos.x0+pad, pos.y0, pos.width*relative, pos1.height] 
+						# cax = plt.add_axes()
+						# cax.set_position(pos)
+						divider = make_axes_locatable(obj)
+						cax = divider.append_axes('right', size=size,pad=pad)
 						colorbar = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation=_kwargs.pop('orientation','vertical'))
 						obj = cax	
 						for attr in _kwargs:

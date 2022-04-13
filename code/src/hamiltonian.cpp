@@ -105,13 +105,13 @@ void Hamiltonian<T>::set(){
 
 	for (i=0;i<this->system.state.size();i++){
 		name = this->system.state[i];
-		if ((name == "order") or (name == "energy") or (name == "gap")){
+		if ((name == "order")){
 			states[name] = tensor::Tensor<T>::vector::Zero(size);
 		}
 		else if ((name == "energy") or (name == "gap")){
 			states[name];
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			states[name];
 		}
 		else {
@@ -196,6 +196,7 @@ void Hamiltonian<T>::compute(){
 	int axis = 1; // Axis of eigenvectors for sorting
 	T eps = this->system.eps; // Floating point tolerance
 	T tol = this->system.tol; // Tolerance of closeness of sorted eigenvalues
+	T close = this->system.close; // Tolerance of closeness of sorted eigenvalues
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
@@ -210,6 +211,13 @@ void Hamiltonian<T>::compute(){
 
 	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.cols())),q);
 	for (i=0;i<q;i++){
+
+		if ((size.size() == 1) and (this->system.parameters["h"] == 0)){
+			tol = close;
+		}
+		else {
+			tol = this->system.tol;
+		};
 		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()),tol))){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
@@ -231,7 +239,7 @@ void Hamiltonian<T>::compute(){
 		if ((name == "order") or (name == "energy") or (name == "gap")){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
@@ -260,45 +268,55 @@ void Hamiltonian<T>::compute(){
 		// Entanglement
 		name = "entanglement";
 		value = 0;
-		state[name](k) = 0;
+		state[name](k) = value;
 
+		// Partition
+		name = "partition";
+		value = 0;
+		state[name](k) = value;		
+
+
+		// Equal Superposition of degenerate eigenvectors in full space from subspace
+		eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 		for (i=0;i<size[k];i++){
-
-			// Eigenvector in full space from subspace
-			if (this->subspaces.size() == n){
+			if (this->subspaces.size() == n and false){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
 			else {
-				eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 				for (j=0;j<this->subspaces.size();j++){
-					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
+					eigenvector(this->subspaces[j]) += this->eigenvectors(j,indices[k][i]);
 				};
 			};
-			// eigenvector = this->eigenvectors.col(indices[k][i]);	
+		};	
+		eigenvector /= std::sqrt(size[k]);
 
+		// Order
+		name = "order";
+		value = physics::expectation(eigenvector,this->states[name],eps)/N;
+		state[name](k) += value;
 
-			// Order
-			name = "order";
-			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
-			state[name](k) += value/size[k];
+		// Energy
+		name = "energy";
+		value = this->eigenvalues(indices[k]).sum()/size[k]/N;
+		state[name](k) += value;
 
-			// Energy
-			name = "energy";
-			value = this->eigenvalues(indices[k][i])/N;
-			state[name](k) += value/size[k];
+		// Entanglement
+		name = "entanglement";
 
-			// Entanglement
-			name = "entanglement";
-			if (((k == 0) and (i==0)) or false){
-				// #pragma omp parallel for private(j,l,value,eigenvector,eps) shared(k,name,state)
-				for (j=0;j<state[name].cols();j++){
-					l = pow(D,j+1);
-					value = physics::entropy(eigenvector,l,eps);
+		// #pragma omp parallel for private(j,l,value,eigenvector,eps) shared(k,name,state)
+		for (j=0;j<state[name].cols();j++){
+			l = pow(D,j+1);
+			value = physics::entropy(eigenvector,l,eps);
 
-					// #pragma omp critical
-					state[name](k,j) += value; //size[k];
-				};
-			};
+			// #pragma omp critical
+			state[name](k,j) += value;
+		};
+		
+		// Partition
+		name = "partition";
+
+		for (j=0;j<state[name].cols();j++){
+			state[name](k,j) += ((T)j+1)/((T)N);
 		};
 
 	};
@@ -307,8 +325,7 @@ void Hamiltonian<T>::compute(){
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
-		// state[name] = (state[name].array().isFinite()).select(state[name],0);
-		// utils::check(state[name],eps);
+		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};
 
@@ -425,7 +442,7 @@ void Ising<T>::set(){
 		else if ((name == "energy") or (name == "gap")){
 			states[name];
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			states[name];
 		}
 		else {
@@ -462,14 +479,12 @@ void Ising<T>::set(){
 		// X Term
 		for (k=0; k<N; k++){
 			j = physics::spinflip(i,(k)%N);
-
 			if (included[j] != -1){
 				t = included[j];
 				value = -parameters["h"];
 
 				#pragma omp critical
 				indexes.push_back(index(s,t,value));
-
 			};
 		};
 	};
@@ -492,6 +507,7 @@ void Ising<T>::set(){
 };
 
 
+
 template <typename T>
 void Ising<T>::compute(){
 	
@@ -503,7 +519,7 @@ void Ising<T>::compute(){
 	unsigned int j,k,l;
 	std::string name;
 	T value;
-	typename tensor::Tensor<T>::vector_complex eigenvector(n);
+	typename tensor::Tensor<T>::vector_complex eigenvector;
 
 	// Sort eigenvalues
 	std::vector<int> argsort; // Sorting indices of eigenvalues
@@ -511,6 +527,7 @@ void Ising<T>::compute(){
 	int axis = 1; // Axis of eigenvectors for sorting
 	T eps = this->system.eps; // Floating point tolerance
 	T tol = this->system.tol; // Tolerance of closeness of sorted eigenvalues
+	T close = this->system.close; // Tolerance of closeness of sorted eigenvalues
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
@@ -525,6 +542,13 @@ void Ising<T>::compute(){
 
 	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.cols())),q);
 	for (i=0;i<q;i++){
+
+		if ((size.size() == 1) and (this->system.parameters["h"] == 0)){
+			tol = close;
+		}
+		else {
+			tol = this->system.tol;
+		};
 		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()),tol))){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
@@ -546,7 +570,7 @@ void Ising<T>::compute(){
 		if ((name == "order") or (name == "energy") or (name == "gap")){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
@@ -575,47 +599,63 @@ void Ising<T>::compute(){
 		// Entanglement
 		name = "entanglement";
 		value = 0;
-		state[name](k) = 0;
+		state[name](k) = value;
 
+		// Partition
+		name = "partition";
+		value = 0;
+		state[name](k) = value;		
+
+
+		// Equal Superposition of degenerate eigenvectors in full space from subspace
+		eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 		for (i=0;i<size[k];i++){
-
-			// Eigenvector in full space from subspace
-			if (this->subspaces.size() == n){
+			if (this->subspaces.size() == n and false){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
 			else {
-				eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 				for (j=0;j<this->subspaces.size();j++){
-					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
+					eigenvector(this->subspaces[j]) += this->eigenvectors(j,indices[k][i]);
 				};
 			};
+		};	
+		eigenvector /= std::sqrt(size[k]);
 
-			// Order
-			name = "order";
-			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
-			state[name](k) += value/size[k];
+		// Order
+		name = "order";
+		value = physics::expectation(eigenvector,this->states[name],eps)/N;
+		state[name](k) += value;
 
-			// Energy
-			name = "energy";
-			value = this->eigenvalues(indices[k][i])/N;
-			state[name](k) += value/size[k];
+		// Energy
+		name = "energy";
+		value = this->eigenvalues(indices[k]).sum()/size[k]/N;
+		state[name](k) += value;
 
-			// Entanglement
-			name = "entanglement";
-			for (j=0;j<state[name].cols();j++){
-				l = pow(D,j+1);
-				value = physics::entropy(eigenvector,l,eps);
-				state[name](k,j) += value/size[k];
-			};
+		// Entanglement
+		name = "entanglement";
 
+		// #pragma omp parallel for private(j,l,value,eigenvector,eps) shared(k,name,state)
+		for (j=0;j<state[name].cols();j++){
+			l = pow(D,j+1);
+			value = physics::entropy(eigenvector,l,eps);
+
+			// #pragma omp critical
+			state[name](k,j) += value;
+		};
+		
+		// Partition
+		name = "partition";
+
+		for (j=0;j<state[name].cols();j++){
+			state[name](k,j) += ((T)j+1)/((T)N);
 		};
 
 	};
 
+
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
-		state[name] = (state[name].array().isFinite()).select(state[name],0);
 		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};
@@ -734,7 +774,7 @@ void Heisenberg<T>::set(){
 		else if ((name == "energy") or (name == "gap")){
 			states[name];
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			states[name];
 		}
 		else {
@@ -758,27 +798,49 @@ void Heisenberg<T>::set(){
 		value = physics::spincount(i,N);
 		states[name](s) = value;
 
-		// ZZ Term
+		// Z + ZZ Term
 		for (k=0; k<N; k++){
 			j = i;
 			t = s;
-			value = -parameters["J"]*physics::spin(i,(k)%N)*physics::spin(j,(k+1)%N);
+			value = -parameters["J"]*physics::spin(i,(k)%N)/2*physics::spin(j,(k+1)%N)/2;
 
 			#pragma omp critical
 			indexes.push_back(index(s,t,value));
+
+			j = i;
+			t = s;
+			value = -parameters["h"]*physics::spin(i,(k)%N)/2;
+
+			#pragma omp critical
+			indexes.push_back(index(s,t,value));			
 		};
+
+		// // X Term
+		// for (k=0; k<N; k++){
+		// 	j = physics::spinflip(i,(k)%N);
+		// 	if (included[j] != -1){
+		// 		t = included[j];
+		// 		value = -parameters["g"];
+
+		// 		#pragma omp critical
+		// 		indexes.push_back(index(s,t,value));
+		// 	};
+		// };
 
 		// XX + YY Term
 		for (k=0; k<N; k++){
-			j = physics::spinswap(i,(k)%N,(k+1));
-			if (included[j] != -1){
-				t = included[j];
-				value = parameters["U"]/2;
+			if (physics::spin(i,(k)%N) != physics::spin(i,(k+1)%N)){
+				j = physics::spinswap(i,(k)%N,(k+1)%N);
+				if (included[j] != -1){
+					t = included[j];
+					value = -parameters["U"]/2;
 
-				#pragma omp critical
-				indexes.push_back(index(s,t,value));
+					#pragma omp critical
+					indexes.push_back(index(s,t,value));
+				};
 			};
 		};
+
 	};
 
 	data.setFromTriplets(indexes.begin(),indexes.end());
@@ -799,6 +861,7 @@ void Heisenberg<T>::set(){
 };
 
 
+
 template <typename T>
 void Heisenberg<T>::compute(){
 	
@@ -810,7 +873,7 @@ void Heisenberg<T>::compute(){
 	unsigned int j,k,l;
 	std::string name;
 	T value;
-	typename tensor::Tensor<T>::vector_complex eigenvector(n);
+	typename tensor::Tensor<T>::vector_complex eigenvector;
 
 	// Sort eigenvalues
 	std::vector<int> argsort; // Sorting indices of eigenvalues
@@ -818,6 +881,7 @@ void Heisenberg<T>::compute(){
 	int axis = 1; // Axis of eigenvectors for sorting
 	T eps = this->system.eps; // Floating point tolerance
 	T tol = this->system.tol; // Tolerance of closeness of sorted eigenvalues
+	T close = this->system.close; // Tolerance of closeness of sorted eigenvalues
 
 	utils::check(this->eigenvalues,eps);
 	utils::check(this->eigenvectors,eps);
@@ -832,6 +896,13 @@ void Heisenberg<T>::compute(){
 
 	q = std::min(std::min((unsigned int)(this->eigenvalues.size()),(unsigned int)(this->eigenvectors.cols())),q);
 	for (i=0;i<q;i++){
+
+		if ((size.size() == 1) and (this->system.parameters["h"] == 0)){
+			tol = close;
+		}
+		else {
+			tol = this->system.tol;
+		};
 		if ((i==0) or (not utils::close(this->eigenvalues(i),this->eigenvalues(indices.back().back()),tol))){
 			indices.push_back(std::vector<unsigned int>());
 			indices.back().push_back(i);			
@@ -853,7 +924,7 @@ void Heisenberg<T>::compute(){
 		if ((name == "order") or (name == "energy") or (name == "gap")){
 			state[name] = tensor::Tensor<T>::vector::Zero(s);
 		}
-		else if ((name == "entanglement")){
+		else if ((name == "entanglement") or (name == "partition")){
 			state[name] = tensor::Tensor<T>::matrix::Zero(s,N-1);
 		}
 		else {
@@ -882,38 +953,55 @@ void Heisenberg<T>::compute(){
 		// Entanglement
 		name = "entanglement";
 		value = 0;
-		state[name](k) = 0;
+		state[name](k) = value;
 
+		// Partition
+		name = "partition";
+		value = 0;
+		state[name](k) = value;		
+
+
+		// Equal Superposition of degenerate eigenvectors in full space from subspace
+		eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 		for (i=0;i<size[k];i++){
-
-			// Eigenvector in full space from subspace
-			if (this->subspaces.size() == n){
+			if (this->subspaces.size() == n and false){
 				eigenvector = this->eigenvectors.col(indices[k][i]);
 			}
 			else {
-				eigenvector = tensor::Tensor<T>::vector_complex::Zero(n);
 				for (j=0;j<this->subspaces.size();j++){
-					eigenvector(this->subspaces[j]) = this->eigenvectors(j,indices[k][i]);
+					eigenvector(this->subspaces[j]) += this->eigenvectors(j,indices[k][i]);
 				};
 			};
+		};	
+		eigenvector /= std::sqrt(size[k]);
 
-			// Order
-			name = "order";
-			value = eigenvector.cwiseAbs2().dot(this->states[name].cwiseAbs())/N;
-			state[name](k) += value/size[k];
+		// Order
+		name = "order";
+		value = physics::expectation(eigenvector,this->states[name],eps)/N;
+		state[name](k) += value;
 
-			// Energy
-			name = "energy";
-			value = this->eigenvalues(indices[k][i])/N;
-			state[name](k) += value/size[k];
+		// Energy
+		name = "energy";
+		value = this->eigenvalues(indices[k]).sum()/size[k]/N;
+		state[name](k) += value;
 
-			// Entanglement
-			name = "entanglement";
-			for (j=0;j<state[name].cols();j++){
-				l = pow(D,j);
-				value = physics::entropy(eigenvector,l,eps);
-				state[name](k,j) += value/size[k];
-			};
+		// Entanglement
+		name = "entanglement";
+
+		// #pragma omp parallel for private(j,l,value,eigenvector,eps) shared(k,name,state)
+		for (j=0;j<state[name].cols();j++){
+			l = pow(D,j+1);
+			value = physics::entropy(eigenvector,l,eps);
+
+			// #pragma omp critical
+			state[name](k,j) += value;
+		};
+		
+		// Partition
+		name = "partition";
+
+		for (j=0;j<state[name].cols();j++){
+			state[name](k,j) += ((T)j+1)/((T)N);
 		};
 
 	};
@@ -922,7 +1010,6 @@ void Heisenberg<T>::compute(){
 	// Check
 	for (k=0;k<this->system.state.size();k++){
 		name = this->system.state[k];
-		state[name] = (state[name].array().isFinite()).select(state[name],0);
 		utils::check(state[name],eps);
 		this->state[name] = state[name];
 	};

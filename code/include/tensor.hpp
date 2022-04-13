@@ -49,6 +49,7 @@ struct System {
 	unsigned int dim = 2; // Data dimension
 	type eps = 1e-14; // Floating point tolerance
 	type tol = 1e-14; // State degeneracy tolerance
+	type close = 1e-14; // Equal State degeneracy tolerance
 	unsigned int nnz = 0; // number of data elements
 	bool sparse = true; // sparsity of data
 	std::string path = "data.hdf5"; // path name
