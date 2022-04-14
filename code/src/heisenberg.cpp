@@ -70,16 +70,18 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(4u);
 		variables[names.back()].push_back(6u);
 		variables[names.back()].push_back(8u);
-		variables[names.back()].push_back(12u);
-		variables[names.back()].push_back(14u);
-		variables[names.back()].push_back(16u);
-		variables[names.back()].push_back(18u);
-		variables[names.back()].push_back(20u);
+		// variables[names.back()].push_back(12u);
+		// variables[names.back()].push_back(14u);
+		// variables[names.back()].push_back(16u);
+		// variables[names.back()].push_back(18u);
+		// variables[names.back()].push_back(20u);
 		// variables[names.back()].push_back(24u);
 
 		names.push_back("J");
 		sizes[names.back()] = 0;
+		variables[names.back()].push_back(0.0);		
 		variables[names.back()].push_back(1.0);		
+		variables[names.back()].push_back(-1.0);		
 
 		names.push_back("h");
 		sizes[names.back()] = 64;
@@ -92,6 +94,8 @@ int main(int argc, char *argv[]){
 
 		names.push_back("U");
 		sizes[names.back()] = 1;
+		variables[names.back()].push_back(-1.0);
+		variables[names.back()].push_back(1.0);
 		variables[names.back()].push_back(2.0);
 
 	};

@@ -85,9 +85,9 @@ def main(args):
 	sizes = {attr: min([data[name][attr].shape[0] for name in data]) if attr in values else 1 for attr in attrs}
 
 
-	xattrs = ['U','U','N','partition']
-	yattrs = ['energy','order','gap','entanglement']
-	iattrs = [('N',),('N',),('U',),('N','U',)]
+	xattrs = ['U','U','N','partition','N']
+	yattrs = ['energy','order','gap','entanglement','energy']
+	iattrs = [('N',),('N',),('U',),('N','U',),('U','J')]
 
 	variables = {}
 
@@ -108,8 +108,8 @@ def main(args):
 				variables[key][index][i]['y'] = ((xy['y'] if xy['y'].ndim < 1 else xy['y'][:,index] if key[1] in attrs else np.arange(len(names)))[variables[key][index][i]['argsort']]).reshape(-1)
 
 				variables[key][index][i]['xfunc'] = (
-							{'U': variables[key][index][i]['x']/np.array([data[name]['J'] for name in names]),
-							 'N': 1/variables[key][index][i]['x'] if key[0] =='N' else variables[key][index][i]['x'],
+							{'U': variables[key][index][i]['x'],
+							 'N': 1/variables[key][index][i]['x'] if (key[0] =='N' and key[1] == 'gap') else variables[key][index][i]['x'],
 							 'partition': variables[key][index][i]['x'],
 							}[key[0]]
 							)
@@ -164,9 +164,11 @@ def main(args):
 					'y': variables[key][index][i]['yfunc'],
 					'marker':'o',
 					'color':getattr(plt.cm,'tab10')(l),
-					'label':texify(dict(zip(key[2],i))[key[2][0]])if index==(0) else None,
+					'label':r'$%s$'%('~'.join(['%s: %s'%(k,texify(j,usetex=False)) for k,j in dict(zip(key[2],i)).items()])),
 					}
 					for l,i in enumerate(variables[key][index])
+					if (dict(zip(key[2],i)).get('U',-1) == -1 and
+					    dict(zip(key[2],i)).get('J',-1) == -1)
 					],
 				'set_title':{'label':r'$\textrm{Level %d}$'%(index)},
 				'set_xlabel':{'xlabel':texify(key[0])},
@@ -175,8 +177,8 @@ def main(args):
 				'set_xticks':{'ticks':np.linspace(
 					np.min([variables[key][index][i]['xfunc'] for i in variables[key][index]]),
 					np.max([variables[key][index][i]['xfunc'] for i in variables[key][index]]),
-					3)},
-				'legend':{'title':texify(key[2][0]),'ncol':1},
+					5)},
+				'legend':{'title':r'$%s$'%('~,'.join(['%s'%(texify(k,usetex=False)) for k,j in dict(zip(key[2],i)).items()])),'ncol':1},
 				'grid':{'visible':True},
 			},	
 			'fig':{
@@ -193,7 +195,7 @@ def main(args):
 			},			
 		}
 		for index in range(sizes[key[1]])}
-		for key in [('U','energy',('N',)),('U','order',('N',))]},
+		for key in [('U','energy',('N',)),('U','order',('N',)),('N','energy',('U','J',))]},
 		**{
 		key:{
 		index: {

@@ -2,7 +2,7 @@
 CC 		:= g++
 MKDIR 	:= mkdir -p
 RM 	:= rm -rf
-RUN     := ./
+CMD     := ./
 
 # Directories
 SRC_DIR := src
@@ -38,6 +38,8 @@ OBJ := $(patsubst $(SRC_DIR)/%.$(SRC_EXT),$(OBJ_DIR)/%.$(OBJ_EXT),$(SRC))
 MAIN := main
 PROGRAM := ising heisenberg
 SEQ  := $(shell seq $(words $(PROGRAM)))
+RUN := $(patsubst %,run_%,$(PROGRAM)) 
+PLOT := $(patsubst %,plot_%,$(PROGRAM)) 
 
 EXE := $(MAIN)
 EXE := $(patsubst %,$(EXE_DIR)/%.$(EXE_EXT),$(EXE))
@@ -121,32 +123,7 @@ LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/li
 endif
 
 # CLI Arguments
-ifeq (all,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (run,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (runs,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (main,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (ising,$(firstword $(MAKECMDGOALS)))
-RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
-endif
-
-ifeq (heisenberg,$(firstword $(MAKECMDGOALS)))
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter all run runs main $(PROGRAM) $(RUN),$(firstword $(MAKECMDGOALS))))
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
 endif
@@ -157,23 +134,24 @@ $(eval $(PROCESS_ARGS):;@:)
 endif
 
 
-
-
 # Make Options
-.PHONY: all run test clean plot process profile runs plots processs main ising heisenberg
-.SILENT : all run test clean plot process profile runs plots processs main ising heisenberg
+.PHONY: all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
+.SILENT : all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
 .PRECIOUS : $(OBJ_DIR)/%.$(OBJ_EXT) $(DEP_DIR)/%.$(DEP_EXT)
 .SECONDEXPANSION:
 
 
 # Rules
-all: clean $(EXE)
+all : clean $(EXE)
 
 run : $(EXE) clean_data
-	$(RUN)$(EXE) $(RUN_ARGS)
+	$(CMD)$(EXE) $(RUN_ARGS)
 
 runs : $(EXES) clean_data
-	$(foreach i,$(SEQ),@$(RUN)$(word $(i),$(EXES)) $(RUN_ARGS);)	
+	$(foreach i,$(SEQ),@$(CMD)$(word $(i),$(EXES)) $(RUN_ARGS);)	
+
+$(RUN) : $(EXE_DIR)/$$(patsubst run_%,%,$$(@)).$(EXE_EXT) clean_data
+	@$(CMD)$(EXE_DIR)/$(patsubst run_%,%,$@).$(EXE_EXT) $(RUN_ARGS)
 
 test :
 
@@ -182,12 +160,14 @@ clean : clean_obj clean_data
 plot : $(PROCESS) $(PROCESS_DEP)
 	@$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) $(PROCESS_ARGS)
 
-
 plots : $(PROCESSS) $(PROCESSS_DEP)
 	$(foreach i,$(SEQ),$(word $(i),$(PROCESSS)) $(word $(i),$(PROCESSS_DEP)) $(PROCESSS_FLAGS);)
 
-process : run plot
 
+$(PLOT) : $(PROCESS_DIR)/$$(patsubst plot_%,%,$$@).$(PROCESS_EXT)
+	$(PROCESS_DIR)/$(patsubst plot_%,%,$@).$(PROCESS_EXT) $(DATA_DIR)/$(patsubst plot_%,%,$@)/data.$(DATA_EXT) $(PROCESS_FLAGS)
+
+process : run plot
 
 processs : runs plots
 
@@ -196,17 +176,9 @@ profile : $(EXE) $(PROFILE_DEP)
 	$(foreach i,$(SEQ),$(PROFILE) $(PROFILE_FLAGS) $(word $(i),$(EXES)) $(PROFILE_DEP) > $(PROFILE_OUT);)
 # 	h5dump $(PROCESSS_DEP)
 
+$(PROGRAM) : run_$$@ plot_$$@
 
-# ising:
-# heisenberg:
-
-$(PROGRAM) : $(EXE_DIR)/$$@.$(EXE_EXT) clean_data $(PROCESS_DIR)/$$@.$(PROCESS_EXT)
-	@$(RUN)$< $(RUN_ARGS)
-	@$(PROCESS_DIR)/$@.$(PROCESS_EXT) $(DATA_DIR)/$@/data.$(DATA_EXT) $(PROCESS_FLAGS)
-
-main: run $(PROCESS_DIR)/$$@.$(PROCESS_EXT)
-	@$(PROCESS_DIR)/$@.$(PROCESS_EXT) $(DATA_DIR)/data.$(DATA_EXT) $(PROCESS_FLAGS) 
-
+main : run plot
 
 clean_obj :
 	@$(RM) $(OBJ_DIR)
