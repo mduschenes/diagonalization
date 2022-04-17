@@ -23,6 +23,7 @@ int main(int argc, char *argv[]){
 	T J = 1;
 	T h = 1;
 	T U = 0;
+	unsigned int iteration;
 
 	// Iterations
 	unsigned int i,j;
@@ -61,6 +62,10 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(U);
 
+		names.push_back("iteration");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(0u);
+
 	}
 	else {
 
@@ -68,13 +73,13 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 6;
 		variables[names.back()].push_back(4u);
 		variables[names.back()].push_back(6u);
-		variables[names.back()].push_back(8u);
-		variables[names.back()].push_back(10u);
-		variables[names.back()].push_back(12u);
-		variables[names.back()].push_back(14u);
-		variables[names.back()].push_back(16u);
-		variables[names.back()].push_back(18u);
-		variables[names.back()].push_back(20u);
+		// variables[names.back()].push_back(8u);
+		// variables[names.back()].push_back(10u);
+		// variables[names.back()].push_back(12u);
+		// variables[names.back()].push_back(14u);
+		// variables[names.back()].push_back(16u);
+		// variables[names.back()].push_back(18u);
+		// variables[names.back()].push_back(20u);
 
 		names.push_back("J");
 		sizes[names.back()] = 1;
@@ -83,10 +88,10 @@ int main(int argc, char *argv[]){
 		names.push_back("h");
 		sizes[names.back()] = 64;
 
-		variables[names.back()].push_back(0.0);
+		// variables[names.back()].push_back(0.0);
 		variables[names.back()].push_back(1.0);
-		variables[names.back()].push_back(2.0);
-		variables[names.back()].push_back(10.0);
+		// variables[names.back()].push_back(2.0);
+		// variables[names.back()].push_back(10.0);
 
 		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.+0.8*(j)/((sizes[names.back()])/4.-1)));};
 		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.8+0.2*(j+1)/((sizes[names.back()])/4.-1+1)));};
@@ -97,20 +102,31 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(0.0);
 
+		names.push_back("iteration");
+		sizes[names.back()] = 1;
+		for (j=0;j<(sizes[names.back()]);j++){variables[names.back()].push_back(j);};
+
 	};
 
 	size = variables.size();
 	multiple = false;
 	for (j=0;j<size;j++){sizes[names[j]] = variables[names[j]].size();multiple |= sizes[names[j]]>1;};
 
-	for (auto&& [i,iterable] : iter::enumerate(iter::product(variables[names[0]],variables[names[1]],variables[names[2]],variables[names[3]]))){
+	for (auto&& [i,iterable] : iter::enumerate(iter::product(
+			variables[names[0]],variables[names[1]],
+			variables[names[2]],variables[names[3]],
+			variables[names[4]]
+			))){
 
+		// i = i+576;
 		// assign(iterable,variable,names);
 		variable[names[0]] = std::get<0>(iterable); variable[names[1]] = std::get<1>(iterable);
 		variable[names[2]] = std::get<2>(iterable); variable[names[3]] = std::get<3>(iterable);
+		variable[names[4]] = std::get<4>(iterable);
 
 		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
 		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
+		iteration = std::get<unsigned int>(variable["iteration"]);
 
 		tensor::System<T> system;
 		system.N = N; // number of sites
@@ -118,15 +134,14 @@ int main(int argc, char *argv[]){
 		system.d = d; // spatial dimension
 		system.n = pow(system.D,system.N); // system size
 		system.z = 2*d; // coordination number
-		system.k = k; // number of parameters
+		system.k = 3; // number of parameters
 		system.model = "hamiltonian"; // Model		
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
 		system.q = 5;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
-		system.r = 0;// Number of symmetries
 		system.sigma = "LA"; // State shift parameter
-		system.shift = 100.0*(J*((2*d)*N/2) + h*N); // State shift value
+		system.shift = 0;//100.0*(J*((2*d)*N/2) + h*N); // State shift value
 		system.scale = -1; // State scale value
 		system.sorting = "<="; // Sorting for states
 		system.size = pow(system.D,system.N); // data size

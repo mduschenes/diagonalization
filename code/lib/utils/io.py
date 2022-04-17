@@ -132,7 +132,7 @@ def _load(obj,wr,ext,**kwargs):
 
 		data = {}
 
-		for group in file:
+		for group in natsorted(file):
 			data[group] = {}
 
 			names = list(set((name.replace('.real','').replace('.imag','') for name in file[group])))
@@ -153,7 +153,7 @@ def _load(obj,wr,ext,**kwargs):
 			for name in names:
 				data[group][name] = file[group].attrs[name]
 
-
+		file.close()
 		# for group in list(data):
 		# 	for name in list(data[group]):
 		# 		if isinstance(data[group][name],np.ndarray):

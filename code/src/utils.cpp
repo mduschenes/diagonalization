@@ -118,7 +118,7 @@ unsigned int find(std::vector<T> & a, T & value){
 
 
 template <typename T> 
-std::string string(const T & obj){ 
+std::string string(T & obj){ 
 	std::ostringstream stream; 
 	stream << obj; 
 	std::string string = stream.str();
@@ -127,7 +127,7 @@ std::string string(const T & obj){
 
 
 template <typename T> 
-T number(const std::string & obj){
+T number(std::string & obj){
 	T number = std::stod(obj);
 	return number;
 };
@@ -219,14 +219,14 @@ template unsigned int find<float>(std::vector<float> & a,float & value);
 template unsigned int find<int>(std::vector<int> & a,int & value);
 template unsigned int find<unsigned int>(std::vector<unsigned int> & a,unsigned int & value);
 
-template std::string string(const double & obj);
-template std::string string(const float & obj);
-template std::string string(const int & obj);
-template std::string string(const std::string & obj);
+template std::string string(double & obj);
+template std::string string(float & obj);
+template std::string string(int & obj);
+template std::string string(std::string & obj);
 
-template double number<double>(const std::string & obj);
-template float number<float>(const std::string & obj);
-template int number<int>(const std::string & obj);
+template double number<double>(std::string & obj);
+template float number<float>(std::string & obj);
+template int number<int>(std::string & obj);
 
 template Eigen::Vector<double,Eigen::Dynamic> Vector<double>(std::vector<double> & vector);
 template Eigen::Vector<float,Eigen::Dynamic> Vector<float>(std::vector<float> & vector);

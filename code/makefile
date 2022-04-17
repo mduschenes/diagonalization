@@ -26,7 +26,7 @@ PROCESS_EXT:= py
 DATA_EXT := hdf5
 
 # Targets
-SRC := linalg hamiltonian tensor physics io hdf5 utils
+SRC := hdf5 io linalg hamiltonian tensor physics utils
 SRC := $(patsubst %,$(SRC_DIR)/%.$(SRC_EXT),$(SRC))
 
 # LIB := /usr/local/lib/libhdf5_hl_cpp.a /usr/local/lib/libhdf5_cpp.a /usr/local/lib/libhdf5_hl.a /usr/local/lib/libhdf5.a
@@ -123,12 +123,12 @@ LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/li
 endif
 
 # CLI Arguments
-ifeq ($(firstword $(MAKECMDGOALS)),$(filter all run runs main $(PROGRAM) $(RUN),$(firstword $(MAKECMDGOALS))))
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter all run runs process processs main $(PROGRAM) $(RUN),$(firstword $(MAKECMDGOALS))))
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
 endif
 
-ifeq (process,$(firstword $(MAKECMDGOALS)))
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter plot plots $(PLOT),$(firstword $(MAKECMDGOALS))))
 PROCESS_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(PROCESS_ARGS):;@:)
 endif
@@ -150,7 +150,7 @@ run : $(EXE) clean_data
 runs : $(EXES) clean_data
 	$(foreach i,$(SEQ),@$(CMD)$(word $(i),$(EXES)) $(RUN_ARGS);)	
 
-$(RUN) : $(EXE_DIR)/$$(patsubst run_%,%,$$(@)).$(EXE_EXT) clean_data
+$(RUN) : $(EXE_DIR)/$$(patsubst run_%,%,$$(@)).$(EXE_EXT)
 	@$(CMD)$(EXE_DIR)/$(patsubst run_%,%,$@).$(EXE_EXT) $(RUN_ARGS)
 
 test :
@@ -158,7 +158,7 @@ test :
 clean : clean_obj clean_data
 
 plot : $(PROCESS) $(PROCESS_DEP)
-	@$(PROCESS) $(PROCESS_DEP) $(PROCESS_FLAGS) $(PROCESS_ARGS)
+	@$(PROCESS) $(PROCESS_ARGS) $(PROCESS_DEP) $(PROCESS_FLAGS)
 
 plots : $(PROCESSS) $(PROCESSS_DEP)
 	$(foreach i,$(SEQ),$(word $(i),$(PROCESSS)) $(word $(i),$(PROCESSS_DEP)) $(PROCESSS_FLAGS);)

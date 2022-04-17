@@ -18,12 +18,51 @@ Tensor<T>::~Tensor(){
 template <typename T>
 void Tensor<T>::eig(){
 
+
 	unsigned int n = std::min(this->size-1,this->system.q); // Number of eigenvalues
 	std::string sigma = this->system.sigma; // Eigenvalue to centre around
 	T eps = this->system.eps; // Eigenvalues tolerance
 
 	T scale = this->system.scale; // Scale data
 	T shift = this->system.shift; // Shift diagonal of data
+
+	// Get interior of spectrum if sigma is a number
+	try {
+		T value = utils::number<T>(sigma);
+		T max,min;
+
+		scale = 1;
+		n = 2;
+		sigma = "BE";
+
+		// this->data.array() *= scale;
+		this->data.coeffs() *= scale;
+		this->data.diagonal().array() += shift;
+
+		linalg::eigh(this->data,this->eigenvalues,this->eigenvectors,n,sigma,eps);
+
+		this->eigenvalues.array() -= shift;
+		this->eigenvalues.array() /= scale;
+
+		this->data.diagonal().array() -= shift;
+		this->data.coeffs() /= scale;
+		// this->data.array() /= scale;
+
+		min = this->eigenvalues(0);
+		max = this->eigenvalues(1);
+
+		value = min + (max-min)*value;
+		sigma = utils::string<T>(value);
+
+	}
+	catch (...) {};
+
+
+	n = std::min(this->size-1,this->system.q); // Number of eigenvalues
+	eps = this->system.eps; // Eigenvalues tolerance
+
+	scale = this->system.scale; // Scale data
+	shift = this->system.shift; // Shift diagonal of data
 
 	// this->data.array() *= scale;
 	this->data.coeffs() *= scale;
@@ -56,7 +95,8 @@ void Tensor<T>::print(){
 	std::cout << "n = " << this->system.n << std::endl;
 	std::cout << "J = " << this->system.parameters["J"] << "\t";
 	std::cout << "h = " << this->system.parameters["h"] << "\t";
-	std::cout << "U = " << this->system.parameters["U"] << std::endl;
+	std::cout << "U = " << this->system.parameters["U"] << "\t";
+	std::cout << "sigma = " << this->system.sigma << std::endl;
 };
 
 
@@ -81,12 +121,29 @@ void Tensor<T>::dump(){
 	io::io<T_attributes> io_attributes;
 	std::map<std::string,T_attributes> attributes = {
 		{"N",this->system.N},{"D",this->system.D},{"d",this->system.d},
-		{"n",this->system.n},{"k",this->system.k},{"s",this->system.s},
+		{"k",this->system.k},{"s",this->system.s},
 	};
 	group = this->system.group;
 	name = this->system.name;	
 
 	io_attributes.dump(path,group,name,attributes);
+
+	// Other
+	typedef T T_other;    
+	io::io<T_other> io_other;
+	std::map<std::string,T_other> other;
+
+	try {
+		other["sigma"] = utils::number<T_other>(this->system.sigma);
+	}
+	catch (...){
+		other["sigma"] = (T_other)0;
+	};
+
+	group = this->system.group;
+	name = this->system.name;	
+
+	io_other.dump(path,group,name,other);
 
 	// Parameters
 	typedef T T_parameters;    
@@ -94,6 +151,7 @@ void Tensor<T>::dump(){
 	group = this->system.group;
 	name = this->system.name;
 	io_parameters.dump(path,group,name,this->system.parameters);
+
 
 	// State
 	typedef T T_state;

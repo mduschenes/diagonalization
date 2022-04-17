@@ -112,13 +112,12 @@ int main(int argc, char *argv[]){
 		system.d = d; // spatial dimension
 		system.n = pow(system.D,system.N); // system size
 		system.z = 2*d; // coordination number
-		system.k = k; // number of parameters
+		system.k = 3; // number of parameters
 		system.model = "ising"; // Model
 		system.space = "spin"; // Local site space
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
 		system.q = 5;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
-		system.r = 0;// Number of symmetries
 		system.sigma = "LA"; // State shift parameter
 		system.shift = 100.0*(J*((2*d)*N/2) + h*N); // State shift value
 		system.scale = -1; // State scale value

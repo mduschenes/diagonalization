@@ -456,6 +456,51 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 };
 
 
+template<typename T>
+void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,std::string> & attributes){
+
+	H5::Exception::dontPrint();
+	
+	typename std::map<std::string, std::string>::iterator i;
+	H5::DataType type = H5Type<std::string>();
+	H5::DataType datatype(type);
+
+	std::filesystem::create_directory(std::filesystem::path(path).parent_path());
+
+	try {
+		H5::H5File file(path,H5F_ACC_RDWR);
+	}
+	catch (...) {
+		H5::H5File file(path,H5F_ACC_TRUNC);
+	};
+	H5::H5File file(path,H5F_ACC_RDWR);
+
+
+	try {
+		H5::Group obj = file.openGroup(group);
+	}
+	catch (...) {
+		H5::Group obj = file.createGroup(group);
+	};
+
+	H5::Group obj = file.openGroup(group);
+
+	H5::DataSpace dataspace(H5S_SCALAR);
+
+	H5::Attribute attribute;
+
+
+	// TODO: Write variable length string (currently only pointer/first character)
+
+	for (i=attributes.begin(); i!=attributes.end();i++){
+		attribute = obj.createAttribute(i->first,datatype,dataspace);
+		const char * values = attributes[i->first].c_str();
+		attribute.write(datatype,values);
+	};
+
+	return;
+};
+
 
 
 template<typename T>
@@ -618,67 +663,72 @@ template <> H5::DataType H5TypeMap<double>::h5_type = H5::PredType::NATIVE_DOUBL
 template <> H5::DataType H5TypeMap<float>::h5_type = H5::PredType::NATIVE_FLOAT;
 template <> H5::DataType H5TypeMap<int>::h5_type = H5::PredType::NATIVE_INT32;
 template <> H5::DataType H5TypeMap<unsigned int>::h5_type = H5::PredType::NATIVE_INT32;
+template <> H5::DataType H5TypeMap<std::string>::h5_type = H5::PredType::C_S1;
 
 
-template void dump(std::string & path, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<double>(std::string & path, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<float>(std::string & path, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<int>(std::string & path, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<unsigned int>(std::string & path, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
 
-template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<double> & data);
-template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<float> & data);
-template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<int> & data);
-template void dump(std::string & path, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
+template void dump<double>(std::string & path, std::string & name, Eigen::SparseMatrix<double> & data);
+template void dump<float>(std::string & path, std::string & name, Eigen::SparseMatrix<float> & data);
+template void dump<int>(std::string & path, std::string & name, Eigen::SparseMatrix<int> & data);
+template void dump<unsigned int>(std::string & path, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<double> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<float> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<int> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<double> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<float> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<int> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<unsigned int> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<double, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<float, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<int, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<unsigned int, Eigen::Dynamic> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::Vector<double, Eigen::Dynamic> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::Vector<float, Eigen::Dynamic> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::Vector<int, Eigen::Dynamic> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::Vector<unsigned int, Eigen::Dynamic> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<unsigned int>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<double>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<float>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<int>, Eigen::Dynamic, Eigen::Dynamic> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::Matrix<std::complex<unsigned int>, Eigen::Dynamic, Eigen::Dynamic> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<double>> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<float>> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<int>> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<unsigned int>> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<double>> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<float>> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<int>> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::SparseMatrix<std::complex<unsigned int>> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<int>, Eigen::Dynamic> & data);
-template void dump(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<unsigned int>, Eigen::Dynamic> & data);
+template void dump<double>(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<double>, Eigen::Dynamic> & data);
+template void dump<float>(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<float>, Eigen::Dynamic> & data);
+template void dump<int>(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<int>, Eigen::Dynamic> & data);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, Eigen::Vector<std::complex<unsigned int>, Eigen::Dynamic> & data);
 
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,double> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,float> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,int> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,unsigned int> & attributes);
+template void dump<double>(std::string & path, std::string & group, std::string & name, std::map<std::string,double> & attributes);
+template void dump<float>(std::string & path, std::string & group, std::string & name, std::map<std::string,float> & attributes);
+template void dump<int>(std::string & path, std::string & group, std::string & name, std::map<std::string,int> & attributes);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, std::map<std::string,unsigned int> & attributes);
 
+template void dump<double>(std::string & path, std::string & group, std::string & name, std::map<std::string,std::string> & attributes);
+template void dump<float>(std::string & path, std::string & group, std::string & name, std::map<std::string,std::string> & attributes);
+template void dump<int>(std::string & path, std::string & group, std::string & name, std::map<std::string,std::string> & attributes);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, std::map<std::string,std::string> & attributes);
 
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<double, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<float, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<int, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<unsigned int, Eigen::Dynamic>> & attributes);
+template void dump<double>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<double, Eigen::Dynamic>> & attributes);
+template void dump<float>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<float, Eigen::Dynamic>> & attributes);
+template void dump<int>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<int, Eigen::Dynamic>> & attributes);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Vector<unsigned int, Eigen::Dynamic>> & attributes);
 
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
-template void dump(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump<double>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump<float>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump<int>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
+template void dump<unsigned int>(std::string & path, std::string & group, std::string & name, std::map<std::string,Eigen::Matrix<unsigned int, Eigen::Dynamic, Eigen::Dynamic>> & attributes);
 
-template void dump(std::string & path, std::string & name, std::vector<double> & data);
-template void dump(std::string & path, std::string & name, std::vector<float> & data);
-template void dump(std::string & path, std::string & name, std::vector<int> & data);
-template void dump(std::string & path, std::string & name, std::vector<unsigned int> & data);
+template void dump<double>(std::string & path, std::string & name, std::vector<double> & data);
+template void dump<float>(std::string & path, std::string & name, std::vector<float> & data);
+template void dump<int>(std::string & path, std::string & name, std::vector<int> & data);
+template void dump<unsigned int>(std::string & path, std::string & name, std::vector<unsigned int> & data);
 
 };

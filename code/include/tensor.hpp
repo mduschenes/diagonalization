@@ -10,6 +10,7 @@
 #include <map>
 #include <thread>
 #include <variant>
+#include <random>
 
 #define EIGEN_USE_MKL_ALL   
 #define NUM_THREADS 7
@@ -40,7 +41,6 @@ struct System {
 	std::string lattice = "square"; // Lattice type
 	unsigned int s; // Number of unique states
 	unsigned int q; // Number of states
-	unsigned int r; // Number of symmetries
 	std::string sigma; // State shift parameter
 	type shift = 0; // State shift value
 	type scale = 1; // State scale value	

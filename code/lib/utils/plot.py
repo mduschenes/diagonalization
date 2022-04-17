@@ -263,14 +263,27 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 				# 		for k,v in zip(['handles','labels'],
 				# 						getattr(obj,'get_legend_handles_labels')())
 				# 		})
+				for atr in list(kwargs):
+					if atr in ['set_linewidth']:
+						val = kwargs.pop(atr)
+						for handle in handles:
+							getattr(handle,atr)(**val)
+					elif atr in ['set_errorbar']:
+						val = kwargs.pop(atr)
+						if not val:
+							handles = [handle[0] for handle in handles]
 				if (handles == [] or all([kwargs[k] is None for k in kwargs])):# and all([kwargs.get(k) is None for k in ['handles','labels']]):
 					call = False
 				else:
 					kwargs.update(dict(zip(['handles','labels'],[handles,labels])))
+
+
+
 				_kwds.update({
 					'set_zorder':{'level':100},
 					'set_title':{**({'title': kwargs.pop('title',None),'prop':{'size':kwargs.get('prop',{}).get('size')}} 
 									if 'title' in kwargs else {'title':None})},
+
 					})
 
 			

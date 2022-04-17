@@ -59,10 +59,10 @@ template < typename T>
 unsigned int find(std::vector<T> & a, T & value);
 
 template <typename T> 
-std::string string(const T & obj);
+std::string string(T & obj);
 
 template <typename T> 
-T number(const std::string & obj);
+T number(std::string & obj);
 
 template <typename T>
 Eigen::Vector<T,Eigen::Dynamic> Vector(std::vector<T> & vector);

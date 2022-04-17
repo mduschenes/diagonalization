@@ -281,6 +281,12 @@ void io<T>::dump(std::string & path,std::string & group,std::string & name, std:
 
 
 template <class T>
+void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,std::string> & attributes){
+	hdf5::dump<T>(path,group,name,attributes);
+};
+
+
+template <class T>
 void io<T>::dump(std::string & path,std::string & group,std::string & name, std::map<std::string,Eigen::Vector<T, Eigen::Dynamic>> & attributes){
 	hdf5::dump<T>(path,group,name,attributes);
 };
@@ -341,7 +347,6 @@ template class io<double>;
 template class io<float>;
 template class io<int>;
 template class io<unsigned int>;
-
 
 };
 
