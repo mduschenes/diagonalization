@@ -1,8 +1,87 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
 \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
 \providecommand{\bibinfo}[2]{#2}
 \providecommand{\eprint}[2][]{\url{ePrint:#2}}
+
+\bibitem{Joel2013}
+\bibinfo{author}{Joel, K.}, \bibinfo{author}{Kollmar, D.} \&
+  \bibinfo{author}{Santos, L.~F.}
+\newblock \bibinfo{title}{{An introduction to the spectrum, symmetries, and
+  dynamics of spin-1/2 Heisenberg chains}}.
+\newblock \emph{\bibinfo{journal}{Am. J. Phys.}} \textbf{\bibinfo{volume}{81}},
+  \bibinfo{pages}{450} (\bibinfo{year}{2013}).
+
+\bibitem{Lieb1961}
+\bibinfo{author}{Lieb, E.}, \bibinfo{author}{Schultz, T.} \&
+  \bibinfo{author}{Mattis, D.}
+\newblock \bibinfo{title}{{Two soluble models of an antiferromagnetic chain}}.
+\newblock \emph{\bibinfo{journal}{Ann. Phys.}} \textbf{\bibinfo{volume}{16}},
+  \bibinfo{pages}{407--466} (\bibinfo{year}{1961}).
+
+\bibitem{Franchini2016}
+\bibinfo{author}{Franchini, F.}
+\newblock \bibinfo{title}{{An introduction to integrable techniques for
+  one-dimensional quantum systems}}.
+\newblock In \emph{\bibinfo{booktitle}{Lect. Notes Phys.}}, vol.
+  \bibinfo{volume}{940} (\bibinfo{publisher}{Springer}, \bibinfo{year}{2016}).
+
+\bibitem{Cole2017}
+\bibinfo{author}{Cole, R.}, \bibinfo{author}{Pollmann, F.} \&
+  \bibinfo{author}{Betouras, J.~J.}
+\newblock \bibinfo{title}{{Entanglement scaling and spatial correlations of the
+  transverse-field Ising model with perturbations}}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B}} \textbf{\bibinfo{volume}{95}},
+  \bibinfo{pages}{214410} (\bibinfo{year}{2017}).
+
+\bibitem{Abanin2018}
+\bibinfo{author}{Abanin, D.~A.}, \bibinfo{author}{Altman, E.},
+  \bibinfo{author}{Bloch, I.} \& \bibinfo{author}{Serbyn, M.}
+\newblock \bibinfo{title}{{Many-body localization, thermalization, and
+  entanglement}}.
+\newblock \emph{\bibinfo{journal}{Rev. Mod. Phys.}}
+  \textbf{\bibinfo{volume}{91}} (\bibinfo{year}{2018}).
+
+\bibitem{DeLeeuw2013}
+\bibinfo{author}{de~Leeuw, M.} \& \bibinfo{author}{Candu, C.}
+\newblock \bibinfo{title}{{Introduction to Integrability}}
+  (\bibinfo{year}{2013}).
+
+\bibitem{Luitz2014}
+\bibinfo{author}{Luitz, D.~J.}, \bibinfo{author}{Laflorencie, N.} \&
+  \bibinfo{author}{Alet, F.}
+\newblock \bibinfo{title}{{Many-body localization edge in the random-field
+  Heisenberg chain}}.
+\newblock \emph{\bibinfo{journal}{Phys. Rev. B - Condens. Matter Mater. Phys.}}
+  \textbf{\bibinfo{volume}{91}} (\bibinfo{year}{2014}).
+
+\bibitem{eigen}
+\bibinfo{author}{Guennebaud, G.}, \bibinfo{author}{Jacob, B.} \emph{et~al.}
+\newblock \bibinfo{title}{Eigen v3}.
+\newblock \bibinfo{howpublished}{http://eigen.tuxfamily.org}
+  (\bibinfo{year}{2010}).
+
+\bibitem{Lehoucq1998}
+\bibinfo{author}{Lehoucq, R.~B.}, \bibinfo{author}{Sorensen, D.~C.} \&
+  \bibinfo{author}{Yang, C.}
+\newblock \emph{\bibinfo{title}{{ARPACK Users' Guide}}}
+  (\bibinfo{publisher}{Society for Industrial and Applied Mathematics},
+  \bibinfo{year}{1998}).
+
+\bibitem{Sandvik2010}
+\bibinfo{author}{Sandvik, A.~W.}
+\newblock \bibinfo{title}{{Computational studies of quantum spin systems}}.
+\newblock \emph{\bibinfo{journal}{AIP Conf. Proc.}}
+  \textbf{\bibinfo{volume}{1297}}, \bibinfo{pages}{135--338}
+  (\bibinfo{year}{2010}).
+
+\bibitem{Jung2020}
+\bibinfo{author}{Jung, J.~H.} \& \bibinfo{author}{Noh, J.~D.}
+\newblock \bibinfo{title}{{Guide to Exact Diagonalization Study of Quantum
+  Thermalization}}.
+\newblock \emph{\bibinfo{journal}{J. Korean Phys. Soc. 2020 768}}
+  \textbf{\bibinfo{volume}{76}}, \bibinfo{pages}{670--683}
+  (\bibinfo{year}{2020}).
 
 \end{thebibliography}

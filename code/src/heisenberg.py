@@ -29,13 +29,13 @@ from lib.utils.plot import plot
 def texify(string,usetex=True):
 	strings = {
 		'N':r'$N$'%(),
-		'h':r'$h$'%(),
+		'h':r'$W/J$'%(),
 		'U':r'$J_{\perp}$'%(),
 		'J':r'$\Delta$'%(),
 		'order':r'$\sigma/N$'%(),
-		'energy':r'$\epsilon/N$'%(),
+		'energy':r'$\Omega/NJ$'%(),
 		'gap':r'$\Delta/N$'%(),
-		'entanglement':r'$S/N/h$'%(),
+		'entanglement':r'$S$'%(),
 		'partition':r'$L/N$'%(),
 	}
 	if not isinstance(string,str):
@@ -51,20 +51,45 @@ def texify(string,usetex=True):
 	return string
 
 
-def fit(x,y,intercept=True):
-	if intercept:
-		x = np.array([x,np.ones(x.size)]).T
-	else:
-		x = np.array([x]).T
+def fit(x,y,_x=None,func=None,wrapper=None,coef0=None,intercept=True):
+
 	x[np.isnan(x) | np.isinf(x)] = 0
-	x[np.abs(x)<0] = 0
-	try:
-		coef = np.linalg.lstsq(x,y)[0] + 0.0
-		y = x.dot(coef)
-	except:
-		y = y
-		coef = np.zeros(x.shape[1])
-	return y,coef
+
+	if wrapper is None:
+		wrapper = lambda x,y,*coef: y
+
+	if func is None:
+		if intercept:
+			x = np.array([x,np.ones(x.size)]).T
+		else:
+			x = np.array([x]).T
+		if _x is None:
+			_x = x
+		elif intercept:
+			_x = np.array([_x,np.ones(_x.size)]).T
+		else:
+			_x = np.array([_x]).T
+		try:
+			coef = np.linalg.lstsq(x,y)[0] + 0.0
+			_y = _x.dot(coef)
+		except:
+			_y = y
+			coef = np.zeros(_x.shape[1])
+	else:
+		if _x is None:
+			_x = x
+		try:
+			coef = sp.optimize.curve_fit(func,x,y,p0=coef0)[0] + 0.0
+			_y = func(_x,*coef)
+		except Exception as e:
+			coef = coef0
+			_y = np.zeros(_x.shape[0])
+
+	if coef is not None:
+		_y = wrapper(_x,_y,*coef)
+	else:
+		coef = np.zeros(3)
+	return _y,coef
 
 
 def main(args):
@@ -90,12 +115,12 @@ def main(args):
 	sizes = {attr: min([data[name][attr].shape[0] for name in data]) if attr in values else 1 for attr in attrs}
 
 	keys = [
-		('U','energy',('N',)),
-		('U','order',('N',)),
-		('N','gap',('U',)),
-		('partition','entanglement',('N','U','J',)),
+		# ('U','energy',('N',)),
+		# ('U','order',('N',)),
+		# ('N','gap',('U',)),
+		# ('partition','entanglement',('N','U','J',)),
 		('N','energy',('U','J','h',)),
-		('N','entanglement',('U','J','h','sigma')),
+		# ('N','entanglement',('U','J','h','sigma')),
 	]
 
 	variables = {}
@@ -163,6 +188,7 @@ def main(args):
 						('N','entanglement',('U','J','h','sigma')): variables[key][index][i]['xfunc'] if (key == ('N','entanglement',('U','J','h','sigma'))) else variables[key][index][i]['xfunc'],
 						}[key])
 
+
 				variables[key][index][i]['yfit'] = ({
 						('U','energy',('N',)): variables[key][index][i]['yfunc'] if (key == ('U','energy',('N',))) else variables[key][index][i]['yfunc'],
 						('U','order',('N',)): variables[key][index][i]['yfunc'] if (key == ('U','order',('N',))) else variables[key][index][i]['yfunc'],
@@ -171,7 +197,18 @@ def main(args):
 							 	np.log(params['N']/np.pi*np.sin(np.pi*variables[key][index][i]['xfunc']))/3,
 							 	variables[key][index][i]['yfunc'],
 							 	intercept=True)[0] if (key == ('partition','entanglement',('N','U','J',))) else variables[key][index][i]['yfunc'],
-						('N','energy',('U','J','h',)): variables[key][index][i]['yfunc'] if (key == ('N','energy',('U','J','h',))) else variables[key][index][i]['yfunc'],
+						('N','energy',('U','J','h',)):
+						 (1/4 - np.log(2))*np.ones(variables[key][index][i]['xfit'].shape)
+						 # (-1/np.pi)*np.ones(variables[key][index][i]['xfit'].shape)
+								# fit(
+							 # 	variables[key][index][i]['xfunc'],
+							 # 	(variables[key][index][i]['yfunc']),
+							 # 	variables[key][index][i]['xfit'],			
+							 # 	func=(lambda x,a,b,c: b*x**(-a) + c),		
+							 # 	wrapper=(lambda x,y,a,b,c:	y),	 	
+							 # 	coef0=[1,1,1/2],
+							 # 	intercept=False)[0]
+							 	 if (key == ('N','energy',('U','J','h',))) else variables[key][index][i]['yfunc'],
 						('N','entanglement',('U','J','h','sigma')): variables[key][index][i]['yfunc'] if (key == ('N','entanglement',('U','J','h','sigma'))) else variables[key][index][i]['yfunc'],
 						}[key])
 	
@@ -192,7 +229,14 @@ def main(args):
 							 	np.log(params['N']/np.pi*np.sin(np.pi*variables[key][index][i]['xfunc']))/3,
 							 	variables[key][index][i]['yfunc'],
 							 	intercept=True)[1] if (key == ('partition','entanglement',('N','U','J',))) else variables[key][index][i]['yfunc'],
-						('N','energy',('U','J','h',)): variables[key][index][i]['yfunc'] if (key == ('N','energy',('U','J','h',))) else variables[key][index][i]['yfunc'],
+						('N','energy',('U','J','h',)): fit(
+							 	variables[key][index][i]['xfunc'],
+							 	(variables[key][index][i]['yfunc']),
+							 	variables[key][index][i]['xfit'],			
+							 	func=(lambda x,a,b,c: b*x**(-a) + c),		
+							 	wrapper=(lambda x,y,a,b,c:	y),	 	
+							 	coef0=[1,1,1/2],
+							 	intercept=False)[1] if (key == ('N','energy',('U','J','h',))) else variables[key][index][i]['yfunc'],
 						('N','entanglement',('U','J','h','sigma')): variables[key][index][i]['yfunc'] if (key == ('N','entanglement',('U','J','h','sigma'))) else variables[key][index][i]['yfunc'],
 						}[key])
 
@@ -261,46 +305,95 @@ def main(args):
 		key:{
 		index: {
 			'ax': {
-				'plot':[{
+				'plot':[
+				*[{
 					'x': variables[key][index][i]['xfunc'],
+					# 'y': variables[key][index][i]['yfunc'],
 					'y': variables[key][index][i]['yfunc'],
-					'marker':'o',					
+					'marker':'o',	
+					'linestyle':'--',
+					'markersize':10,
+					'linewidth':4,									
 					# 'marker':{0:'',1:'o',2:'^'}.get(index,'o'),					
 					# 'color':getattr(plt.cm,'tab10')(l),
-					'color':getattr(plt.cm,'viridis')((len(variables[key][index]) - 1 - l)/len(variables[key][index])),
-					'label':texify(dict(zip(key[2],i))[key[2][0]])if index==(0) else None,
+					'color':getattr(plt.cm,'viridis')(0.5),#(len(variables[key][index]) - 1 - l)/len(variables[key][index])),
+					# 'color':getattr(plt.cm,'twilight')(
+					# 	((dict(zip(key[2],i))['h']-0.9)/(1.1-0.9))),
+					# 'color':getattr(plt.cm,'twilight')(
+					# 	((dict(zip(key[2],i))['h']-min([dict(zip(key[2],i))['h'] for i in variables[key][index]]))/
+					# 	 max(1e-30,(max([dict(zip(key[2],i))['h'] for i in variables[key][index]]) - min([dict(zip(key[2],i))['h'] for i in variables[key][index]]))))),
+					# 'label':texify(dict(zip(key[2],i))[key[2][0]])if index==(0) else None,					
+					# 'alpha':0.5,
 					}
 					for l,i in enumerate(variables[key][index])
-					# if ((dict(zip(key[2],i)).get('h',-1) > 0.9 and dict(zip(key[2],i)).get('h',-1) < 1.1) and
-					#     (dict(zip(key[2],i)).get('N',1000) >= 8))
-					],
+				],
+				*[{
+					'x': variables[key][index][i]['xfit'],
+					# 'y': variables[key][index][i]['yfit'],
+					'y': variables[key][index][i]['yfit'],
+					'marker':'',					
+					# 'marker':{0:'',1:'o',2:'^'}.get(index,'o'),					
+					# 'color':getattr(plt.cm,'tab10')(l),
+					'color':'k',
+					# 'color':getattr(plt.cm,'twilight')(
+					# 	((dict(zip(key[2],i))['h']-0.9)/(1.1-0.9))),					
+					'linestyle':'--',
+					'linewidth':4,
+					'zorder':-1,
+					'alpha':0.6,
+					'label':r'$\lim_{N \to \infty} ~ \Omega/NJ$',					
+					}
+					for l,i in enumerate(variables[key][index])
+				],
+				*[{
+					'x': variables[key][index][i]['xfit'],
+					# 'y': variables[key][index][i]['yfit'],
+					'y': fit(
+							 	variables[key][index][i]['xfunc'],
+							 	(variables[key][index][i]['yfunc']),
+							 	variables[key][index][i]['xfit'],			
+							 	func=(lambda x,a,b,c: b*x**(-a) + c),		
+							 	wrapper=(lambda x,y,a,b,c:	y),	 	
+							 	coef0=[1,1,1/2],
+							 	intercept=False)[0],
+					'marker':'',					
+					# 'marker':{0:'',1:'o',2:'^'}.get(index,'o'),					
+					# 'color':getattr(plt.cm,'tab10')(l),
+					'color':'gray',
+					# 'color':getattr(plt.cm,'twilight')(
+					# 	((dict(zip(key[2],i))['h']-0.9)/(1.1-0.9))),					
+					'linestyle':'-',
+					'linewidth':5,
+					'zorder':-1,
+					'alpha':0.6,
+					'label':r'$\quad \quad\quad\quad\Omega/NJ \sim \bar{\alpha} N^{-\bar{\lambda}} + \bar{\Omega} \\ \bar{\lambda} = %0.3f,~ \bar{\alpha} = %0.3f, ~ \bar{\Omega} = %0.3f$'%(
+							tuple(variables[key][index][i]['ycoef'])) if index==(0) else None,					
+					}
+					for l,i in enumerate(variables[key][index])
+				],				
+				],
 				# 'set_title':{'label':r'$\textrm{Level %d}$'%(index)},
 				'set_xlabel':{'xlabel':texify(key[0])},
 				'set_ylabel':{'ylabel':texify(key[1])},
 				'set_xscale':{'value':'linear'},				
-				'set_xticks':{'ticks':np.linspace(
+				'set_xticks':{'ticks':np.arange(
 					np.min([u for i in variables[key][index] for u in variables[key][index][i]['xfunc']]),
-					np.max([u for i in variables[key][index] for u in variables[key][index][i]['xfunc']]),
-					3)},
-				# 'legend':{'title':texify(key[2][0]),'ncol':1,'set_linewidth':{'w':3}},
-				# 'tick_params':[
-				# 	{'axis':'x','which':'major','labelsize':25,'length':10,'width':2},
-				# 	{'axis':'y','which':'major','labelsize':25,'length':10,'width':2},
-				# 	{'axis':'x','which':'minor','labelsize':15,'length':5,'width':2},
-				# 	{'axis':'y','which':'minor','labelsize':15,'length':5,'width':2},					
-				# 	],
-				'grid':[{'visible':True,'which':'major'},{'visible':True,'which':'minor'},],
+					np.max([u for i in variables[key][index] for u in variables[key][index][i]['xfunc']])+1,
+					2)},
+				'legend':{'loc':(0.44,0.02)},
+				'grid':{'visible':True},
 				'set_colorbar':{
 					'values':[i for i in np.linspace(
-						min([dict(zip(key[2],i))['U'] for i in variables[key][index]]),
-						max([dict(zip(key[2],i))['U'] for i in variables[key][index]]),
+						min([dict(zip(key[2],i))['h'] for i in variables[key][index]]),
+						max([dict(zip(key[2],i))['h'] for i in variables[key][index]]),
 						4*len(variables[key][index]))],
 					'colors':[getattr(plt.cm,'viridis')(i/(4*len(variables[key][index]))) for i in range(4*len(variables[key][index]))],
 					'size':'3%',
 					'pad':0.1,
 					'set_ylabel':{'ylabel':texify(key[2][0])},
 					'set_yticks':{'ticks':np.linspace(min([dict(zip(key[2],i))['h'] for i in variables[key][index]]),max([dict(zip(key[2],i))['h'] for i in variables[key][index]]),5)},
-					}  if index == (sizes[key[1]]-1) else {},							
+					# }  if index == (sizes[key[1]]-1) else {},							
+					}  if index == (1) else {},							
 			},	
 			'fig':{
 				'set_size_inches':{'w':18,'h':12},
@@ -312,12 +405,15 @@ def main(args):
 					'nrows':1,
 					'ncols':sizes[key[1]],
 					'index':index+1,
-					# 'ncols':1,
-					# 'index':1,
+					'ncols':1,
+					'index':1,
 				},
+			'rcParams':{
+					'font.size':30
+				},				
 			},			
 		}
-		for index in range(sizes[key[1]])}
+		for index in [0]} #range(1,sizes[key[1]])}
 		for key in [('N','energy',('U','J','h',))]
 		if key in keys
 		},			
@@ -327,15 +423,19 @@ def main(args):
 			'ax': {
 				'errorbar':[{
 					'x': variables[key][index][i]['xfunc'][1:],
-					'y': variables[key][index][i]['yfunc'][1:]/variables[key][index][i]['xfunc'][1:]/(dict(zip(key[2],i)).get('h',-1)),
+					# 'y': variables[key][index][i]['yfunc'][1:]/variables[key][index][i]['xfunc'][1:]/(dict(zip(key[2],i)).get('h',-1)),
+					'y': variables[key][index][i]['yfunc'][1:]/variables[key][index][i]['xfunc'][1:],
+					# 'y': variables[key][index][i]['yfunc'][1:],
 					**({
 					# 'xerr': variables[key][index][i]['xerr'][1:],
-					'yerr': variables[key][index][i]['yerr'][1:]/variables[key][index][i]['xfunc'][1:]/(dict(zip(key[2],i)).get('h',-1)),
+					'yerr': variables[key][index][i]['yerr'][1:]/variables[key][index][i]['xfunc'][1:],
+					# 'yerr': variables[key][index][i]['yerr'][1:],
 					'capsize':5,
 					'elinewidth':2,
 					} if variables[key][index][i]['yerr'].sum()>0 else {}),
 					'marker':'o',
-					'color':getattr(plt.cm,'tab10')(l),
+					# 'color':getattr(plt.cm,'tab10')(l),
+					'color':getattr(plt.cm,'viridis')((parameters['h'].index(dict(zip(key[2],i))['h']))/(len(parameters['h']))),
 					'label':r'$%s$'%('~'.join(['%s'%(texify(j,usetex=False)) for k,j in dict(zip(key[2],i)).items() if k != attr and k in ['h']])),
 					}
 					for l,i in enumerate([i for i in variables[key][index] if (dict(zip(key[2],i)).get(attr,-1) == param) ])
@@ -345,9 +445,10 @@ def main(args):
 					],
 				'set_title':{'label':r'$\epsilon = %0.1f$'%(param)},
 				'set_xlabel':{'xlabel':texify(key[0])},
-				'set_ylabel':{'ylabel':texify(key[1])},
+				'set_ylabel':{'ylabel':r'$%s/N$'%(texify(key[1],usetex=False))},
 				'set_xscale':{'value':'linear'},				
 				'set_yscale':{'value':'log'},				
+				'set_ylim':{'ymin':1e-4,'ymax':1e0,},				
 				'set_xticks':{'ticks':np.linspace(
 					np.min([u for i in variables[key][index] for u in variables[key][index][i]['xfunc'][1:]]),
 					np.max([u for i in variables[key][index] for u in variables[key][index][i]['xfunc'][1:]]),
@@ -367,7 +468,7 @@ def main(args):
 				'legend':{
 					'title':r'$%s$'%(',~'.join(['%s'%(texify(k,usetex=False)) for k,j in dict(zip(key[2],i)).items() if k != attr and k in ['h']])),
 					'ncol':1,
-					'set_errorbar':False} if p == (len(parameters[attr])-1) else {},
+					'set_errorbar':False} if p == (len(parameters[attr])-1) else None,
 			},	
 			'fig':{
 				'set_size_inches':{'w':18,'h':12},
@@ -451,14 +552,16 @@ def main(args):
 					# 'xerr': variables[key][index][i]['xerr'],
 					'yerr': variables[key][index][i]['yerr'],
 					} if variables[key][index][i]['yerr'].sum()>0 else {}),					
-					'marker':{0:'v',1:'o',2:'^'}.get(dict(zip(key[2],i))['U'],'*'),
+					'marker':{0:'o',1:'o',2:'o'}.get(dict(zip(key[2],i))['U'],'o'),
 					'linestyle':'--',
-					'alpha':{0:0.3,1:0.6,2:0.9}.get(dict(zip(key[2],i))['U'],1),
-					'color':getattr(plt.cm,'tab10')(parameters['N'].index(dict(zip(key[2],i))['N'])),
-					'label':'$%s%s : c = %0.3f,~ C = %0.3f$'%(
-						'~~'.join(['%s: %s'%(texify(k,usetex=False),texify(j,usetex=False)) for k,j in dict(zip(key[2],i)).items()]),
-						r'~' if dict(zip(key[2],i))['N']<10 else '',
-						*variables[key][index][i]['ycoef']) if index==(0) else None,					
+					# 'alpha':{0:0.3,1:0.6,2:0.9}.get(dict(zip(key[2],i))['U'],1),
+					# 'color':getattr(plt.cm,'tab10')(parameters['N'].index(dict(zip(key[2],i))['N'])),
+					'color':getattr(plt.cm,'viridis')((len(parameters['N'])-parameters['N'].index(dict(zip(key[2],i))['N']))/len(parameters['N'])),					
+
+					# 'label':'$%s%s : c = %0.3f,~ C = %0.3f$'%(
+					# 	'~~'.join(['%s: %s'%(texify(k,usetex=False),texify(j,usetex=False)) for k,j in dict(zip(key[2],i)).items()]),
+					# 	r'~' if dict(zip(key[2],i))['N']<10 else '',
+					# 	*variables[key][index][i]['ycoef']) if index==(0) else None,					
 					}
 					for l,i in enumerate(sorted(variables[key][index],key=lambda i: dict(zip(key[2],i))['U']))
 					# if dict(zip(key[2],i))['U'] == 1					
@@ -467,8 +570,13 @@ def main(args):
 					'x': variables[key][index][i]['xfit'],
 					'y': variables[key][index][i]['yfit'],
 					'linestyle':'-',					
-					'alpha':{0:0.3,1:0.6,2:0.9}.get(dict(zip(key[2],i))['U'],1),					
-					'color':getattr(plt.cm,'tab10')(parameters['N'].index(dict(zip(key[2],i))['N'])),
+					# 'alpha':{0:0.3,1:0.6,2:0.9}.get(dict(zip(key[2],i))['U'],1),					
+					# 'color':getattr(plt.cm,'tab10')(parameters['N'].index(dict(zip(key[2],i))['N'])),
+					'color':getattr(plt.cm,'viridis')((len(parameters['N'])-parameters['N'].index(dict(zip(key[2],i))['N']))/len(parameters['N'])),					
+					'label':'$%s%s ~ c = %0.3f,~ C = %0.3f$'%(
+						'~~'.join(['%s: %s'%(k,texify(j,usetex=False)) for k,j in dict(zip(key[2],i)).items() if k in ['N']]),
+						r'~' if dict(zip(key[2],i))['N']<10 else '',
+						*variables[key][index][i]['ycoef']) if index==(0) else None,										
 					}
 					for l,i in enumerate(sorted(variables[key][index],key=lambda i: dict(zip(key[2],i))['U']))
 					# if dict(zip(key[2],i))['U'] == 1					

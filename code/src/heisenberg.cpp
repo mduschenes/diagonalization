@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
 	std::map<std::string,types> variable;
 	std::map<std::string,std::vector<types>> variables;
 
-
 	if (argc > 1){
 		argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
 		argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
@@ -64,6 +63,10 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(U);
 
+		names.push_back("sigma");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back("LA");		
+
 		names.push_back("iteration");
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(0u);
@@ -77,10 +80,10 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(6u);
 		variables[names.back()].push_back(8u);
 		variables[names.back()].push_back(12u);
-		variables[names.back()].push_back(14u);
-		variables[names.back()].push_back(16u);
-		variables[names.back()].push_back(18u);
-		variables[names.back()].push_back(20u);
+		// variables[names.back()].push_back(14u);
+		// variables[names.back()].push_back(16u);
+		// variables[names.back()].push_back(18u);
+		// variables[names.back()].push_back(20u);
 		// variables[names.back()].push_back(24u);
 		// variables[names.back()].push_back(28u);
 
@@ -118,7 +121,8 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back("0.7");		
 
 		names.push_back("iteration");
-		sizes[names.back()] = 100;
+		// sizes[names.back()] = 1;
+		sizes[names.back()] = 1000;
 		for (j=0;j<(sizes[names.back()]);j++){variables[names.back()].push_back(j);};
 
 	};
@@ -134,7 +138,7 @@ int main(int argc, char *argv[]){
 			variables[names[5]]
 			))){
 
-		i = i+2000;
+		// i = i+1000000;
 
 		// assign(iterable,variable,names);
 		variable[names[0]] = std::get<0>(iterable); variable[names[1]] = std::get<1>(iterable);

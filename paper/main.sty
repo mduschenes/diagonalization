@@ -74,19 +74,19 @@
 \title{\Large\doctitle}
 \posttitle{\end{center}}
 \preauthor{\begin{center} \vskip -10pt}
-\author[1,2,3,4]{M. Duschenes\thanks{Corresponding author at: Department of Physics \& Astronomy, University of Waterloo, Canada. \emph{E-mail address}: mduschen@waterloo.ca (M. Duschenes).}}
+\author[1,2,3,4]{Matthew Duschenes\thanks{Corresponding author at: Department of Physics \& Astronomy, University of Waterloo, Canada. \emph{E-mail address}: mduschen@waterloo.ca (M. Duschenes).}}
 \affil[1]{Department of Physics \& Astronomy, University of Waterloo, Canada}
 \affil[2]{Institute for Quantum Computing, University of Waterloo, Canada}
-\affil[3]{Perimeter Institute for Theoretical Physics, Waterloo, Canada}
-\affil[4]{Vector Institute for Artificial Intelligence, Toronto, Canada}
+\affil[3]{Vector Institute for Artificial Intelligence, Toronto, Canada}
+\affil[4]{Perimeter Institute for Theoretical Physics, Waterloo, Canada}
 % \docauthorINFO
 % \url{krishna@umich.edu}, \url{mduschen@umich.edu}
 % \author{\docauthor}
 % \affil{\docaffil}
 \postauthor{\end{center} \vskip -20pt}
 \predate{\begin{center} \vskip -0pt}
-\date{} %\today}%\small{\today}}
-\postdate{\end{center} \vskip -40pt}%
+\date{\today}%\small{\today}}
+\postdate{\end{center} \vskip 0pt}%
 
 
 
@@ -171,6 +171,8 @@
 % \renewcommand{\labelenumii}{\roman{enumii})}
 % \renewcommand\thesection{\normalsize \Roman{section}}
 % \renewcommand\thesubsection{\normalsize \Roman{subsection}}
+\renewcommand\thesubsection{\small (\alph{subsection})}
+\renewcommand\thesubsubsection{\normalsize \arabic{section}.\alph{subsection}.\roman{subsubsection}}
 \usepackage[nottoc]{tocbibind}
 \usepackage{afterpage}
 \usepackage{titlesec}
@@ -253,7 +255,8 @@
 \usepackage[british]{babel}
 \usepackage[draft=false]{microtype}
 \usepackage[doublespacing]{setspace}
-\usepackage{indentfirst}
+% \usepackage{indentfirst}
+\setlength\parindent{0pt}
 \edef\restoreparindent{\parindent=\the\parindent\relax}
 \usepackage[parfill]{parskip}
 \restoreparindent
@@ -313,7 +316,7 @@
 
 
 % HypperReferences
-\usepackage[pdftex,draft=false]{hyperref}
+\usepackage[pdftex,pdfauthor={\docauthor},pdftitle={\pdftitle}]{hyperref}
 \hypersetup{
     colorlinks=true,
     linkcolor=black,

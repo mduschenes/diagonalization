@@ -23,12 +23,13 @@ int main(int argc, char *argv[]){
 	T J = 1;
 	T h = 1;
 	T U = 0;
+	std::string sigma = "LA";	
 	unsigned int iteration;
 
 	// Iterations
 	unsigned int i,j;
 	bool multiple;
-	using types = std::variant<T,unsigned int>;
+	using types = std::variant<T,unsigned int,std::string>;
 	unsigned int size = 0;
 	std::vector<std::string> names;
 	std::map<std::string,unsigned int> sizes;
@@ -62,6 +63,10 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(U);
 
+		names.push_back("sigma");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back("LA");		
+
 		names.push_back("iteration");
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(0u);
@@ -73,13 +78,13 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 6;
 		variables[names.back()].push_back(4u);
 		variables[names.back()].push_back(6u);
-		// variables[names.back()].push_back(8u);
-		// variables[names.back()].push_back(10u);
-		// variables[names.back()].push_back(12u);
-		// variables[names.back()].push_back(14u);
-		// variables[names.back()].push_back(16u);
-		// variables[names.back()].push_back(18u);
-		// variables[names.back()].push_back(20u);
+		variables[names.back()].push_back(8u);
+		variables[names.back()].push_back(10u);
+		variables[names.back()].push_back(12u);
+		variables[names.back()].push_back(14u);
+		variables[names.back()].push_back(16u);
+		variables[names.back()].push_back(18u);
+		variables[names.back()].push_back(20u);
 
 		names.push_back("J");
 		sizes[names.back()] = 1;
@@ -88,9 +93,9 @@ int main(int argc, char *argv[]){
 		names.push_back("h");
 		sizes[names.back()] = 64;
 
-		// variables[names.back()].push_back(0.0);
+		variables[names.back()].push_back(0.0);
 		variables[names.back()].push_back(1.0);
-		// variables[names.back()].push_back(2.0);
+		variables[names.back()].push_back(2.0);
 		// variables[names.back()].push_back(10.0);
 
 		// for (j=0;j<(sizes[names.back()])/4;j++){variables[names.back()].push_back((0.+0.8*(j)/((sizes[names.back()])/4.-1)));};
@@ -102,8 +107,16 @@ int main(int argc, char *argv[]){
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(0.0);
 
+		names.push_back("sigma");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back("LA");		
+		// variables[names.back()].push_back("0.2");		
+		// variables[names.back()].push_back("0.5");		
+		// variables[names.back()].push_back("0.7");		
+
 		names.push_back("iteration");
 		sizes[names.back()] = 1;
+		// sizes[names.back()] = 100;
 		for (j=0;j<(sizes[names.back()]);j++){variables[names.back()].push_back(j);};
 
 	};
@@ -115,14 +128,22 @@ int main(int argc, char *argv[]){
 	for (auto&& [i,iterable] : iter::enumerate(iter::product(
 			variables[names[0]],variables[names[1]],
 			variables[names[2]],variables[names[3]],
-			variables[names[4]]
+			variables[names[4]],
+			variables[names[5]]
 			))){
 
-		// i = i+576;
+		// i = i+2000;
+
 		// assign(iterable,variable,names);
 		variable[names[0]] = std::get<0>(iterable); variable[names[1]] = std::get<1>(iterable);
 		variable[names[2]] = std::get<2>(iterable); variable[names[3]] = std::get<3>(iterable);
 		variable[names[4]] = std::get<4>(iterable);
+		variable[names[5]] = std::get<5>(iterable);
+
+		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
+		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
+		sigma = std::get<std::string>(variable["sigma"]);
+		iteration = std::get<unsigned int>(variable["iteration"]);
 
 		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
 		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
@@ -140,9 +161,9 @@ int main(int argc, char *argv[]){
 		system.lattice = "square"; // Lattice type
 		system.s = 3; // number of unique eigenvalues to consider
 		system.q = 5;//2*pow(system.N,2)+4 + system.N; //std::max(q,int(pow(system.D,system.N))); // number of eigenvalues to consider
-		system.sigma = "LA"; // State shift parameter
+		system.sigma = sigma; // State shift parameter
 		system.shift = 0;//100.0*(J*((2*d)*N/2) + h*N); // State shift value
-		system.scale = -1; // State scale value
+		if (sigma == "LA") {system.scale = -1;} else {system.scale = 1;}; // State scale value
 		system.sorting = "<="; // Sorting for states
 		system.size = pow(system.D,system.N); // data size
 		system.dim = 2; // data dimension
@@ -151,7 +172,7 @@ int main(int argc, char *argv[]){
 		system.close = 0.0; // Equal State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
-		system.path = "data/data.hdf5"; // path name
+		system.path = "data/ising/data.hdf5"; // path name
 		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name

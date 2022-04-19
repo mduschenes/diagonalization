@@ -2,47 +2,47 @@ This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: main.bst
-I found no \citation commands---while reading file main.aux
-I found no \bibdata command---while reading file main.aux
-You've used 0 entries,
+Database file #1: main.bib
+Warning--empty note in DeLeeuw2013
+You've used 11 entries,
             2344 wiz_defined-function locations,
-            972 strings with 8698 characters,
-and the built_in function-call counts, 28 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 7
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+            1058 strings with 10805 characters,
+and the built_in function-call counts, 3886 in all, are:
+= -- 251
+> -- 112
+< -- 1
++ -- 56
+- -- 28
+* -- 479
+:= -- 432
+add.period$ -- 31
+call.type$ -- 11
+change.case$ -- 12
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 12
+duplicate$ -- 358
+empty$ -- 367
+format.name$ -- 37
+if$ -- 771
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 8
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 11
+missing$ -- 85
+newline$ -- 61
+num.names$ -- 11
+pop$ -- 82
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 1
+skip$ -- 67
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 102
+swap$ -- 353
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 7
-(There were 2 error messages)
+warning$ -- 1
+while$ -- 19
+width$ -- 13
+write$ -- 121
+(There was 1 warning)

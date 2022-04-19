@@ -129,18 +129,23 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 	def layout(key,fig,axes,settings):
 		if all([key in obj for obj in [fig,axes]]):
 			return
-		_layout_ = _layout(settings[key]['style']['layout'])
+
+		attr = 'style'
+		rcParams = settings[key][attr].get('rcParams',{})
+		matplotlib.rcParams.update(rcParams)
+
+		_layout_ = _layout(settings[key][attr]['layout'])
 		add_subplot = True and (_layout_ != {})
-		other = {'%s_%s'%(key,k):settings[key]['style'].get(k) for k in AXES if isinstance(settings[key]['style'].get(k),dict)}
+		other = {'%s_%s'%(key,k):settings[key][attr].get(k) for k in AXES if isinstance(settings[key][attr].get(k),dict)}
 		for k in axes:
-			__layout__ = _layout(settings.get(k,{}).get('style',{}).get('layout',axes[k].get_geometry()))
+			__layout__ = _layout(settings.get(k,{}).get(attr,{}).get('layout',axes[k].get_geometry()))
 			if all([_layout_[s]==__layout__[s] for s in _layout_]):
 				axes[key] = axes[k]
 				add_subplot = False
 				break
 
 		if fig.get(key) is None:
-			if (fig == {} or settings[key]['style'].get('unique_fig',False)) and not hasattr(axes.get(key),'figure'):
+			if (fig == {} or settings[key][attr].get('unique_fig',False)) and not hasattr(axes.get(key),'figure'):
 				fig[key] = plt.figure()
 			elif hasattr(axes.get(key),'figure'):
 				fig[key] = getattr(axes.get(key),'figure')
@@ -272,7 +277,7 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 						val = kwargs.pop(atr)
 						if not val:
 							handles = [handle[0] for handle in handles]
-				if (handles == [] or all([kwargs[k] is None for k in kwargs])):# and all([kwargs.get(k) is None for k in ['handles','labels']]):
+				if (handles == [] or (kwargs != {} and all([kwargs[k] is None for k in kwargs]))):# and all([kwargs.get(k) is None for k in ['handles','labels']]):
 					call = False
 				else:
 					kwargs.update(dict(zip(['handles','labels'],[handles,labels])))
@@ -433,8 +438,8 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 			'layout':_layout(settings[key]['style'].get('layout',{})),
 			}	
 		
-		matplotlib.rcParams.update(settings[key]['style'].get('rcParams',{}))
-
+		rcParams = settings[key]['style'].get('rcParams',{})
+		matplotlib.rcParams.update(rcParams)
 
 		objs = lambda attr,key,fig,axes: {'fig':fig.get(key),'ax':axes.get(key),**{'%s_%s'%('ax',k):axes.get('%s_%s'%(key,k)) for k in AXES}}[attr]
 		obj = objs(attr,key,fig,axes)
@@ -599,6 +604,7 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 			axes = {}
 
 		for key in settings:
+
 			attr = 'layout'
 			layout(key,fig,axes,settings)
 
@@ -634,8 +640,8 @@ def plot(x=None,y=None,settings={},fig=None,axes=None,mplstyle=None,texify=None,
 	try:
 		fig,axes = context(x,y,settings,fig,axes,mplstyle,texify)
 	except:
-		rc_params = {'text.usetex': False}
-		matplotlib.rcParams.update(rc_params)
+		rcParams = {'text.usetex': False}
+		matplotlib.rcParams.update(rcParams)
 		matplotlib.use('pdf') 
 
 		fig,axes = context(x,y,settings,fig,axes,_mplstyle,texify)

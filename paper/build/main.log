@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.10.6)  2 MAR 2022 19:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.10.6)  19 APR 2022 00:29
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -252,9 +252,6 @@ File: microtype.cfg 2019/11/18 v2.7d microtype main configuration file (RS)
 ))
 (/usr/local/texlive/2020/texmf-dist/tex/latex/setspace/setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
-)
-(/usr/local/texlive/2020/texmf-dist/tex/latex/tools/indentfirst.sty
-Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
 )
 (/usr/local/texlive/2020/texmf-dist/tex/latex/parskip/parskip.sty
 Package: parskip 2020-06-15 v2.0f non-zero parskip adjustments
@@ -1131,7 +1128,6 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
 \Hy@SavedSpaceFactor=\count345
-Package hyperref Info: Option `draft' set `false' on input line 4338.
 Package hyperref Info: Hyper figures OFF on input line 4464.
 Package hyperref Info: Link nesting OFF on input line 4469.
 Package hyperref Info: Hyper index ON on input line 4472.
@@ -1201,7 +1197,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip135
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 321.
+Package hyperref Info: Option `colorlinks' set `true' on input line 324.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/cleveref/cleveref.sty
 Package: cleveref 2018/03/27 v0.21.4 Intelligent cross-referencing
 Package cleveref Info: `hyperref' support loaded on input line 2370.
@@ -1259,22 +1255,22 @@ Package: relsize 2013/03/29 ver 4.1
 )) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
  (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count364
@@ -1331,14 +1327,14 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \microtypecontext on input line 14.
+LaTeX Info: Redefining \microtypecontext on input line 15.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 14.
+LaTeX Info: Redefining \showhyphens on input line 15.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1350,7 +1346,7 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: floatrow package v0.3b is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 14.
+Package hyperref Info: Link coloring ON on input line 15.
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -1364,9 +1360,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count370
 )
-LaTeX Info: Redefining \ref on input line 14.
-LaTeX Info: Redefining \pageref on input line 14.
-LaTeX Info: Redefining \nameref on input line 14.
+LaTeX Info: Redefining \ref on input line 15.
+LaTeX Info: Redefining \pageref on input line 15.
+LaTeX Info: Redefining \nameref on input line 15.
  (./main.out) (./main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
@@ -1387,39 +1383,136 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 
 [2
 
-] [1
+]
 
-] (./main.aux)
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 54.
+
+[1
+
+] [2] [3] [4] [5] [6]
+<figures/ising/energy__h__N.pdf, id=228, 1300.86pt x 867.24pt>
+File: figures/ising/energy__h__N.pdf Graphic file (type pdf)
+<use figures/ising/energy__h__N.pdf>
+Package pdftex.def Info: figures/ising/energy__h__N.pdf  used on input line 223
+.
+(pdftex.def)             Requested size: 469.75502pt x 313.17218pt.
+ [7] [8 <./figures/ising/energy__h__N.pdf>]
+<figures/ising/order__h__N.pdf, id=288, 1300.86pt x 867.24pt>
+File: figures/ising/order__h__N.pdf Graphic file (type pdf)
+<use figures/ising/order__h__N.pdf>
+Package pdftex.def Info: figures/ising/order__h__N.pdf  used on input line 239.
+
+(pdftex.def)             Requested size: 469.75502pt x 313.17218pt.
+ [9 <./figures/ising/order__h__N.pdf>]
+<figures/ising/gap__N__h.pdf, id=330, 1300.86pt x 867.24pt>
+File: figures/ising/gap__N__h.pdf Graphic file (type pdf)
+<use figures/ising/gap__N__h.pdf>
+Package pdftex.def Info: figures/ising/gap__N__h.pdf  used on input line 265.
+(pdftex.def)             Requested size: 469.75502pt x 313.17218pt.
+ [10]
+<figures/ising/gap__N__h_legend.pdf, id=342, 476.78125pt x 518.93875pt>
+File: figures/ising/gap__N__h_legend.pdf Graphic file (type pdf)
+<use figures/ising/gap__N__h_legend.pdf>
+Package pdftex.def Info: figures/ising/gap__N__h_legend.pdf  used on input line
+ 273.
+(pdftex.def)             Requested size: 187.89914pt x 204.51534pt.
+ [11 <./figures/ising/gap__N__h.pdf> <./figures/ising/gap__N__h_legend.pdf>] [1
+2]
+<figures/xy/energy__N__U.pdf, id=426, 1300.86pt x 867.24pt>
+File: figures/xy/energy__N__U.pdf Graphic file (type pdf)
+<use figures/xy/energy__N__U.pdf>
+Package pdftex.def Info: figures/xy/energy__N__U.pdf  used on input line 301.
+(pdftex.def)             Requested size: 375.80544pt x 250.52715pt.
+<figures/ah/energy__N__U.pdf, id=429, 1300.86pt x 867.24pt>
+File: figures/ah/energy__N__U.pdf Graphic file (type pdf)
+<use figures/ah/energy__N__U.pdf>
+Package pdftex.def Info: figures/ah/energy__N__U.pdf  used on input line 307.
+(pdftex.def)             Requested size: 375.80544pt x 250.52715pt.
+ [13] [14 <./figures/xy/energy__N__U.pdf> <./figures/ah/energy__N__U.pdf>] [15]
+<figures/ising/entanglement__partition__N.pdf, id=478, 1156.32pt x 867.24pt>
+File: figures/ising/entanglement__partition__N.pdf Graphic file (type pdf)
+<use figures/ising/entanglement__partition__N.pdf>
+Package pdftex.def Info: figures/ising/entanglement__partition__N.pdf  used on 
+input line 334.
+(pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
+ [16]
+<figures/xy/entanglement__partition__N__U__J.pdf, id=487, 1156.32pt x 867.24pt>
+
+File: figures/xy/entanglement__partition__N__U__J.pdf Graphic file (type pdf)
+<use figures/xy/entanglement__partition__N__U__J.pdf>
+Package pdftex.def Info: figures/xy/entanglement__partition__N__U__J.pdf  used 
+on input line 344.
+(pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
+ [17 <./figures/ising/entanglement__partition__N.pdf>]
+<figures/ah/entanglement__partition__N__U__J.pdf, id=514, 1156.32pt x 867.24pt>
+
+File: figures/ah/entanglement__partition__N__U__J.pdf Graphic file (type pdf)
+<use figures/ah/entanglement__partition__N__U__J.pdf>
+Package pdftex.def Info: figures/ah/entanglement__partition__N__U__J.pdf  used 
+on input line 353.
+(pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
+ [18 <./figures/xy/entanglement__partition__N__U__J.pdf>]
+<figures/other/entanglement__partition__N__U__J.pdf, id=539, 1156.32pt x 867.24
+pt>
+File: figures/other/entanglement__partition__N__U__J.pdf Graphic file (type pdf
+)
+<use figures/other/entanglement__partition__N__U__J.pdf>
+Package pdftex.def Info: figures/other/entanglement__partition__N__U__J.pdf  us
+ed on input line 363.
+(pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
+ [19 <./figures/ah/entanglement__partition__N__U__J.pdf>] [20 <./figures/other/
+entanglement__partition__N__U__J.pdf>] [21] [22]
+<figures/heisenberg/entanglement__N__U__J__h__sigma.pdf, id=597, 1300.86pt x 86
+7.24pt>
+File: figures/heisenberg/entanglement__N__U__J__h__sigma.pdf Graphic file (type
+ pdf)
+<use figures/heisenberg/entanglement__N__U__J__h__sigma.pdf>
+Package pdftex.def Info: figures/heisenberg/entanglement__N__U__J__h__sigma.pdf
+  used on input line 403.
+(pdftex.def)             Requested size: 469.75502pt x 313.17218pt.
+ [23 <./figures/heisenberg/entanglement__N__U__J__h__sigma.pdf>] [24] [25] [26]
+ (./main.bbl) [27] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 05347F7456755D826AF1EF06033E75C7;115.
+(rerunfilecheck)             Checksum: 9B4B7030CC7DCDD8B961E280684365A5;1892.
  ) 
 Here is how much of TeX's memory you used:
- 33126 strings out of 479916
- 661258 string characters out of 5882695
- 1061100 words of memory out of 5000000
- 48971 multiletter control sequences out of 15000+600000
- 555737 words of font info for 96 fonts, out of 8000000 for 9000
+ 33614 strings out of 479916
+ 669787 string characters out of 5882695
+ 1075225 words of memory out of 5000000
+ 49186 multiletter control sequences out of 15000+600000
+ 563738 words of font info for 182 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 89i,11n,122p,1189b,365s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 89i,15n,122p,1304b,548s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<
-/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
-usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></us
-r/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/
-local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/lo
-cal/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb></usr/loca
-l/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/
-texlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/te
-xlive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texl
-ive/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texliv
-e/2020/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/
-2020/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/20
-20/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2020
-/texmf-dist/fonts/type1/public/cm-super/sfti1200.pfb>
-Output written on main.pdf (3 pages, 168535 bytes).
+/usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
+usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></u
+sr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></us
+r/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/lo
+cal/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loca
+l/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/
+texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/tex
+live/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
+ive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texliv
+e/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/
+2020/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive/20
+20/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2020
+/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2020/t
+exmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb></usr/local/texlive/2020/tex
+mf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/texlive/2020/texmf
+-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2020/texmf-d
+ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2020/texmf-dis
+t/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2020/texmf-dist/
+fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2020/texmf-dist/fo
+nts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2020/texmf-dist/font
+s/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2020/texmf-dist/fonts/
+type1/public/cm-super/sfti1200.pfb>
+Output written on main.pdf (29 pages, 752879 bytes).
 PDF statistics:
- 94 PDF objects out of 1000 (max. 8388607)
- 75 compressed objects within 1 object stream
- 7 named destinations out of 1000 (max. 500000)
- 24093 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 749 PDF objects out of 1000 (max. 8388607)
+ 535 compressed objects within 6 object streams
+ 111 named destinations out of 1000 (max. 500000)
+ 27388 words of extra memory for PDF output out of 29859 (max. 10000000)
 

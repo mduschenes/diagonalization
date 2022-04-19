@@ -643,13 +643,12 @@ text.latex.preamble : \usepackage{graphicx}\usepackage{relsize}\usepackage{amsma
 
 #mathtext.fallback_to_cm : True
 
-font.size : 20
 #font.weight : bold
 #axes.labelweight : bold
 axes.linewidth : 2  
 #axes.prop_cycle : cycler(color='tab10')
 figure.max_open_warning: 100
-
+font.size : 20
 
 #   # matplotlib.rcParams['font.family'] = 'sans-serif'
 #   # matplotlib.rcParams['font.serif'] = 'Computer modern'
