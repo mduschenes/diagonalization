@@ -16,7 +16,7 @@
 \contentsline {subsection}{\numberline {\small (b)}XY Model Entanglement Scaling}{17}{subsection.3.2}%
 \contentsline {subsection}{\numberline {\small (c)}AH Model Entanglement Scaling}{18}{subsection.3.3}%
 \contentsline {subsection}{\numberline {\small (d)}Anisotropic Heisenberg Model Entanglement Scaling}{19}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Entanglement Entropy and Central Charges}{21}{section.4}%
+\contentsline {section}{\numberline {4}Many Body Localization}{21}{section.4}%
 \contentsline {subsection}{\numberline {\small (a)}Eigenstate Thermalization Hypothesis and Many Body Thermalization}{21}{subsection.4.1}%
 \contentsline {subsection}{\numberline {\small (b)}Random Field Heisenberg Model Area and Volume Law Entanglement Scaling}{22}{subsection.4.2}%
 \contentsline {section}{Numerical Methods}{24}{figure.caption.12}%
