@@ -83,8 +83,8 @@ int main(int argc, char *argv[]){
 		variables[names.back()].push_back(12u);
 		variables[names.back()].push_back(14u);
 		variables[names.back()].push_back(16u);
-		variables[names.back()].push_back(18u);
-		variables[names.back()].push_back(20u);
+		// variables[names.back()].push_back(18u);
+		// variables[names.back()].push_back(20u);
 
 		names.push_back("J");
 		sizes[names.back()] = 1;
@@ -172,7 +172,7 @@ int main(int argc, char *argv[]){
 		system.close = 0.0; // Equal State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
-		system.path = "data/ising/data.hdf5"; // path name
+		system.path = "data/data.hdf5"; // path name
 		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name
