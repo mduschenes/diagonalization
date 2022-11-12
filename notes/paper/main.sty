@@ -1,0 +1,599 @@
+% Packages
+% Document Properties
+\providecommand{\docauthor}{Matthew Duschenes}
+\providecommand{\doctitle}{\docauthor}
+\providecommand{\docaffil}{Department of Applied Physics, University of Michigan}
+\providecommand{\docemail}{mduschen@umich.edu, krishna@umich.edu }
+\providecommand{\docaddress}{Ann Arbor, MI}
+\providecommand{\docheader}{}
+\providecommand{\docfooter}{Resume - \docauthor}
+\providecommand{\bibname}{BibliographyMatthewDuschenes}
+\providecommand{\filedirectory}{./figures/}
+
+% Preamble Commands
+% \usepackage{xparse}
+\usepackage{xargs}
+\usepackage[T1]{fontenc}
+% \usepackage[subpreambles=True]{standalone}
+\usepackage{etoolbox}
+\newcommand{\optargs}[4]{\IfNoValueTF{#1}{\IfNoValueTF{#2}{#4[][]{#3}}{#4[][#2]{#3}}}{\IfNoValueTF{#2}{#4[#1][]{#3}}{#4[#1][#2]{#3}}}}
+\usepackage{graphicx}
+\graphicspath{{\filedirectory}}
+\makeatletter
+\def\input@path{{\filedirectory}}
+%or: \def\input@path{{/path/to/folder/}{/path/to/other/folder/}}
+\makeatother
+% \usepackage{filecontents}
+
+% File Directory Commands
+
+% Document Commands
+\newcommand{\emptylinebreak}{~\\}
+
+% Margins
+\usepackage[letterpaper,margin=1in]{geometry}
+\geometry{headheight=15pt}
+% \geometry{headsep=30pt}
+% \setlength{\skip\footins}{3pt} % gap between text and footer
+\usepackage{changepage}   % for the adjustwidth environment
+
+% Headers
+\usepackage{fancyhdr}
+\renewcommand{\headrulewidth}{0.4pt}% default is 0.4pt
+\renewcommand{\footrulewidth}{0.4pt}% default is 0pt
+\fancyhf{}
+
+\makeatletter
+\if@twoside
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[LO,RE]{\docfooter}
+\else
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{\docfooter}
+\fi
+\makeatother
+\fancyhead[R]{\docheader}
+
+
+% Title
+% \singlespacing
+\usepackage{titling}
+\usepackage[affil-it]{authblk}
+\renewcommand*{\Authand}{~\&~}
+\settowidth{\thanksmarkwidth}{*}
+\setlength{\thanksmargin}{-\thanksmarkwidth}
+\pagestyle{fancy}
+\newcommandx{\docauthorINFO}[5][1=\relax, 2=\docauthor, 3=\docaffil, 4=\docaddress, 5=\docemail]{
+\author[#1]{#2} \affil[#1]{#3, #4, #5}} %% {Author #}{Author}{University}{Dept.}{Adress}{email@email}
+% \makeatletter
+% \patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{30}{19.2}\selectfont\@title}{}{}
+% \makeatother
+\renewcommand*{\Authfont}{\bfseries}
+\renewcommand*{\Affilfont}{\normalfont\itshape}
+\pretitle{\begin{center}\vskip -80pt}%
+\title{\Large\doctitle}
+\posttitle{\end{center}}
+\preauthor{\begin{center} \vskip -10pt}
+\author[1,2,3,4]{Matthew Duschenes\thanks{Corresponding author at: Department of Physics \& Astronomy, University of Waterloo, Canada. \emph{E-mail address}: mduschen@waterloo.ca (M. Duschenes).}}
+\affil[1]{Department of Physics \& Astronomy, University of Waterloo, Canada}
+\affil[2]{Institute for Quantum Computing, University of Waterloo, Canada}
+\affil[3]{Vector Institute for Artificial Intelligence, Toronto, Canada}
+\affil[4]{Perimeter Institute for Theoretical Physics, Waterloo, Canada}
+% \docauthorINFO
+% \url{krishna@umich.edu}, \url{mduschen@umich.edu}
+% \author{\docauthor}
+% \affil{\docaffil}
+\postauthor{\end{center} \vskip -20pt}
+\predate{\begin{center} \vskip -0pt}
+\date{\today}%\small{\today}}
+\postdate{\end{center} \vskip 0pt}%
+
+
+
+
+
+% % Document Properties
+% \providecommand{\doctitle}{PHYS XXX COURSE TITLE}
+% \providecommand{\docauthor}{\textbf{Matthew Duschenes} 90285449}
+% \providecommand{\docaffil}{Department of Applied Physics, University of Michigan}
+% \providecommand{\docemail}{mduschen@umich.edu}
+% \providecommand{\docaddress}{Ann Arbor, MI}
+% \providecommand{\docheader}{\docauthor}
+% \providecommand{\docfooter}{\docaffil}
+% \providecommand{\bibname}{BibliographyMatthewDuschenes}
+
+% % Preamble Commands
+% \usepackage{xparse}
+% \usepackage{etoolbox}
+% \usepackage[T1]{fontenc}
+% \usepackage[subpreambles]{standalone}
+% \usepackage{etoolbox}
+% \newcommand{\optargs}[4]{\IfNoValueTF{#1}{\IfNoValueTF{#2}{#4[][]{#3}}{#4[][#2]{#3}}}{\IfNoValueTF{#2}{#4[#1][]{#3}}{#4[#1][#2]{#3}}}}
+% \newcommand{\newcommandx}{\NewDocumentCommand}
+
+% % Margins
+% \usepackage[letterpaper,margin=1in]{geometry}
+% % \usepackage{changepage}   % for the adjustwidth environment
+
+% % Headers
+% % Headers
+% \usepackage{fancyhdr}
+% \geometry{headheight=15pt}
+% \renewcommand{\headrulewidth}{0.4pt}% default is 0.4pt
+% \renewcommand{\footrulewidth}{0.4pt}% default is 0pt
+% \geometry{headheight=15pt}
+% \geometry{headsep=10pt}
+% \setlength{\skip\footins}{10pt} % gap between text and footer
+% \fancyhf{}
+% \fancyhead[R]{\docheader}
+% \fancyfoot[LE,RO]{\thepage}
+% \fancyfoot[LO,RE]{\docfooter}
+
+% % \makeatletter
+% % \if@twoside
+% % \fancyfoot[LE,RO]{\thepage}
+% % \fancyfoot[LO,RE]{\docfooter}
+% % \else
+% % \fancyfoot[R]{\thepage}
+% % \fancyfoot[L]{\docfooter}
+% % \fi
+% % \makeatother
+% % \fancyhead[R]{\docheader}
+
+
+% % Title
+% % \singlespacing
+% \usepackage{titling}
+% \usepackage[affil-it]{authblk}
+% % \pagestyle{fancy}
+% \newcommandx{\docauthorINFO}[5][1=\relax, 2=\docauthor, 3=\docaffil, 4=\docaddress, 5=\docemail]{
+% \author[#1]{#2} \affil[#1]{#3, #4, #5}} %% {Author #}{Author}{University}{Dept.}{Adress}{email@email}
+% % \makeatletter
+% % \patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{30}{19.2}\selectfont\@title}{}{}
+% % \makeatother
+% \renewcommand*{\Authfont}{\bfseries}
+% \renewcommand*{\Affilfont}{\normalfont\itshape}
+% \pretitle{\begin{center}\linespread{1}\vskip -80pt}%
+% \title{\Large\doctitle}
+% \posttitle{\end{center}}
+% \preauthor{\begin{center} \vskip 0pt}
+% \docauthorINFO
+% % \author{\docauthor}
+% % \affil{\docaffil}
+% \postauthor{\end{center} \vskip 0pt}
+% \predate{\begin{center} \vskip -0pt}
+% \date{\today}%\small{\today}}
+% \postdate{\end{center} \vskip 0pt}%
+
+
+
+% Sections
+% \renewcommand{\labelenumii}{\roman{enumii})}
+% \renewcommand\thesection{\normalsize \Roman{section}}
+% \renewcommand\thesubsection{\normalsize \Roman{subsection}}
+\renewcommand\thesubsection{\small (\alph{subsection})}
+\renewcommand\thesubsubsection{\normalsize \arabic{section}.\alph{subsection}.\roman{subsubsection}}
+\usepackage[nottoc]{tocbibind}
+\usepackage{afterpage}
+\usepackage{titlesec}
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large \bfseries}
+\titleformat*{\subsubsection}{\normalsize\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+\titleformat*{\subparagraph}{\normalsize\bfseries}
+\usepackage[toc,page,title,titletoc]{appendix}
+% \usepackage[toc,page,title,titletoc]{acknowledgments}
+% \let\appendixpagenameorig\appendixpagename
+% \renewcommand\appendixpagename{\Large\bfseries\appendixpagenameorig}
+\usepackage[titles]{tocloft}
+\renewcommand\contentsname{\Large \bfseries Contents}
+\addtolength{\cftsecnumwidth}{15pt}
+\newcounter{savepage}
+\makeatletter
+\newcommand{\ps@abstract}{%
+  \renewcommand{\@oddhead}{}%
+  \renewcommand{\@evenhead}{\@oddhead}%
+  \renewcommand{\@oddfoot}{}%
+  \renewcommand{\@evenfoot}{\@oddfoot}%
+  \setcounter{savepage}{\number\value{page}}
+  \pagenumbering{roman}%
+  \setcounter{page}{\number\thesavepage}
+  \setcounter{savepage}{\number\value{page}}
+  \onehalfspacing%
+  \thispagestyle{plain}%
+}
+\newcommand{\ps@bibliography}{%
+  \renewcommand{\@oddhead}{}%
+  \renewcommand{\@evenhead}{\@oddhead}%
+  \renewcommand{\@oddfoot}{}%
+  \renewcommand{\@evenfoot}{\@oddfoot}%
+  \renewcommand{\bibpreamble}{\thispagestyle{plain}}
+  \thispagestyle{plain}%
+  \setcounter{savepage}{\number\value{page}}
+  \pagenumbering{arabic}%
+  \setcounter{page}{\number\thesavepage}
+  \onehalfspacing% 
+}
+\newcommand{\ps@document}{%
+  % \geometry{headheight=15pt,margin=1in}
+  \renewcommand{\headrulewidth}{0.4pt}% default is 0.4pt
+  \renewcommand{\footrulewidth}{0.4pt}% default is 0pt
+  \fancyhf{}
+
+  \if@twoside
+  \fancyfoot[LE,RO]{\thepage}
+  \fancyfoot[LO,RE]{\docfooter}
+  \else
+  \fancyfoot[R]{\thepage}
+  \fancyfoot[L]{\docfooter}
+  \fi
+  \fancyhead[R]{\docheader}
+  % \setcounter{page}{\number\thesavepage}
+  \pagenumbering{arabic}%
+  % \setcounter{page}{\number\thesavepage}
+  \singlespacing%
+  \thispagestyle{fancy}%
+}
+\makeatother
+
+\newenvironment{acknowledgments} {\renewcommand\abstractname{Acknowledgments}\begin{abstract}} {\end{abstract}}
+
+
+\newcommand\getcurrentref[1]{%
+ \ifnumequal{\value{#1}}{0}
+  {??}
+  {\thesection}%
+}  
+\usepackage{enumitem}
+\newcommand{\itemsubscript}[2]{$#1 _ #2$}
+
+\renewcommand{\labelitemii}{\labelitemi}
+\renewcommand{\labelitemiii}{\labelitemi}
+\renewcommand{\labelitemiv}{\labelitemi}
+
+% Fonts
+\usepackage[british]{babel}
+\usepackage[draft=false]{microtype}
+\usepackage[doublespacing]{setspace}
+% \usepackage{indentfirst}
+\setlength\parindent{0pt}
+\edef\restoreparindent{\parindent=\the\parindent\relax}
+\usepackage[parfill]{parskip}
+\restoreparindent
+
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage[cal=boondoxo]{mathalfa}
+\usepackage{bbm}
+\usepackage{scalerel}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+
+% Glossary
+% \usepackage{glossaries}
+% \makeglossaries
+
+% Lists
+\renewcommand{\labelenumi}{\alph{enumi}.}
+
+
+% Figures
+% \usepackage{wrapfig}
+\usepackage{floatrow}
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+\usepackage{multicol}
+\usepackage{grffile}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx,xcolor}
+\PassOptionsToPackage{export}{adjustbox}
+% \renewcommand{\thesubfigure}{\arabic{subfigure}}
+\usepackage{stackengine}
+\newcommand{\tableheight}[2][0]{\addstackgap[.5\dimexpr#2\relax]{\vphantom{#1}}}
+
+
+
+% Tikz
+\usepackage{tikz}
+\usepackage{tikzit}
+\usetikzlibrary{shapes.geometric, arrows,chains}
+\usetikzlibrary{quantikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,positioning,fit,petri}
+% \tikzexternalize[prefix=tikz/]
+% \tikzexternalize[pdflatex -enable-write18]
+% \usepackage{subfig}
+% \graphicspath{}
+
+
+
+% HypperReferences
+\usepackage[pdftex,pdfauthor={\docauthor},pdftitle={\pdftitle}]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black}
+\usepackage{url}
+
+% References
+% Natbib
+\usepackage[capitalize]{cleveref}
+% \usepackage[square,numbers]{natbib}
+\usepackage[super,comma]{natbib}
+\usepackage{silence}
+% \WarningFilter{Bibtex}{Citation `Entry' multiply defined}
+% \IfFileExists{../bib/naturemagext.bst}{\bibliographystyle{../bib/naturemagext}}{\bibliographystyle{naturemag}}%h-physrev}
+\IfFileExists{main.bst}{\bibliographystyle{main}}{\bibliographystyle{naturemag}}%h-physrev}
+\usepackage{bibentry}
+\renewcommand{\bibsection}{\section*{References}}
+\renewcommand{\bibnumfmt}[1]{#1.}
+
+% Seperate bibliogrpahy %%UNCOMMENT
+% \newwrite\bibstuff
+% \newcommand{\strf}[1]{\string#1^^J}
+
+% \AtEndDocument{%
+%   \immediate\openout\bibstuff=\bibname.tex
+%   \immediate\write\bibstuff{%
+%   \strf{\documentclass[12pt]{article}}%
+%   \strf{\usepackage[british]{babel}}%
+%   \strf{\usepackage{times}}%
+%   \strf{\usepackage{microtype}}%
+%   \strf{\usepackage[margin=0.75in,marginparsep=0pt,paperwidth=216mm,paperheight=279mm]{geometry}}
+%   \strf{\geometry{headheight=15pt}}
+%   \strf{\usepackage{xparse}}
+%   \strf{\usepackage[singlespacing]{setspace}}
+%   \strf{\usepackage{fancyhdr}}
+%   \strf{\renewcommand{\noexpand\headrulewidth}{0.4pt}}% default is 0.4pt
+%   \strf{\renewcommand{\noexpand\footrulewidth}{0.4pt}}% default is 0pt
+%   \strf{\geometry{headheight=15pt}}
+%   \strf{\geometry{headsep=10pt}}
+%   \strf{\setlength{\skip\footins}{20pt}} % gap between text and footer
+%   \strf{\fancyhf{}}
+%   \strf{\fancyhead[R]{Bibliography - \docauthor}}
+%   \strf{\fancyfoot[LE,RO]{\noexpand\thepage}}
+%   \strf{\fancyfoot[LO,RE]{\docfooter}}
+%   \strf{\usepackage{titling}}
+%   \strf{\pretitle{\noexpand\begin{center}\vskip -50pt}}
+%   \strf{\title{\noexpand\large Bibliography}}
+%   \strf{\posttitle{\noexpand\end{center}}}
+%   \strf{\preauthor{\noexpand\begin{center} \vskip -20pt}}
+%   \strf{\author{}}
+%   \strf{\postauthor{\noexpand\end{center} \vskip -20pt}}
+%   \strf{\predate{\noexpand\begin{center} \vskip -20pt}}
+%   \strf{\date{}}
+%   \strf{\postdate{\noexpand\end{center} \vskip -40pt}}
+%   \strf{\usepackage[super,comma]{natbib}}
+%   % \strf{\bibliographystyle{h-physrev}}
+%   % \strf{\usepackage{titlesec}}
+%   % \strf{\noexpand\titleformat*{\noexpand\section}{\normalsize}}
+%   \strf{\renewcommand{\noexpand\bibsection}{\relax}}
+%   \strf{\renewcommand{\noexpand\bibnumfmt}[1]{\string#1.}}
+%   \strf{\usepackage{hyperref}}
+%   \strf{\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black}}
+%   \strf{\usepackage{url}}
+%   \strf{\urlstyle{same}}
+%   \strf{\begin{document}}
+%     \strf{\maketitle}
+%     \strf{\thispagestyle{fancy}}
+%     \strf{\InputIfFileExists{\jobname.bbl}{}{}}
+%     \strf{\thispagestyle{fancy}}
+%     \strf{\end{document}}
+%   }
+%   \immediate\closeout\bibstuff
+%   \immediate\write18{pdflatex \bibname.tex} % Compilation
+% }
+
+
+
+% Code
+% \usepackage[linesnumbered,ruled]{algorithm2e}
+% \usepackage{minted}
+% \renewcommand\listingscaption{Algorithm}
+% \floatsetup[listing]{style=Plaintop}    
+
+% \crefname{listing}{Alg.}{Algorithms}
+% \newminted{python}{frame=lines,framerule=2pt,float=ht}
+% \setminted{breaklines,frame=single,framesep=2pt,breakindent=10pt,breakafter={,},breaksymbolleft=}
+
+
+% \newcommand{\code}[4]{
+% \begin{listing}[ht]
+%     \caption{#3}
+%     \inputminted{#1}{#2}
+%     \label{code:#4}
+% \end{listing}
+% }
+
+
+
+
+% Functions
+\newcommandx{\reals}[2][1=,2=]{{\mathbb{R}}^{#1}_{#2}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\newcommandx{\Cx}[3][1=0,2=0,3=\relax,usedefault]{C^{(#1)}(#3x^{(#2)})}
+\newcommandx{\Co}[1][1=0,usedefault]{C^{(#1)}}
+\newcommandx{\Sa}[1][1=\alpha,usedefault]{S_{#1}}
+\newcommandx{\xo}[2][1=0,2=\relax,usedefault]{#2x^{(#1)}}
+\newcommandx{\xij}[2][1=i,2=j,usedefault]{x_{#1#2}}
+\newcommandx{\cij}[2][1=i,2=j,usedefault]{c_{#1#2}}
+\newcommandx{\xije}[2][1=i,2=j,usedefault]{x_{e(i,j)}}
+\newcommandx{\cije}[2][1=i,2=j,usedefault]{c_{e(i,j)}}
+\newcommand{\xe}{x_e}
+\newcommand{\ce}{c_e}
+\newcommandx{\xuv}[2][1=\mu,2=\nu,usedefault]{x_{#1#2}}
+\newcommandx{\iter}[1][1=\relax]{^{(#1)}}
+\newcommandx{\ith}[1][1=i]{#1^{\textrm{th}}}
+\newcommandx{\ird}[1][1=i]{#1^{\textrm{rd}}}
+
+\usepackage{relsize}
+
+% \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+% \newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+
+
+% Macros
+
+% \newcommandx{\func}[2][1=\funcindex,2=]{{{u}^{#1}_{#2}}}
+% \newcommandx{\funcone}[2][1=\funcindex,2=]{{{w}^{#1}_{#2}}}
+% \newcommandx{\functwo}[2][1=\funcindex,2=]{{{v}^{#1}_{#2}}}
+% \newcommandx{\funcgeneral}[2][1=\funcindex,2=]{{{f}^{#1}_{#2}}}
+% \newcommandx{\Func}[2][1=\funcindex,2=]{{{U}^{#1}_{#2}}}
+% \newcommandx{\Funcone}[2][1=\funcindex,2=]{{{W}^{#1}_{#2}}}
+% \newcommandx{\Funcgeneral}[2][1=\funcindex,2=]{{{F}^{#1}_{#2}}}
+% \newcommandx{\Functwo}[2][1=\funcindex,2=]{{{V}^{#1}_{#2}}}
+% \newcommandx{\funcindex}[1][1=\chi]{#1}
+% \newcommandx{\functional}[2][1=\funcindex,2=]{{{f}^{#1}_{#2}}}
+% \newcommandx{\Functional}[2][1=\funcindex,2=]{{\bar{f}^{#1}_{#2}}} 
+
+% \renewcommandx{x^{\mu}}[2][1=\mu,2=]{{{x}^{#1}_{#2}}}
+% \newcommandx{x^{\mu}one}[2][1=\mu,2=]{{{y}^{#1}_{#2}}}
+% \newcommandx{x^{\mu}two}[2][1=\mu,2=]{{{z}^{#1}_{#2}}}
+% \newcommandx{x^{\mu}general}[2][1=\mu,2=]{{{\xi}^{#1}_{#2}}}
+% \newcommandx{x^{\mu}}[2][1=\mu,2=]{{{X}^{#1}_{#2}}}
+% \newcommandx{\Varone}[2][1=\mu,2=]{{{Y}^{#1}_{#2}}}
+% \newcommandx{\Vartwo}[2][1=\mu,2=]{{{Z}^{#1}_{#2}}}
+% \newcommandx{\Vargeneral}[2][1=\mu,2=]{{{\Xi}^{#1}_{#2}}}
+% \newcommandx{x^{\mu}index}[1][1=]{{{\mu}_{#1}}}
+% \newcommandx{x^{\mu}indexone}[1][1=]{{{\nu}_{#1}}}
+% \newcommandx{x^{\mu}indextwo}[1][1=]{{{\theta}_{#1}}}
+% \newcommandx{x^{\mu}indexthree}[1][1=]{{{\epsilon}_{#1}}}
+% \newcommandx{x^{\mu}indexfour}[1][1=]{{{\deta}_{#1}}}
+% \newcommandx{x^{\mu}dim}[1][1=]{{{\alpha}_{#1}}}
+% \newcommandx{x^{\mu}dimone}[1][1=]{{{\beta}_{#1}}}
+% \newcommandx{x^{\mu}dimtwo}[1][1=]{{{\gamma}_{#1}}}
+% \newcommandx{x^{\mu}dimthree}[1][1=]{{{\delta}_{#1}}}
+% \newcommandx{x^{\mu}dimfour}[1][1=]{{{\epsilon}_{#1}}}
+% \newcommandx{x^{\mu}dimfive}[1][1=]{{{\theta}_{#1}}}
+% \newcommandx{\const}[2][1=,2=]{{{\alpha}^{#1}_{#2}}}
+% \newcommandx{\constone}[2][1=,2=]{{{\beta}^{#1}_{#2}}}
+% \newcommandx{\consttwo}[2][1=,2=]{{{\kappa}^{#1}_{#2}}}
+% \newcommandx{\constthree}[2][1=,2=]{{{\gamma}^{#1}_{#2}}}
+% \newcommandx{\constfour}[2][1=,2=]{{{\theta}^{#1}_{#2}}}
+
+% \newcommandx{\pfunc}[2][1=\mu,2=]{\partial \func[#1][#2]}
+% \newcommandx{\dfunc}[2][1=\mu,2=]{\delta \func[#1][#2]}
+% \newcommandx{\Dfunc}[2][1=\mu,2=]{\Delta \func[#1][#2]}
+% \newcommandx{\pvar}[2][1=\mu,2=]{\partial \var[#1][#2]}
+% \newcommandx{\dvar}[2][1=\mu,2=]{\delta \var[#1][#2]}
+% \newcommandx{\Dvar}[2][1=\mu,2=]{\Delta \var[#1][#2]}
+% \newcommandx{\pvarone}[2][1=\mu,2=]{\partial \varone[#1][#2]}
+% \newcommandx{\dvarone}[2][1=\mu,2=]{\delta \varone[#1][#2]}
+% \newcommandx{\Dvarone}[2][1=\mu,2=]{\Delta \varone[#1][#2]}
+% \newcommandx{\pvartwo}[2][1=\mu,2=]{\partial \vartwo[#1][#2]}
+% \newcommandx{\dvartwo}[2][1=\mu,2=]{\delta \vartwo[#1][#2]}
+% \newcommandx{\Dvartwo}[2][1=\mu,2=]{\Delta \vartwo[#1][#2]}
+% \newcommandx{\pFunc}[2][1=\mu,2=]{\partial \Func[#1][#2]}
+% \newcommandx{\dFunc}[2][1=\mu,2=]{\delta \Func[#1][#2]}
+% \newcommandx{\DFunc}[2][1=\mu,2=]{\Delta \Func[#1][#2]}
+% \newcommandx{\pVar}[2][1=\mu,2=]{\partial \var[#1][#2]}
+% \newcommandx{\dVar}[2][1=\mu,2=]{\delta \Var[#1][#2]}
+% \newcommandx{\DVar}[2][1=\mu,2=]{\Delta \Var[#1][#2]}
+% \newcommandx{\pVarone}[2][1=\mu,2=]{\partial \Varone[#1][#2]}
+% \newcommandx{\dVarone}[2][1=\mu,2=]{\delta \Varone[#1][#2]}
+% \newcommandx{\DVarone}[2][1=\mu,2=]{\Delta \Varone[#1][#2]}
+% \newcommandx{\pVartwo}[2][1=\mu,2=]{\partial \Vartwo[#1][#2]}
+% \newcommandx{\dVartwo}[2][1=\mu,2=]{\delta \Vartwo[#1][#2]}
+% \newcommandx{\DVartwo}[2][1=\mu,2=]{\Delta \Vartwo[#1][#2]}
+
+% \newcommandx{\radius}[2][1=,2=]{{{r}^{#1}_{#2}}}
+% \newcommandx{\Radius}[2][1=,2=]{{{R}^{#1}_{#2}}}
+% \newcommandx{\loss}[2][1=,2=]{{{\ell}^{#1}_{#2}}}
+% \newcommandx{\linearconstraint}[2][1=,2=]{{{C}^{#1}_{#2}}}
+% \newcommandx{\linearbias}[2][1=,2=]{{{d}^{#1}_{#2}}}
+% \newcommandx{\nonlinearconstraint}[2][1=,2=]{{{c}^{#1}_{#2}}}
+% \newcommandx{\nonlinearbias}[2][1=,2=]{{{v}^{#1}_{#2}}}
+% \newcommandx{\weight}[2][1=,2=]{{{w}^{#1}_{#2}}}
+% \newcommandx{\Weight}[2][1=,2=]{{{W}^{#1}_{#2}}}
+% \newcommandx{\normspace}[2][1=,2=]{{{L}^{#1}_{#2}}}
+
+% \renewcommand{\square}{\mathord{\scalebox{0.8}[0.8]{\scalerel*{\Box}{gX}}}}
+% \newcommandx{\hrectangle}{\mathord{\scalebox{1.2}[0.8]{\scalerel*{\Box}{gX}}}}
+% \newcommandx{\vrectangle}{\mathord{\scalebox{0.8}[1.2]{\scalerel*{\Box}{gX}}}}
+
+% \renewcommandx{\square}{{\ooalign{$\sqsubset\mkern2mu$\cr$\mkern1mu\sqsupset$\cr}}}
+% \newcommandx{\hrectangle}{{\ooalign{$\sqsubset\mkern1mu$\cr$\mkern3mu\sqsupset$\cr}}+}
+% \newcommandx{\vrectangle}{{\ooalign{$\sqsubset\mkern1mu$\cr$\mkern3mu\sqsupset$\cr}}-}
+
+% \newcommandx{\Fgrad}[2][1=,2=]{{{\vecbar{F}}^{#1}_{#2}}}
+% \newcommandx{\fgrad}[2][1=,2=]{{{\vec{F}}^{#1}_{#2}}}
+% \newcommandx{\Udeform}[2][1=,2=]{{{\vecbar{u}}^{#1}_{#2}}}
+% \newcommandx{\udeform}[2][1=,2=]{{{\vec{u}}^{#1}_{#2}}}
+% \newcommandx{\traction}[2][1=,2=]{{{\vec{T}}^{#1}_{#2}}}
+
+% \newcommandx{\Bstressspatialindex}[2][1=,2=]{{{B}^{#1}_{#2}}}
+% \newcommandx{\Bstressspatial}[2][1=,2=]{{{\vec{B}}^{#1}_{#2}}}
+% \newcommandx{\Bstress}[2][1=,2=]{{{\vecbar{B}}^{#1}_{#2}}}
+% \newcommandx{\Bstressindex}[2][1=,2=]{{{\bar{B}}^{#1}_{#2}}}
+% \newcommandx{\bstresssymmindex}[2][1=,2=]{{{b}^{#1}_{#2}}}
+% \newcommandx{\bstresssymm}[2][1=,2=]{{{\vecbar{b}}^{#1}_{#2}}}
+% \newcommandx{\bstressspatialsymm}[2][1=,2=]{{{\vec{b}}^{#1}_{#2}}} 
+% \newcommandx{\bstressindex}[2][1=,2=]{{{\bar{b}}^{#1}_{#2}}}
+
+% \newcommandx{\Pstressspatialindex}[2][1=,2=]{{{P}^{#1}_{#2}}}
+% \newcommandx{\Pstressspatial}[2][1=,2=]{{{\vec{P}}^{#1}_{#2}}}
+% \newcommandx{\Pstress}[2][1=,2=]{{{\vecbar{P}}^{#1}_{#2}}}
+% \newcommandx{\Pstressindex}[2][1=,2=]{{{\bar{P}}^{#1}_{#2}}}
+% \newcommandx{\pstresssymmindex}[2][1=,2=]{{{p}^{#1}_{#2}}}
+% \newcommandx{\pstresssymm}[2][1=,2=]{{{\vecbar{p}}^{#1}_{#2}}}
+% \newcommandx{\pstressspatialsymm}[2][1=,2=]{{{\vec{p}}^{#1}_{#2}}} 
+% \newcommandx{\pstressindex}[2][1=,2=]{{{\bar{p}}^{#1}_{#2}}}
+
+% \newcommandx{\Estrainspatialindex}[2][1=,2=]{{{E}^{#1}_{#2}}}
+% \newcommandx{\Estrainspatial}[2][1=,2=]{{{\vec{E}}^{#1}_{#2}}}
+% \newcommandx{\Estrain}[2][1=,2=]{{{\vecbar{E}}^{#1}_{#2}}}
+% \newcommandx{\Estrainindex}[2][1=,2=]{{{\bar{E}}^{#1}_{#2}}}
+% \newcommandx{\estrainspatialindex}[2][1=,2=]{{{e}^{#1}_{#2}}}
+% \newcommandx{\estrain}[2][1=,2=]{{{\vecbar{e}}^{#1}_{#2}}}
+% \newcommandx{\estrainspatial}[2][1=,2=]{{{\vec{e}}^{#1}_{#2}}} 
+% \newcommandx{\estrainindex}[2][1=,2=]{{{\bar{e}}^{#1}_{#2}}}
+% \newcommandx{\estrainsymmindex}[2][1=,2=]{{{e}^{#1}_{#2}}}
+% \newcommandx{\estrainsymm}[2][1=,2=]{{{\vecbar{e}}^{#1}_{#2}}}
+% \newcommandx{\estrainspatialsymm}[2][1=,2=]{{{\vec{e}}^{#1}_{#2}}} 
+
+% \newcommandx{\energydensity}[2][1=,2=]{{{\psi}^{#1}_{#2}}}
+% \newcommandx{\energy}[2][1=,2=]{{{\Psi}^{#1}_{#2}}}
+
+% \newcommandx{\orderparameter}[2][1=\alpha,2=]{{{\eta}^{#1}_{#2}}}
+% \newcommandx{\Orderparameter}[2][1=\alpha,2=]{{{\bar{\eta}}^{#1}_{#2}}}
+% \newcommandx{\composition}[2][1=,2=]{{{c}^{#1}_{#2}}}
+% \newcommandx{\volfrac}[2][1=,2=]{{{\varphi}^{#1}_{#2}}}
+% \newcommandx{\Volfrac}[2][1=,2=]{{{\bar{\varphi}}^{#1}_{#2}}}
+% \newcommandx{\chemicalpotential}[2][1=,2=]{{{\mu}^{#1}_{#2}}}
+% \newcommandx{\current}[2][1=,2=]{{{\vec{J}}^{#1}_{#2}}}
+% \newcommandx{\mobility}[2][1=,2=]{{{\vec{L}}^{#1}_{#2}}}
+% \newcommandx{\mobilityscalar}[2][1=,2=]{{{{L}}^{#1}_{#2}}}
+% \newcommandx{\interfacial}[2][1=,2=]{{{l}^{#1}_{#2}}}
+% \newcommandx{\Interfacial}[2][1=,2=]{{\bar{l}^{#1}_{#2}}}
+% \newcommandx{\numberphase}[2][1=,2=]{{{N}^{#1}_{#2}}}
+% \newcommandx{\Numberphase}[2][1=,2=]{{\bar{N}^{#1}_{#2}}}
+
+% \newcommandx{\coef}[2][1=\mu,2=]{\gamma^{#1}_{#2}}
+% \newcommandx{\normalizationrhs}[2][1=,2=]{\alpha^{#1}_{#2}}
+% \newcommandx{\normalizationlhs}[2][1=,2=]{\beta^{#1}_{#2}}
+% \newcommandx{\kronecker}[2][1=,2=]{\delta^{#1#2}}
+% \newcommandx{\dirac}[2][1=,2=]{\delta^{#1}(#2)}
+% \newcommandx{\identity}{I}
+% \newcommandx{\Identity}{\vec{\identity}}
+% \renewcommandx{\dotproduct}[2][1=,2=]{#1\cdot#2}
+% \renewcommandx{\gradient}[2][1={w},2=]{{\nabla}_{#1}#2}
+% \renewcommandx{\laplacian}[2][1={w},2=]{\gradient[#1]^2#2}
+% \newcommandx{\nlaplacian}[3][1={w},2=,3=n]{\gradient[#1][]^{#3}#2}
+% \renewcommandx{\divergence}[2][1={w},2=]{\dotproduct[{\gradient[#1]}][{#2}]}
+% \newcommandx{\integrand}[2][1=p]{{{d}^{#1}}{#2}~}
+% \newcommandx{\rhs}[2][1=,2=]{{{X}^{#1}_{#2}}}
+% \newcommandx{\lhs}[2][1=,2=]{{{y}^{#1}_{#2}}}
+% \newcommandx{\lagrangemultiplier}[2][1=,2=]{{{\lambda}^{#1}_{#2}}}
+% \newcommandx{\lagrangemultiplierone}[2][1=,2=]{{{\mu}^{#1}_{#2}}}
