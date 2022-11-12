@@ -19,9 +19,6 @@ Data saved with HDF5
 . setup/install.sh
 
 # Directories
-paper: Analyis of results
-
-code: Source code
 
 # Run
 All calculations and post-processing through makefile commands 
