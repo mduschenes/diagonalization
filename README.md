@@ -22,14 +22,14 @@ Under `setup`, please install the appropriate C++ and Python libaries with:
 ```
 
 ## Setup
-For model system settings (Temperature, couplings), under `build`, please modify the `main.cpp`
+For model settings (Temperature, couplings), under `build`, please modify the settings in `main.cpp`
 
-For specific system settings (Hamiltonian, observables), under `src`, please modify the `main.cpp`
+For specific system settings (Hamiltonian, observables), under `src`, please modify the classes in `hamiltonian.cpp`
 
 For post-processing settings, under `src`, please modify `main.py`
 
 ## Run
 Please use the makefile for all commands:
-  - `make` : All calculations and processing
-  - `make run` : All calculations
-  - `make plot` : All processing
+  - `make` : All calculations and processing, with additional command-line arguments, as per `src/main.cpp`
+  - `make run` : All calculations, with additional command-line arguments, as per `src/main.cpp`
+  - `make plot` : All processing, with additional command-line arguments, as per `src/main.py`
