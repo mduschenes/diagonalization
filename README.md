@@ -15,20 +15,19 @@ Backend with sparse Eigen and ARPACK with MKL BLAS and LAPACK, and OpenMP for (A
 
 Data saved with HDF5
 
-# Install
+## Install
+Under `setup`, please install the appropriate C++ and Python libaries with:
+```sh
 . setup/install.sh
+```
 
-# Directories
+## Setup
+For model system settings (Temperature, couplings), under `build`, please modify the `main.cpp`
+For specific system settings (Hamiltonian, observables), under `src`, please modify the `main.cpp`
+For post-processing settings, under `src`, please modify `main.py`
 
-# Run
-All calculations and post-processing through makefile commands 
-
-All: make
-
-Calculations: make run
-
-Post-processing: make plot
-
-Specify calculations settings in src/main.cpp
-
-Specify post-processing settings in src/main.py
+## Run
+Please use the makefile for all commands:
+  - `make` : All calculations and processing
+  - `make run` : All calculations
+  - `make plot` : All processing
