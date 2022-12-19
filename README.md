@@ -23,7 +23,9 @@ Under `setup`, please install the appropriate C++ and Python libaries with:
 
 ## Setup
 For model system settings (Temperature, couplings), under `build`, please modify the `main.cpp`
+
 For specific system settings (Hamiltonian, observables), under `src`, please modify the `main.cpp`
+
 For post-processing settings, under `src`, please modify `main.py`
 
 ## Run
