@@ -66,16 +66,15 @@ PROFILE_OUT := profile.out
 # Optional Flags
 USE_DEP := 1
 USE_OMP := 1
-USE_MKL := 1
-# USE_HDF5 := /usr/lib/x86_64-linux-gnu/hdf5/serial/
-# USE_HDF5 := /usr/local/include/
-USE_HDF5 := /usr/local/
+USE_ARPACK := /usr/include/arpack
+USE_MKL := /usr/include/mkl
+USE_HDF5 := /usr/lib/x86_64-linux-gnu/hdf5/serial/
 USE_PROFILE :=
 
 # Flags
 # CC_FLAGS := -Ofast -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -DNDEBUG -Wall -Wextra -g -Wall -Wno-unknown-pragmas -Wno-unused-variable -I/usr/include -I$(INC_DIR)
 CC_FLAGS := -O3 -funroll-loops -m64 -std=c++17 -fext-numeric-literals -fconcepts -fPIC -Wall -DNDEBUG -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-value -I/usr/include -I$(INC_DIR)
-LD_FLAGS := -L/usr/lib -L$(LIB_DIR)
+LD_FLAGS := -L/usr/lib -L$(LIB_DIR) -lstdc++
 LD_LIBS  := 
 
 
@@ -92,14 +91,29 @@ endif
 # User Libraries
 # CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/lbfgspp/include -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra
 # CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/spectra/include
-CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools -I$(LIB_DIR)/arpack
-LD_FLAGS += -L$(LIB_DIR)/arpack/lib
-LD_LIBS += -lpthread -larpack
+CC_FLAGS += -I$(LIB_DIR)/eigen -I$(LIB_DIR)/itertools
+LD_FLAGS +=
+LD_LIBS += -lpthread
+
+# Arpack Libraries
+ifdef USE_ARPACK
+ARPACK_DIR := $(USE_ARPACK)
+CC_FLAGS += -I$(ARPACK_DIR)
+LD_FLAGS += -L$(ARPACK_DIR)/lib
+LD_LIBS += -larpack
+else
+CC_FLAGS +=
+LD_FLAGS +=
+LD_LIBS +=
+endif
 
 # BLAS Libraries
 ifdef USE_MKL
-CC_FLAGS += -I${MKLROOT}/include
-LD_FLAGS += -L${MKLROOT}/lib/intel64 
+MKL_DIR := $(USE_MKL)
+CC_FLAGS += -I$(MKL_DIR)/include
+CC_FLAGS += -I$(MKL_DIR)
+LD_FLAGS += -L$(MKL_DIR)/lib/intel64 
+LD_FLAGS += -L$(MKL_DIR)/intel64 
 LD_LIBS  += -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_rt -lmkl_core -liomp5 -fopenmp -lpthread -Wl,--no-as-needed -DMKL_LP64
 else
 CC_FLAGS +=
@@ -117,9 +131,10 @@ endif
 ifdef USE_HDF5
 HDF5_DIR := $(USE_HDF5)
 USE_HDF5 := 1
-CC_FLAGS += -DUSE_HDF5 -DOLD_HEADER_FILENAME -DHDF_NO_NAMESPACE -DNO_STATIC_CAST -I$(HDF5_DIR)
-LD_FLAGS += -L$(HDF5_DIR)lib 
-LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/lib
+CC_FLAGS += -DUSE_HDF5 -DOLD_HEADER_FILENAME -DHDF_NO_NAMESPACE -DNO_STATIC_CAST -I$(HDF5_DIR)/include
+LD_FLAGS += -L$(HDF5_DIR)/lib
+# LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath -Wl,/usr/local/lib
+LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath
 endif
 
 # CLI Arguments
