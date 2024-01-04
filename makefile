@@ -121,7 +121,6 @@ LD_FLAGS +=
 LD_LIBS  += -lblas -llapack -fopenmp
 endif
 
-
 ifdef USE_OMP
 USE_OMP = 1
 CCFLAGS += -DUSE_OMP
