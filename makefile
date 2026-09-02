@@ -63,6 +63,11 @@ PROFILE_DEP := gmon.out
 PROFILE_OUT := profile.out
 
 
+# Args
+RUN_ARGS :=
+PROCESS_ARGS :=
+
+
 # Optional Flags
 USE_DEP := 1
 USE_OMP := 1
@@ -136,24 +141,25 @@ LD_FLAGS += -L$(HDF5_DIR)/lib
 LD_LIBS += -lhdf5 -lhdf5_hl -lhdf5_cpp -lz -ldl -lm -Wl,-rpath
 endif
 
+# Make Options
+.PHONY : all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
+.SILENT : all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
+.PRECIOUS : $(OBJ_DIR)/%.$(OBJ_EXT) $(DEP_DIR)/%.$(DEP_EXT)
+.SECONDEXPANSION :
+
 # CLI Arguments
+COUNT = $(words $(filter $1,$2))
 ifeq ($(firstword $(MAKECMDGOALS)),$(filter all run runs process processs main $(PROGRAM) $(RUN),$(firstword $(MAKECMDGOALS))))
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(RUN_ARGS):;@:)
+# $(eval $(sort $(strip $(foreach i, $(RUN_ARGS), $(if $(filter-out 1, $(words $(filter $(i), $(RUN_ARGS)))), , $(i))))):;@:)
+# $(eval $(sort $(strip $(foreach i, $(RUN_ARGS), $(if $(filter 1, $(words $(filter $(i), $(RUN_ARGS)))), , $(i))))):;@:)
+$(eval $(sort $(RUN_ARGS))::;@:)
 endif
 
 ifeq ($(firstword $(MAKECMDGOALS)),$(filter plot plots $(PLOT),$(firstword $(MAKECMDGOALS))))
 PROCESS_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(PROCESS_ARGS):;@:)
+$(eval $(sort $(PROCESS_ARGS))::;@:)
 endif
-
-
-# Make Options
-.PHONY: all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
-.SILENT : all run test clean plot process profile runs plots processs main $(PROGRAM) $(RUN) $(PLOT)
-.PRECIOUS : $(OBJ_DIR)/%.$(OBJ_EXT) $(DEP_DIR)/%.$(DEP_EXT)
-.SECONDEXPANSION:
-
 
 # Rules
 all : clean $(EXE)

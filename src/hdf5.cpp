@@ -41,7 +41,13 @@ void dump(std::string & path, std::string & name, Eigen::Matrix<T, Eigen::Dynami
 	H5::H5File obj = file;
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	try {
+		H5::DataSet dataset = obj.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = obj.openDataSet(name);
 
 	T * values;
 
@@ -79,7 +85,13 @@ void dump(std::string & path, std::string & name, Eigen::SparseMatrix<T> & data)
 	H5::H5File obj = file;
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	try {
+		H5::DataSet dataset = obj.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = obj.openDataSet(name);
 
 	// TODO: Memory Leak
 
@@ -124,7 +136,13 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ma
 	H5::Group obj = file.openGroup(group);
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	try {
+		H5::DataSet dataset = obj.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = obj.openDataSet(name);
 
 	T * values = data.data();
 
@@ -163,7 +181,13 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Sp
 	H5::Group obj = file.openGroup(group);
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	try {
+		H5::DataSet dataset = obj.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = obj.openDataSet(name);
 
 	// TODO: Memory Leak
 	
@@ -210,7 +234,14 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ve
 	H5::Group obj = file.openGroup(group);
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+
+	try {
+		H5::DataSet dataset = obj.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = obj.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = obj.openDataSet(name);
 
 	T * values = data.data();
 
@@ -259,10 +290,22 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ma
 	imag.append(".imag");
 
 	H5::DataSpace dataspace_real(dim, shape);
-	H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	try {
+		H5::DataSet dataset_real = obj.openDataSet(real);
+	}
+	catch (...) {
+		H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	};
+	H5::DataSet dataset_real = obj.openDataSet(real);
 
 	H5::DataSpace dataspace_imag(dim, shape);
-	H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+	try {
+		H5::DataSet dataset_imag = obj.openDataSet(imag);
+	}
+	catch (...) {
+		H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+	};
+	H5::DataSet dataset_imag = obj.openDataSet(imag);
 	
 	T values_real[row][col];
 	T values_imag[row][col];
@@ -320,11 +363,22 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Sp
 	imag.append(".imag");
 
 	H5::DataSpace dataspace_real(dim, shape);
-	H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	try {
+		H5::DataSet dataset_real = obj.openDataSet(real);
+	}
+	catch (...) {
+		H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	};
+	H5::DataSet dataset_real = obj.openDataSet(real);
 
 	H5::DataSpace dataspace_imag(dim, shape);
-	H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
-
+	try {
+		H5::DataSet dataset_imag = obj.openDataSet(imag);
+	}
+	catch (...) {
+		H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+	};
+	H5::DataSet dataset_imag = obj.openDataSet(imag);
 
 	// TODO: Memory Leak
 	
@@ -383,10 +437,22 @@ void dump(std::string & path, std::string & group, std::string & name, Eigen::Ve
 	imag.append(".imag");
 
 	H5::DataSpace dataspace_real(dim, shape);
-	H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	try {
+		H5::DataSet dataset_real = obj.openDataSet(real);
+	}
+	catch (...) {
+		H5::DataSet dataset_real = obj.createDataSet(real,datatype,dataspace_real);
+	};
+	H5::DataSet dataset_real = obj.openDataSet(real);
 
 	H5::DataSpace dataspace_imag(dim, shape);
-	H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+	try {
+		H5::DataSet dataset_imag = obj.openDataSet(imag);
+	}
+	catch (...) {
+		H5::DataSet dataset_imag = obj.createDataSet(imag,datatype,dataspace_imag);
+	};
+	H5::DataSet dataset_imag = obj.openDataSet(imag);
 	
 	// T * values_real = data.real().data();
 	// T * values_real = &std::reinterpret_cast<T(&)[2]>(data.real().data()[0] )[0]
@@ -431,7 +497,6 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 	};
 	H5::H5File file(path,H5F_ACC_RDWR);
 
-
 	try {
 		H5::Group obj = file.openGroup(group);
 	}
@@ -447,7 +512,12 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 	T * values;
 
 	for (i=attributes.begin(); i!=attributes.end();i++){
-		attribute = obj.createAttribute(i->first,datatype,dataspace);
+		if (obj.attrExists(i->first)) {
+			attribute = obj.openAttribute(i->first);
+		}
+		else {
+			attribute = obj.createAttribute(i->first,datatype,dataspace);
+		};
 		values = &attributes[i->first];
 		attribute.write(datatype,values);
 	};
@@ -493,7 +563,12 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 	// TODO: Write variable length string (currently only pointer/first character)
 
 	for (i=attributes.begin(); i!=attributes.end();i++){
-		attribute = obj.createAttribute(i->first,datatype,dataspace);
+		if (obj.attrExists(i->first)) {
+			attribute = obj.openAttribute(i->first);
+		}
+		else {
+			attribute = obj.createAttribute(i->first,datatype,dataspace);
+		};
 		const char * values = attributes[i->first].c_str();
 		attribute.write(datatype,values);
 	};
@@ -544,7 +619,12 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 		shape[0] = size;
 		dataspace = H5::DataSpace(dim,shape);
 
-		attribute = obj.createAttribute(i->first,datatype,dataspace);
+		if (obj.attrExists(i->first)) {
+			attribute = obj.openAttribute(i->first);
+		}
+		else {
+			attribute = obj.createAttribute(i->first,datatype,dataspace);
+		};
 		values = attributes[i->first].data();
 		attribute.write(datatype,values);
 	};
@@ -597,7 +677,12 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 
 			dataspace = H5::DataSpace(dim,shape);
 
-			attribute = obj.createAttribute(i->first,datatype,dataspace);
+			if (obj.attrExists(i->first)) {
+				attribute = obj.openAttribute(i->first);
+			}
+			else {
+				attribute = obj.createAttribute(i->first,datatype,dataspace);
+			};
 			values = attributes[i->first].data();
 			attribute.write(datatype,values);
 		}
@@ -609,7 +694,12 @@ void dump(std::string & path, std::string & group, std::string & name, std::map<
 
 			dataspace = H5::DataSpace(dim,shape);
 
-			attribute = obj.createAttribute(i->first,datatype,dataspace);
+			if (obj.attrExists(i->first)) {
+				attribute = obj.openAttribute(i->first);
+			}
+			else {
+				attribute = obj.createAttribute(i->first,datatype,dataspace);
+			};
 
 			attributes[i->first].transposeInPlace();
 
@@ -649,7 +739,13 @@ void dump(std::string & path, std::string & name, std::vector<T> & data){
 	H5::H5File file(path,H5F_ACC_RDWR);
 
 	H5::DataSpace dataspace(dim, shape);
-	H5::DataSet dataset = file.createDataSet(name,datatype,dataspace);
+	try {
+		H5::DataSet dataset = file.openDataSet(name);
+	}
+	catch (...) {
+		H5::DataSet dataset = file.createDataSet(name,datatype,dataspace);
+	};
+	H5::DataSet dataset = file.openDataSet(name);
 
 	T * values = &data[0];
 

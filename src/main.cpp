@@ -17,14 +17,15 @@ int main(int argc, char *argv[]){
 	unsigned int N = 4;
 	unsigned int D = 2;
 	unsigned int d = 1;
-	unsigned int k = 3;
-	unsigned int s = 2;
-	unsigned int q = 2*N+4;
 	T J = 1;
 	T h = 1;
 	T U = 0;
+	unsigned int k = 3;
+	unsigned int s = 2;
+	unsigned int q = 2*N+4;
 	std::string sigma = "LA";	
-	unsigned int iteration;
+	unsigned int iteration = 0u;
+	std::string path = "data";
 
 	// Iterations
 	unsigned int i,j;
@@ -37,16 +38,15 @@ int main(int argc, char *argv[]){
 	std::map<std::string,std::vector<types>> variables;
 
 	if (argc > 1){
-		argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){k = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){s = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){q = std::atoi(argv[argn-1]);};
-		argn++;if (argc >= argn){J = std::atof(argv[argn-1]);};
-		argn++;if (argc >= argn){h = std::atof(argv[argn-1]);};
-		argn++;if (argc >= argn){U = std::atof(argv[argn-1]);};
+		argn++;if (argc >= argn){N = std::atoi(argv[argn-1]);}; // N
+		argn++;if (argc >= argn){D = std::atoi(argv[argn-1]);}; // D
+		argn++;if (argc >= argn){d = std::atoi(argv[argn-1]);}; // d
+		argn++;if (argc >= argn){J = std::atof(argv[argn-1]);}; // J
+		argn++;if (argc >= argn){h = std::atof(argv[argn-1]);}; // h
+		argn++;if (argc >= argn){U = std::atof(argv[argn-1]);}; // U
+		argn++;if (argc >= argn){path = argv[argn-1];}; // path
 		
+
 		names.push_back("N");	
 		sizes[names.back()] = 1;
 		variables[names.back()].push_back(N);
@@ -65,11 +65,15 @@ int main(int argc, char *argv[]){
 
 		names.push_back("sigma");
 		sizes[names.back()] = 1;
-		variables[names.back()].push_back("LA");		
+		variables[names.back()].push_back(sigma);
 
 		names.push_back("iteration");
 		sizes[names.back()] = 1;
-		variables[names.back()].push_back(0u);
+		variables[names.back()].push_back(iteration);
+
+		names.push_back("path");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(path);
 
 	}
 	else {
@@ -119,6 +123,10 @@ int main(int argc, char *argv[]){
 		// sizes[names.back()] = 100;
 		for (j=0;j<(sizes[names.back()]);j++){variables[names.back()].push_back(j);};
 
+		names.push_back("path");
+		sizes[names.back()] = 1;
+		variables[names.back()].push_back(path);
+
 	};
 
 	size = variables.size();
@@ -126,27 +134,31 @@ int main(int argc, char *argv[]){
 	for (j=0;j<size;j++){sizes[names[j]] = variables[names[j]].size();multiple |= sizes[names[j]]>1;};
 
 	for (auto&& [i,iterable] : iter::enumerate(iter::product(
-			variables[names[0]],variables[names[1]],
-			variables[names[2]],variables[names[3]],
+			variables[names[0]],
+			variables[names[1]],
+			variables[names[2]],
+			variables[names[3]],
 			variables[names[4]],
-			variables[names[5]]
+			variables[names[5]],
+			variables[names[6]]
 			))){
 
 		// i = i+2000;
 
 		// assign(iterable,variable,names);
-		variable[names[0]] = std::get<0>(iterable); variable[names[1]] = std::get<1>(iterable);
-		variable[names[2]] = std::get<2>(iterable); variable[names[3]] = std::get<3>(iterable);
+		variable[names[0]] = std::get<0>(iterable);
+		variable[names[1]] = std::get<1>(iterable);
+		variable[names[2]] = std::get<2>(iterable);
+		variable[names[3]] = std::get<3>(iterable);
 		variable[names[4]] = std::get<4>(iterable);
 		variable[names[5]] = std::get<5>(iterable);
+		variable[names[6]] = std::get<6>(iterable);
 
-		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
-		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
+		N = std::get<unsigned int>(variable["N"]);
+		J = std::get<T>(variable["J"]);
+		h = std::get<T>(variable["h"]);
+		U = std::get<T>(variable["U"]);
 		sigma = std::get<std::string>(variable["sigma"]);
-		iteration = std::get<unsigned int>(variable["iteration"]);
-
-		N = std::get<unsigned int>(variable["N"]); J = std::get<T>(variable["J"]);
-		h = std::get<T>(variable["h"]); U = std::get<T>(variable["U"]);
 		iteration = std::get<unsigned int>(variable["iteration"]);
 
 		tensor::System<T> system;
@@ -172,7 +184,7 @@ int main(int argc, char *argv[]){
 		system.close = 0.0; // Equal State degeneracy tolerance
 		system.sparse = true; // sparsity of data
 		system.nnz = 2*pow(system.D,system.N)*system.N; // number of data elements
-		system.path = "data/data.hdf5"; // path name
+		system.path = path + "/" + "data.hdf5"; // path name
 		if (multiple) {system.group = "data_" + std::to_string(i);} else {system.group = "data";}; // group name
 		system.name = "data"; // dataset name
 		system.data = "data"; // data name

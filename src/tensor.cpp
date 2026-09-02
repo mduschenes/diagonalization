@@ -97,6 +97,7 @@ void Tensor<T>::print(){
 	std::cout << "h = " << this->system.parameters["h"] << "\t";
 	std::cout << "U = " << this->system.parameters["U"] << "\t";
 	std::cout << "sigma = " << this->system.sigma << std::endl;
+	std::cout << "path = " << this->system.path << std::endl;
 };
 
 
@@ -151,7 +152,6 @@ void Tensor<T>::dump(){
 	group = this->system.group;
 	name = this->system.name;
 	io_parameters.dump(path,group,name,this->system.parameters);
-
 
 	// State
 	typedef T T_state;
