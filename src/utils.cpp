@@ -148,7 +148,7 @@ void _assign(T & tuple, std::map<std::string,T> & map, std::vector<std::string> 
     return;
 };
 
-template <typename T, std::size_t size = std::tuple_size<T>::value>
+template <typename T, std::size_t size>
 void assign(T & tuple, std::map<std::string,T> & map, std::vector<std::string> & keys) {
     return _assign(tuple,map,keys, std::make_index_sequence<size>{}); 
 };
